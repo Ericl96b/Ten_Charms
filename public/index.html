@@ -19,6 +19,42 @@
 </head>
 <body>
 <div id="app"></div>
+<script>
+// If the game can't start, say so instead of leaving a blank screen. Styled inline so it works without app.css.
+(function () {
+  function failed(detail) {
+    var root = document.getElementById('app');
+    while (root.firstChild) root.firstChild.remove();
+    var card = document.createElement('div');
+    card.setAttribute('data-testid', 'startup-failed');
+    card.setAttribute('style', 'position:absolute;left:16px;right:16px;top:30%;padding:24px;border-radius:24px;background:#FFF8F5;color:#5B2340;text-align:center;font:600 16px/1.4 -apple-system,system-ui,sans-serif');
+    var title = document.createElement('div');
+    title.textContent = "Ten Charms couldn't start";
+    title.setAttribute('style', 'font-size:22px;font-weight:800;margin-bottom:8px');
+    var help = document.createElement('div');
+    help.textContent = 'Please try again. If this keeps happening, send a screenshot of this message.';
+    var button = document.createElement('button');
+    button.textContent = 'Reload';
+    button.setAttribute('style', 'margin:16px 0;padding:12px 32px;border:0;border-radius:24px;background:#C73E6C;color:#fff;font:inherit;font-weight:800');
+    button.addEventListener('click', function () { location.reload(); });
+    var info = document.createElement('div');
+    info.setAttribute('data-testid', 'startup-error');
+    info.textContent = detail;
+    info.setAttribute('style', 'font-size:12px;overflow-wrap:anywhere;-webkit-user-select:text;user-select:text');
+    card.append(title, help, button, info);
+    root.append(card);
+  }
+  window.tenCharmsStartupFailed = failed;
+  addEventListener('error', function (e) {
+    if (window.tenCharmsStarted) return;
+    if (e.target && e.target.tagName === 'SCRIPT') failed('Could not load ' + e.target.src);
+    else if (e.target === window) failed(e.message || 'Unknown error');
+  }, true);
+  addEventListener('unhandledrejection', function (e) {
+    if (!window.tenCharmsStarted) failed(String(e.reason));
+  });
+})();
+</script>
 <script type="module" src="app.js"></script>
 </body>
 </html>

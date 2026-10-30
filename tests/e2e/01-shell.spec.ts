@@ -2,6 +2,51 @@ import { spawn } from 'node:child_process';
 import { cpSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { expect, test } from '@playwright/test';
 
+test('starts on browsers with strict element names, as iOS Safari 26 and older may be', async ({ page }) => {
+  const errors: string[] = [];
+  page.on('pageerror', (e) => errors.push(String(e)));
+  await page.addInitScript(() => {
+    const original = document.createElement;
+    document.createElement = function (this: Document, name: string, options?: ElementCreationOptions) {
+      if (!/^[a-z][a-z0-9-]*$/i.test(name)) throw new DOMException(`Bad element name: ${name}`, 'InvalidCharacterError');
+      return original.call(this, name, options);
+    } as typeof document.createElement;
+  });
+  await page.goto('http://localhost:4175/');
+  await expect(page.locator('[data-testid="install-helper"]')).toBeVisible();
+  await page.locator('[data-testid="install-later"]').click({ force: true });
+  await expect(page.locator('[data-testid="stop-1"] button').first()).toBeVisible();
+  expect(errors).toEqual([]);
+});
+
+test('a startup failure shows a message instead of a blank screen', async ({ page }) => {
+  const message = page.locator('[data-testid="startup-failed"]');
+  const detail = page.locator('[data-testid="startup-error"]');
+
+  // The script throws as it runs.
+  await page.route('**/app.js', (route) => route.fulfill({ contentType: 'text/javascript', body: 'throw new Error("boom on load")' }));
+  await page.goto('http://localhost:4175/');
+  await expect(message).toContainText("Ten Charms couldn't start");
+  await expect(detail).toContainText('boom on load');
+  await expect(page.getByRole('button', { name: 'Reload' })).toBeVisible();
+
+  // The script never arrives.
+  await page.unroute('**/app.js');
+  await page.route('**/app.js', (route) => route.abort());
+  await page.goto('http://localhost:4175/');
+  await expect(detail).toContainText('Could not load');
+  await page.unroute('**/app.js');
+});
+
+test('a failure later in startup also shows the message', async ({ page }) => {
+  await page.addInitScript(() => {
+    localStorage.setItem('ten-charms.save', JSON.stringify({ schema: 1, install: { dismissedAt: Date.now() } }));
+    Element.prototype.animate = () => { throw new Error('boom in splash'); };
+  });
+  await page.goto('http://localhost:4175/');
+  await expect(page.locator('[data-testid="startup-error"]')).toContainText('boom in splash');
+});
+
 test('production manifest and service worker validate', async ({ request }) => {
   const manifest = await (await request.get('http://localhost:4175/manifest.webmanifest')).json();
   expect(manifest.name).toBe('Ten Charms');

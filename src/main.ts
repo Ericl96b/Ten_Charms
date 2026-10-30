@@ -11,6 +11,8 @@ import { journey, resumeMatch } from './ui/screens/journey.ts';
 import { installDevHooks } from './dev/hooks.ts';
 
 const WEEK = 7 * 24 * 60 * 60 * 1000;
+// Set up by the small script in index.html, which shows the message when startup fails.
+const startup = window as unknown as { tenCharmsStarted?: boolean; tenCharmsStartupFailed?: (detail: string) => void };
 
 function standalone(): boolean {
   return matchMedia('(display-mode: standalone)').matches || (navigator as unknown as { standalone?: boolean }).standalone === true;
@@ -145,9 +147,10 @@ async function boot(): Promise<void> {
   const saved = app.save.match;
   // Paint the home screen behind the splash so nothing flashes.
   if (!saved) show(journey(), 'map', 'none');
+  startup.tenCharmsStarted = true;
   await installHelper();
   await splash();
   if (saved) resumeMatch(saved);
 }
 
-void boot();
+boot().catch((err: unknown) => startup.tenCharmsStartupFailed?.(String(err)));

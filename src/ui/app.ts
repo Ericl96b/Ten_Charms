@@ -16,7 +16,7 @@ export function initShell(): void {
   app.save = loadSave();
   app.root = document.getElementById('app')!;
   clear(app.root);
-  app.screenHost = h('div#screens');
+  app.screenHost = h('div');
   app.screenHost.id = 'screens';
   const overlays = h('div');
   overlays.id = 'overlays';

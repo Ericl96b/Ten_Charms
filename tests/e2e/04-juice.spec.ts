@@ -30,7 +30,10 @@ test('lay-down moment, slots, sparkles, hit, wild trail, and going out', async (
   // The Wild leaves a sparkle trail when dragged, and it lands in a slot.
   await tap(page, '.hc[data-id="4"]');
   await tap(page, '.hc[data-id="5"]');
+  // The trail is random per pointer move, so pin the odds to keep this drag from ever missing it.
+  await page.evaluate(() => { (window as any).__random = Math.random; Math.random = () => 0.1; });
   await drag(page, '.hc[data-id="6"]', '[data-testid="slot-1"]');
+  await page.evaluate(() => { Math.random = (window as any).__random; });
   await expect(page.locator('[data-testid="slot-1"]')).toContainText('Ready');
   // Suggest fills what's left.
   await tap(page, '.hc[data-id="1"]');
