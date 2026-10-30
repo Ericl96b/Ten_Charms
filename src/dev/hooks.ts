@@ -108,6 +108,7 @@ export function installDevHooks(): void {
       const t = activeTable!;
       new Function('game', 'match', source)(t.game, t.match);
       t.syncSlotShape();
+      t.syncTension();
       persist();
       t.laidEl.dataset.sig = '';
       t.handEls.forEach((el) => el.remove());

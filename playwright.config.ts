@@ -8,6 +8,7 @@ const viewports = [
 
 export default defineConfig({
   testDir: 'tests/e2e',
+  globalSetup: './tests/e2e/global-setup.ts',
   timeout: 180_000,
   fullyParallel: false,
   workers: 1,
