@@ -130,7 +130,7 @@ describe('original IP', () => {
   const banned = new RegExp(['ph', 'ase[\\s_-]*(1', '0|t', 'en)\\b'].join(''), 'i');
   function walk(dir: string): string[] {
     return readdirSync(dir).flatMap((name) => {
-      if (['node_modules', '.tools', '.git', 'dist', 'dist-dev', 'test-results', 'qa-screenshots', 'mockups'].includes(name)) return [];
+      if (['node_modules', '.tools', '.git', 'dist', 'dist-dev', 'test-results', 'qa-screenshots', 'private'].includes(name)) return [];
       const p = join(dir, name);
       return statSync(p).isDirectory() ? walk(p) : [p];
     });
@@ -139,7 +139,7 @@ describe('original IP', () => {
   test('the trademarked name appears nowhere in the project', () => {
     for (const file of walk(root)) {
       const rel = relative(root, file).replaceAll('\\', '/');
-      if (rel === 'SPEC.md' || rel === 'package-lock.json' || /\.(png|woff2|webp|webm|m4a)$/.test(rel)) continue;
+      if (rel === 'package-lock.json' ||/\.(png|woff2|webp|webm|m4a)$/.test(rel)) continue;
       assert.ok(!banned.test(rel), `file name: ${rel}`);
       assert.ok(!banned.test(readFileSync(file, 'utf8')), `content of ${rel}`);
     }

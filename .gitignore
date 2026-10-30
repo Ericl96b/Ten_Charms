@@ -4,4 +4,6 @@ dist/
 dist-dev/
 test-results/
 playwright-report/
+private/
+qa-screenshots/
 *.log

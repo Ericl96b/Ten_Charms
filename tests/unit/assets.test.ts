@@ -50,13 +50,17 @@ describe('portrait pipeline', () => {
 });
 
 describe('dialogue', () => {
-  test('uses the exact lines, and the right number for each bot', () => {
+  test('has the right number of lines for each bot', () => {
     assert.equal(Object.keys(LINES.pip).length, 6);
     assert.equal(Object.keys(LINES.marigold).length, 6);
     assert.equal(Object.keys(LINES.briar).length, 6);
     assert.equal(Object.keys(LINES.hoot).length, 6);
     assert.equal(Object.keys(LINES.nightshade).length, 8);
-    const spec = readFileSync('SPEC.md', 'utf8');
+  });
+
+  // The spec is kept out of the public repo, so this runs only where private/ exists.
+  test('uses the exact lines from the spec', { skip: !existsSync('private/SPEC.md') }, () => {
+    const spec = readFileSync('private/SPEC.md', 'utf8');
     for (const bot of Object.values(LINES)) for (const line of Object.values(bot)) assert.ok(spec.includes(`"${line}"`), line);
   });
 });

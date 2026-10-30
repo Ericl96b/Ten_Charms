@@ -1,7 +1,6 @@
 # Ten Charms
 
-A cozy, Rose Garden themed rummy card game for iPhone: a static web app installed to the Home Screen. `SPEC.md` is the source of truth. `HANDOFF.md` is the place to start if you just want to play it or change it.
-
+A cozy, Rose Garden themed rummy card game for iPhone: a static web app installed to the Home Screen.
 ## Commands
 
 Needs Node 24 or newer. On the build machine, Node is a portable copy; in PowerShell, run `$env:PATH = "$PWD\.tools\node;$env:PATH"` first.
@@ -36,7 +35,7 @@ npm run preview
 | `src/content.ts` | Title, roster, dialogue, stops, unlocks, Charms |
 | `src/ui/` | Table, set pieces, screens, audio, styles |
 | `src/dev/` | Test hooks, compiled out of production builds |
-| `assets/portraits/`, `assets/audio/` | Drop-in art and sound (see `HANDOFF.md`) |
+| `assets/portraits/`, `assets/audio/` | Drop-in art and sound |
 
 ## Major choices
 
