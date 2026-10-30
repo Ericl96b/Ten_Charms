@@ -1,0 +1,44 @@
+@font-face { font-family: 'Fraunces'; font-weight: 600; font-style: normal; font-display: swap; src: url('fonts/fraunces-latin-600-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Fraunces'; font-weight: 600; font-style: italic; font-display: swap; src: url('fonts/fraunces-latin-600-italic.woff2') format('woff2'); }
+@font-face { font-family: 'Fraunces'; font-weight: 800; font-style: normal; font-display: swap; src: url('fonts/fraunces-latin-800-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Nunito'; font-weight: 600; font-style: normal; font-display: swap; src: url('fonts/nunito-latin-600-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Nunito'; font-weight: 700; font-style: normal; font-display: swap; src: url('fonts/nunito-latin-700-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Nunito'; font-weight: 800; font-style: normal; font-display: swap; src: url('fonts/nunito-latin-800-normal.woff2') format('woff2'); }
+
+:root {
+  --wallpaper-a: #FCEFE9; --wallpaper-b: #F9E5DF;
+  --ink: #4A1D35; --ink-soft: #6B3350; --plum: #5B2340;
+  --panel: #FFF8F4; --panel-border: #EBC3C6;
+  --tablecloth: #F6D2D8; --stitch: #E7A9B9;
+  --primary: #C7406E; --primary-glow: rgba(242, 196, 109, .35);
+  --gold: #C9973F; --gold-bright: #D9A441; --gold-light: #F6D27F; --gold-pale: #FBE2A0;
+  --rose-bloom: #E8789A; --rose-blush: #F2A7BC; --leaf: #6E9A6A; --leaf-light: #7FAE77;
+  --card-face: #FFFAF5; --card-edge: #E8CFC2; --card-inner: #F0DDD3;
+  --success-bg: #E3F0DC; --success-ink: #2F5E39;
+  --skipped-bg: #F3ECF6; --skipped-border: #CDB8DD;
+  --rose: #B8325C; --moss: #3C7449; --moonstone: #3B5BA0; --honey: #94600C;
+  --display: 'Fraunces', Georgia, serif;
+  --ui: 'Nunito', system-ui, sans-serif;
+  --sat: env(safe-area-inset-top, 0px); --sab: env(safe-area-inset-bottom, 0px);
+  --sal: env(safe-area-inset-left, 0px); --sar: env(safe-area-inset-right, 0px);
+  --spring: cubic-bezier(.34, 1.56, .64, 1);
+}
+
+/* 1rem is 10 reference points at 390 wide, so the whole layout scales smoothly with width. */
+html { font-size: calc(min(100vw, 440px) / 39); height: 100%; }
+html, body { margin: 0; padding: 0; overflow: hidden; overscroll-behavior: none; touch-action: manipulation; }
+body {
+  height: 100dvh; background: #F2DAD3; color: var(--ink); font-family: var(--ui); font-weight: 600; font-size: 1.4rem;
+  -webkit-text-size-adjust: 100%; -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
+}
+* { box-sizing: border-box; }
+button { font: inherit; color: inherit; border: 0; background: none; padding: 0; cursor: pointer; touch-action: manipulation; }
+img, svg { display: block; -webkit-user-drag: none; }
+h1, h2, h3, p { margin: 0; }
+
+#app {
+  position: relative; width: min(100vw, 440px); height: 100%; margin: 0 auto; overflow: hidden;
+  background: repeating-linear-gradient(90deg, var(--wallpaper-a) 0 22px, var(--wallpaper-b) 22px 44px);
+}
+.screen { position: absolute; inset: 0; display: flex; flex-direction: column; padding: var(--sat) var(--sar) var(--sab) var(--sal); }
