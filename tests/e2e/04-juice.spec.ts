@@ -200,6 +200,8 @@ test('tapping jumps a celebration to its end, and tapping the boss intro skips i
   await page.locator('[data-testid="boss-intro"]').click({ force: true });
   await page.waitForSelector('[data-testid="boss-intro"]', { state: 'detached', timeout: 5000 });
   expect(Date.now() - t0).toBeLessThan(2500);
+  const names = await page.evaluate(() => (window as any).__TC__.events.map((e: { name: string }) => e.name));
+  expect(names).toContain('music.boss');
 });
 
 test('crowded table: five opponents fit and play', async ({ page }, info) => {
@@ -278,6 +280,12 @@ test('12. performance: no main-thread task over 50 ms in the lay-down and victor
   `);
   await tap(page, '[data-testid="suggest"]');
   await page.waitForTimeout(400);
+  // First, prove the probe can see a slow task at all.
+  await startProbe(page);
+  await page.evaluate(() => { const end = performance.now() + 120; while (performance.now() < end); });
+  await page.waitForTimeout(100);
+  expect(await stopProbe(page)).toBeGreaterThan(100);
+
   await startProbe(page);
   await tap(page, '[data-testid="primary"]');
   await page.waitForTimeout(1700);

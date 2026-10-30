@@ -18,6 +18,7 @@ export function bossIntro(host: HTMLElement): Promise<void> {
       if (done) return;
       done = true;
       finishAll();
+      playMusic('boss');
       void animate(overlay, [{ opacity: 1 }, { opacity: 0 }], { ms: 260 }).then(() => {
         overlay.remove();
         resolve();

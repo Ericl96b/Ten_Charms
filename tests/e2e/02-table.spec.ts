@@ -51,6 +51,8 @@ test('2. a full match against Pip finishes through the real UI', async ({ page }
       const top = g.discardPile.pop();
       g.discardPile.push(...g.drawPile.splice(1));
       g.discardPile.push(top);
+      // Two Skips and nothing else, so the auto-player has to choose a target on the picker.
+      g.players[0].hand = [{ id: 9104, kind: 'skip' }, { id: 9105, kind: 'skip' }];
     `);
     (window as any).__TC__.autoplay(true);
   });
@@ -60,6 +62,8 @@ test('2. a full match against Pip finishes through the real UI', async ({ page }
     return { trace: t.autoTrace(), names: t.events.map((e: { name: string }) => e.name), save: t.getSave() };
   });
   expect(report.trace).toContain('layDown');
+  expect(report.trace).toContain('pick-target');
+  expect(report.names).toContain('skip.onBot');
   expect(report.names).toContain('lay.fly');
   expect(report.names).toContain('hit.human');
   expect(report.names).toContain('ui.reshuffle');

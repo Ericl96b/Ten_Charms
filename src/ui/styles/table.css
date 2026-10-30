@@ -161,6 +161,7 @@
 .moth-art { width: 100%; height: 100%; animation: wing-beat .3s ease-in-out infinite alternate; transform-origin: center; }
 .moth-art path { fill: #5D2A63; } .moth-art .sp { fill: #E8789A; } .moth-art .bd { fill: #2A0F2F; }
 @keyframes wing-beat { from { transform: scaleX(1); } to { transform: scaleX(.7); } }
+.hidden-app, .hidden-app * { animation-play-state: paused !important; }
 .vignette { position: absolute; inset: 0; pointer-events: none; z-index: 7; opacity: 0; background: radial-gradient(ellipse at center, transparent 55%, rgba(42, 15, 47, .55) 100%); transition: opacity 1.6s; }
 .boss:not(.daylight) .vignette { opacity: .35; }
 .boss.tense:not(.daylight) .vignette { opacity: .85; }
@@ -183,9 +184,8 @@
   .pill { min-height: 3.4rem; font-size: 1.5rem; }
   .chip { padding: .35rem .4rem; }
   .chip-status { display: none; }
-  .chip-badge { display: none; }
-  .chip.skipped .chip-badge { display: flex; }
-  .chip.down:not(.skipped) .chip-text .chip-name { color: #7A5A15; }
+  .chip.skipped .chip-badge, .chip.down .chip-badge { display: flex; }
+  .chip.down:not(.skipped) .chip-badge { background: var(--gold-pale); color: #5E430F; }
   .duel .chip .p-small { width: 3.8rem; height: 3.8rem; font-size: 1.9rem; }
   .cloth { margin: 1.2rem 1.2rem .5rem; padding: 1.2rem .7rem .5rem; }
   .decor { display: none; }

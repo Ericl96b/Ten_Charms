@@ -296,6 +296,8 @@ export class Table {
       const key = active ? 'thinking' : p.pendingSkip ? 'skipped' : p.laidDown ? 'laid' : 'none';
       if (status.dataset.key !== key) {
         status.dataset.key = key;
+        const badge = chip.querySelector('.chip-badge') as HTMLElement;
+        badge.innerHTML = icon(key === 'laid' ? 'check' : key === 'thinking' ? 'sparkle' : 'hourglass');
         status.className = `chip-status st-${key}`;
         clear(status);
         if (key === 'thinking') {
