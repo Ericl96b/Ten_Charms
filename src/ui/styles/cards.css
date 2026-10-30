@@ -1,0 +1,83 @@
+/* Cards. All art is CSS and SVG. Sizes come from the container, so a card scales wherever it sits. */
+.card {
+  position: relative; width: 6rem; height: 9rem; border-radius: 1rem; background: var(--card-face); border: .15rem solid var(--card-edge);
+  box-shadow: 0 .2rem .5rem rgba(91, 35, 64, .22); font-family: var(--display); font-weight: 800; overflow: hidden; flex: none; color: var(--ink);
+}
+.card::after { content: ''; position: absolute; inset: .3rem; border: .1rem solid var(--card-inner); border-radius: .7rem; pointer-events: none; }
+.s-rose { color: var(--rose); } .s-moss { color: var(--moss); } .s-moonstone { color: var(--moonstone); } .s-honey { color: var(--honey); }
+.card .suit { width: 100%; height: 100%; display: block; }
+.card .idx { position: absolute; top: .5rem; left: .55rem; display: flex; flex-direction: column; align-items: center; width: 1.6rem; line-height: 1; font-size: 1.5rem; }
+.card .idx .suit { width: 1.2rem; height: 1.2rem; margin-top: .1rem; }
+.card .mid { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 3rem; line-height: 1; }
+.card .wm { position: absolute; left: 50%; top: 50%; width: 5rem; height: 5rem; margin: -2.5rem 0 0 -2.5rem; opacity: .14; }
+.card .br { position: absolute; right: .55rem; bottom: .55rem; width: 1.2rem; height: 1.2rem; }
+
+.card.wild { background: linear-gradient(145deg, #FBD9E2 0%, #F2A7BC 45%, #F6D27F 100%); border-color: var(--gold-pale); color: var(--plum); }
+.card.wild::after { border-color: rgba(255, 248, 244, .7); }
+.card.wild .mid { font-size: 1.8rem; font-style: italic; font-weight: 600; }
+.card.wild .sheen { position: absolute; inset: -40%; background: linear-gradient(115deg, transparent 42%, rgba(255, 255, 255, .75) 50%, transparent 58%); animation: wild-sheen 4s ease-in-out infinite; }
+@keyframes wild-sheen { 0% { transform: translateX(-60%); } 45%, 100% { transform: translateX(60%); } }
+.card.skip { background: var(--plum); border-color: #7a3a5a; color: #F9D5E0; }
+.card.skip::after { border-color: rgba(249, 213, 224, .3); }
+.card.skip .mid { font-size: 1.8rem; color: #FFF4F7; }
+.reduced .card.wild .sheen { animation: none; opacity: 0; }
+
+/* Mini cards, 28x40 at reference size */
+.card.mini { width: 2.8rem; height: 4rem; border-radius: .5rem; border-width: .1rem; box-shadow: 0 .1rem .2rem rgba(91, 35, 64, .25); }
+.card.mini::after { inset: .12rem; border-radius: .35rem; }
+.card.mini .idx, .card.mini .wm, .card.mini .br { display: none; }
+.card.mini .mid { font-size: 1.5rem; padding-bottom: 1.2rem; }
+.card.mini.num, .card.mini[class*='s-'] .mid { padding-bottom: 1.2rem; }
+.card.mini[class*='s-']::before { content: none; }
+.card.mini.wild .mid, .card.mini.skip .mid { font-size: 1.2rem; font-style: normal; font-weight: 800; padding: 0; letter-spacing: -.02em; }
+.card.mini.wild .mid { font-size: 0; }
+.card.mini.wild .mid::before { content: 'W'; font-size: 1.5rem; }
+.card.mini.skip .mid { font-size: 0; }
+.card.mini.skip .mid::before { content: 'S'; font-size: 1.5rem; }
+.card.mini .mini-suit { position: absolute; left: .55rem; bottom: .35rem; width: 1.5rem; height: 1.5rem; }
+.card.mini .br { display: block; right: 50%; margin-right: -.65rem; bottom: .3rem; width: 1.3rem; height: 1.3rem; }
+.card.mini.wild .br, .card.mini.skip .br { display: none; }
+
+/* Backs */
+.card-back { border: .25rem solid #FFF3EA; background-color: #A72F5C; }
+.card-back::after { border: 0; }
+.card-back .medal { position: absolute; left: 50%; top: 50%; width: 2.8rem; height: 2.8rem; margin: -1.4rem 0 0 -1.4rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+.card-back.mini { border-width: .15rem; }
+.card-back.mini .medal { transform: scale(.45); }
+.b-rose-lattice { background-image: repeating-linear-gradient(45deg, rgba(242, 167, 188, .55) 0 .12rem, transparent .12rem .9rem), repeating-linear-gradient(-45deg, rgba(242, 167, 188, .55) 0 .12rem, transparent .12rem .9rem); background-color: #A72F5C; }
+.b-rose-lattice .medal { background: #FFF3EA; border: .2rem solid var(--gold); color: var(--primary); padding: .3rem; }
+.b-clover-meadow { background-color: #7FA583; background-image: radial-gradient(circle at 50% 28%, #FFF3EA .22rem, transparent .24rem), radial-gradient(circle at 28% 50%, #FFF3EA .22rem, transparent .24rem), radial-gradient(circle at 72% 50%, #FFF3EA .22rem, transparent .24rem), radial-gradient(circle at 50% 72%, #FFF3EA .22rem, transparent .24rem); background-size: 1.5rem 1.5rem; }
+.b-honeycomb { background-color: #C98A2B; background-image: radial-gradient(circle at 50% 50%, transparent .42rem, rgba(255, 234, 180, .75) .44rem, rgba(255, 234, 180, .75) .54rem, transparent .56rem); background-size: 1.1rem 1.1rem; }
+.b-owl-feather { background-color: #5E8F86; background-image: radial-gradient(ellipse at 50% 0, transparent .62rem, rgba(226, 242, 234, .7) .65rem, rgba(226, 242, 234, .7) .74rem, transparent .77rem); background-size: 1.4rem 1rem; }
+.b-moth-wing { background-color: #3A1640; }
+.b-moth-wing .medal { width: 5rem; height: 5rem; margin: -2.5rem 0 0 -2.5rem; border-radius: 0; background: radial-gradient(circle at 26% 38%, #E8789A .42rem, transparent .46rem), radial-gradient(circle at 74% 38%, #E8789A .42rem, transparent .46rem), radial-gradient(circle at 34% 66%, #D9A441 .26rem, transparent .3rem), radial-gradient(circle at 66% 66%, #D9A441 .26rem, transparent .3rem), radial-gradient(ellipse at 28% 50%, #6C2C70 1.3rem, transparent 1.36rem), radial-gradient(ellipse at 72% 50%, #6C2C70 1.3rem, transparent 1.36rem); }
+.b-starlight { background-color: #1C2A5A; background-image: radial-gradient(circle at 20% 22%, #F6D27F .1rem, transparent .13rem), radial-gradient(circle at 74% 16%, #F6D27F .14rem, transparent .17rem), radial-gradient(circle at 34% 70%, #F6D27F .12rem, transparent .15rem), radial-gradient(circle at 82% 62%, #F6D27F .09rem, transparent .12rem), radial-gradient(circle at 56% 88%, #F6D27F .11rem, transparent .14rem); background-size: 3.2rem 4.6rem; }
+.b-starlight .medal { width: 2.6rem; height: 2.6rem; margin: -1.3rem 0 0 -1.3rem; background: radial-gradient(circle at 66% 40%, #1C2A5A .8rem, transparent .84rem), #F6D27F; }
+
+/* Tablecloth designs, shared by the table and the previews */
+.c-blush-gingham, [data-cloth='blush-gingham'] .cloth {
+  --cloth-bg: #F6D2D8;
+  background-color: #F6D2D8;
+  background-image: repeating-linear-gradient(0deg, rgba(231, 169, 185, .22) 0 1.4rem, transparent 1.4rem 2.8rem), repeating-linear-gradient(90deg, rgba(231, 169, 185, .22) 0 1.4rem, transparent 1.4rem 2.8rem);
+}
+.c-buttercream, [data-cloth='buttercream'] .cloth {
+  --stitch-c: #E5CF95;
+  background-color: #FBF1CF;
+  background-image: radial-gradient(circle at .9rem 0, #fff .8rem, transparent .84rem), radial-gradient(circle at .9rem 100%, #fff .8rem, transparent .84rem);
+  background-size: 1.8rem 1.8rem, 1.8rem 1.8rem; background-repeat: repeat-x; background-position: 0 0, 0 100%;
+}
+.c-lavender-lace, [data-cloth='lavender-lace'] .cloth {
+  --stitch-c: #C4AEDD;
+  background-color: #E5D9F2;
+  background-image: radial-gradient(circle at 1rem 0, #fff 1rem, transparent 1.04rem), radial-gradient(circle at 1rem 100%, #fff 1rem, transparent 1.04rem);
+  background-size: 2rem 2rem, 2rem 2rem; background-repeat: repeat-x; background-position: 0 0, 0 100%;
+}
+.c-midnight-garden, [data-cloth='midnight-garden'] .cloth {
+  --stitch-c: #7C4A80;
+  background-color: #3A1640;
+  background-image: radial-gradient(circle at 25% 30%, #D9A441 .13rem, transparent .16rem), radial-gradient(circle at 70% 60%, #F6D27F .11rem, transparent .14rem), radial-gradient(circle at 45% 85%, #D9A441 .1rem, transparent .13rem);
+  background-size: 3.6rem 3.6rem;
+}
+.swatch { width: 100%; height: 100%; min-height: 7rem; border-radius: 1.2rem; position: relative; border: .15rem solid var(--panel-border); }
+.swatch-stitch { position: absolute; inset: .5rem; border: .15rem dashed var(--stitch-c, var(--stitch)); border-radius: .8rem; }
+.music-disc, .mode-badge { width: 7rem; height: 7rem; margin: auto; border-radius: 50%; background: var(--gold-light); border: .3rem solid var(--gold); color: var(--plum); font-size: 3.4rem; display: flex; align-items: center; justify-content: center; }

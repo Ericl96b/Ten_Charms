@@ -46,7 +46,7 @@ export type GroupCheck =
 function runPlacement(naturals: number[], size: number, runStart?: number): { start: number } | { reason: string } {
   const lo = Math.min(...naturals);
   const hi = Math.max(...naturals);
-  if (hi - lo + 1 > size) return { reason: `Those numbers don't fit in a Run of ${size}.` };
+  if (hi - lo + 1 > size) return { reason: hi === 12 ? "Runs can't go past 12." : `Those numbers don't fit in a Run of ${size}.` };
   if (size > 12) return { reason: "Runs can't go past 12." };
   if (runStart !== undefined) {
     if (runStart < 1) return { reason: "Runs can't go below 1." };
@@ -129,7 +129,7 @@ export function checkHit(group: LaidGroup, card: Card): HitCheck {
   if (card.num === hi + 1) ends.push('high');
   if (card.num === lo - 1) ends.push('low');
   if (ends.length > 0) return { ok: true, ends };
-  if (hi === 12 && card.num === 13) return { ok: false, reason: "Runs can't go past 12." };
+  if (hi === 12 && card.num < lo) return { ok: false, reason: "Runs can't go past 12." };
   return { ok: false, reason: `That Run needs a ${lo > 1 ? lo - 1 : hi + 1}${lo > 1 && hi < 12 ? ` or a ${hi + 1}` : ''}.` };
 }
 

@@ -19,6 +19,7 @@ export default defineConfig({
     isMobile: false,
     deviceScaleFactor: 2,
     baseURL: 'http://localhost:4174/',
+    actionTimeout: 15_000,
     trace: 'off',
     video: 'off',
   },
