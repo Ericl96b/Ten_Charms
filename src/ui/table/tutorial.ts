@@ -34,7 +34,7 @@ export class Tutorial {
 
   /** Called whenever the table changes. Shows the next relevant tip, or moves the current one on. */
   check(): void {
-    if (!this.active || !this.t.alive || this.t.dragging) return;
+    if (!this.active || !this.t.alive || this.t.dragging || this.t.dealing) return;
     if (this.el) {
       // A tip that describes an action clears itself once that action's moment has passed.
       const step = this.steps[this.current];

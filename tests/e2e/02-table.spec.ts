@@ -22,7 +22,12 @@ test('table renders at each size with the hand inside the screen', async ({ page
   }
   const lefts = rects.map((r) => r.l).sort((a, b) => a - b);
   for (let i = 1; i < lefts.length; i++) expect(lefts[i] - lefts[i - 1]).toBeGreaterThanOrEqual(24);
+  // Cards and the main button carry spoken labels.
+  const labels = await page.locator('.hc').evaluateAll((els) => els.map((e) => e.getAttribute('aria-label') ?? ''));
+  for (const l of labels) expect(l).toMatch(/^((Rose|Moss|Moonstone|Honey) \d+|Wild|Skip)$/);
+  await expect(page.locator('[data-testid="primary"]')).toHaveAttribute('aria-label', 'Lay down Phase 1');
   // Interactive controls meet the 44 point minimum.
+
   const sizes = await page.locator('.round-btn, .square-btn, .btn:visible, .slot').evaluateAll((els) => els.map((e) => { const r = e.getBoundingClientRect(); return [r.width, r.height]; }));
   for (const [w, h] of sizes) {
     expect(w).toBeGreaterThanOrEqual(43.9);

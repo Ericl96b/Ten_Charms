@@ -33,7 +33,7 @@ function globalListeners(): void {
   document.addEventListener('dblclick', (e) => e.preventDefault());
   // Keeps iOS from rubber-banding the page, while still letting real scrollers scroll.
   document.addEventListener('touchmove', (e) => {
-    if (!(e.target as Element).closest?.('.page-scroll,.map-scroll,.laid,.sheet-body,.opps,textarea')) e.preventDefault();
+    if (!(e.target as Element).closest?.('.page-scroll,.map-scroll,.laid,.sheet-body,.opps,.re-rows,textarea')) e.preventDefault();
   }, { passive: false });
   document.addEventListener('contextmenu', (e) => e.preventDefault());
 }
@@ -113,10 +113,14 @@ function registerServiceWorker(): void {
       reg.waiting.postMessage('SKIP_WAITING');
       return;
     }
+    let toasted = false;
     reg.addEventListener('updatefound', () => {
       const incoming = reg.installing;
+      // The very first install isn't an update, even though it takes control of the page at once.
+      const isUpdate = !!reg.active;
       incoming?.addEventListener('statechange', () => {
-        if (incoming.state === 'installed' && navigator.serviceWorker.controller) {
+        if (isUpdate && !toasted && incoming.state === 'installed') {
+          toasted = true;
           const toast = noteToast('A new bloom is ready. Tap to update.', () => {
             tapped = true;
             toast.remove();
@@ -133,7 +137,7 @@ async function boot(): Promise<void> {
   requestPersistence();
   globalListeners();
   rotateCard();
-  registerServiceWorker();
+  if (!__DEV__) registerServiceWorker();
   if (__DEV__) installDevHooks();
   const host = h('div.fx-layer');
   app.root.append(host);

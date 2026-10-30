@@ -53,7 +53,8 @@
 .boss-plate { text-align: center; background: #3A1640; color: #fff; padding: .4rem 1.2rem; border-radius: 1.2rem; white-space: nowrap; box-shadow: var(--shadow); }
 .boss-plate small { display: block; color: var(--gold-light); letter-spacing: .1em; font-weight: 800; font-size: 1.2rem; }
 .boss-plate b { font-family: var(--display); font-weight: 800; font-size: 1.6rem; }
-.boss-play { margin-top: .6rem; min-height: 4.8rem; }
+.boss-play { margin-top: .6rem; min-height: 4.8rem; transform: translateX(-4rem); }
+.boss-play:active { transform: translateX(-4rem) scale(.94); }
 
 /* Match intro */
 .intro { display: flex; flex-direction: column; align-items: center; gap: .3rem; text-align: center; }

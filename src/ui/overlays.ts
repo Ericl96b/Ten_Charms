@@ -123,7 +123,7 @@ export function charmToast(id: CharmId): void {
 }
 
 export function noteToast(text: string, onTap?: () => void, sticky = false): HTMLElement {
-  const toast = h(onTap ? 'button.toast.note-toast' : 'div.toast.note-toast', { onclick: onTap, role: 'status' }, text);
+  const toast = h(onTap ? 'button.toast.note-toast' : 'div.toast.note-toast', { onclick: onTap, role: 'status', 'data-testid': onTap ? 'update-toast' : undefined }, text);
   top().append(toast);
   void animate(toast, [{ opacity: 0, transform: 'translateY(-60%)' }, { opacity: 1, transform: 'none' }], { ms: 220, ease: SPRING });
   if (!sticky) {

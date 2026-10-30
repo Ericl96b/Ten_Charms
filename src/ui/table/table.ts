@@ -13,7 +13,7 @@ import { app, persist, show } from '../app.ts';
 import { backEl, candleSvg, cardEl, garlandSvg, icon, portraitEl, setExpression, teacupSvg, type Expression } from '../art.ts';
 import { setTension, sfx } from '../audio/audio.ts';
 import { clear, h, rectOf, wait } from '../dom.ts';
-import { SPRING, animate, burst, center, fx, motion, pause, rollNumber, setFxLayer, setRate } from '../fx/motion.ts';
+import { SPRING, animate, burst, center, finishAll, fx, motion, pause, rollNumber, setFxLayer, setRate } from '../fx/motion.ts';
 import { charmToast, closeAllSheets, confirmSheet, invalid, noteToast, openSheet, tooltip } from '../overlays.ts';
 import { startAmbient, startBossAmbient } from './ambient.ts';
 import { dealAnimation, hitMoment, layDownMoment, otherLayDownMoment, outMoment, reshuffleMoment, roundEndMoment, skipOnHerMoment, skipOnBotMoment } from './moments.ts';
@@ -643,6 +643,11 @@ export class Table {
   onTapAnywhere(): void {
     this.lastTouch = Date.now();
     this.stopBreathing();
+    if (this.celebrating) {
+      setRate(8);
+      finishAll();
+      return;
+    }
     if (this.game.current !== 0 && this.animatingBot && !this.ffUntilTurnEnd) {
       this.ffUntilTurnEnd = true;
       setRate(2.5);
@@ -1171,8 +1176,10 @@ export class Table {
         this.lastActive = -1;
         this.handDimmed = false;
         this.syncTension();
+        this.dealing = true;
         this.render();
         await dealAnimation(this);
+        this.dealing = false;
         if (e.startSkip) noteToast('The first card is a Skip.');
         this.nearWinLine();
         break;
@@ -1210,7 +1217,7 @@ export class Table {
       case 'noDraw': noteToast('Nothing to draw.'); break;
       case 'layDown': {
         if (e.seat === 0) {
-          await layDownMoment(this, e.phase, e.groupIds);
+          await this.celebrate(() => layDownMoment(this, e.phase, e.groupIds));
           this.match.lineup.forEach((_, i) => this.say(i + 1, 'humanLays'));
         } else {
           await otherLayDownMoment(this, e.seat, e.groupIds);
@@ -1242,17 +1249,26 @@ export class Table {
       }
       case 'skipNoTarget': noteToast('No one to skip'); break;
       case 'goOut': {
-        await outMoment(this, e.seat, e.by);
+        await this.celebrate(() => outMoment(this, e.seat, e.by));
         if (e.seat === 0) this.match.lineup.forEach((_, i) => this.say(i + 1, 'humanGoesOut'));
         else { this.say(e.seat, 'goesOut'); this.setFace(e.seat, 'happy'); }
         break;
       }
-      case 'roundEnd': await roundEndMoment(this, e.result); break;
+      case 'roundEnd': await this.celebrate(() => roundEndMoment(this, e.result)); break;
       case 'matchEnd': break;
     }
   }
 
   onHerShown = false;
+  dealing = false;
+
+  /** A set piece she can tap through: a tap jumps it to its final state. */
+  async celebrate(moment: () => Promise<void>): Promise<void> {
+    this.celebrating = true;
+    await moment();
+    this.celebrating = false;
+    setRate(1);
+  }
 
   setActiveChip(): void {
     this.renderChips();
@@ -1417,7 +1433,7 @@ export class Table {
       if (before === 'draw') await this.botWait(budget * 0.22);
     }
     this.animatingBot = false;
-    if (this.ffUntilTurnEnd && this.game.current !== 0) {
+    if (this.ffUntilTurnEnd) {
       this.ffUntilTurnEnd = false;
       setRate(1);
     }

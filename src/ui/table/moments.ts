@@ -2,10 +2,10 @@
 import { BOTS } from '../../content.ts';
 import { cardPoints } from '../../engine/cards.ts';
 import type { Card, RoundResult } from '../../engine/types.ts';
-import { backEl, cardEl, hourglassEl, icon, portraitEl } from '../art.ts';
+import { backEl, cardEl, hourglassEl, portraitEl } from '../art.ts';
 import { sfx } from '../audio/audio.ts';
 import { h, rectOf } from '../dom.ts';
-import { SOFT, SPRING, animate, burst, center, confetti, fx, motion, pause, rollNumber, shake } from '../fx/motion.ts';
+import { SPRING, animate, burst, center, confetti, fx, motion, pause, shake } from '../fx/motion.ts';
 import { flyCard, type Table } from './table.ts';
 
 type Box = { left: number; top: number; width: number; height: number };
@@ -330,7 +330,6 @@ export async function reshuffleMoment(t: Table): Promise<void> {
 /** Every hand flips up, the points tick in, and medallions turn over for those who advance. */
 export async function roundEndMoment(t: Table, result: RoundResult): Promise<void> {
   t.render();
-  t.celebrating = true;
   fx('round.flipHands');
   const overlay = h('div.tally', { 'data-testid': 'tally' });
   t.fxEl.append(overlay);
@@ -396,17 +395,6 @@ export async function roundEndMoment(t: Table, result: RoundResult): Promise<voi
   }
   await pause(skipping ? 120 : 600);
   overlay.remove();
-  t.celebrating = false;
-  if (t.me.laidDown || t.game.groups.length >= 0) rollAllChips(t);
-}
-
-function rollAllChips(t: Table): void {
   t.render();
 }
 
-export function iconFor(name: string): string {
-  return icon(name);
-}
-
-void rollNumber;
-void SOFT;

@@ -18,7 +18,7 @@ import { freePlayScreen } from './freeplay.ts';
 import { settingsScreen } from './settings.ts';
 import { statsScreen } from './stats.ts';
 
-const SPOTS = [{ x: 12.5, y: 56.5 }, { x: 26, y: 43.5 }, { x: 12.5, y: 31 }, { x: 26, y: 18.5 }, { x: 19.5, y: 0.5 }];
+const SPOTS = [{ x: 12.5, y: 57 }, { x: 26, y: 45 }, { x: 12.5, y: 33 }, { x: 26, y: 21 }, { x: 19.5, y: 0.5 }];
 
 export type NavTab = 'journey' | 'free' | 'collection' | 'stats';
 

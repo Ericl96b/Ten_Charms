@@ -114,7 +114,7 @@ export function reviewSheet(t: Table, r: RoundResult): void {
   const hands = r.hands.map((hand, seat) => h('div.review-hand', { 'data-testid': `review-${seat}` },
     h('div.review-head', null, seatPortrait(t, seat), h('b', null, seatName(t, seat)), h('span.pts', null, `${r.points[seat]} pts`)),
     hand.length > 0 ? miniCards(hand) : h('p.re-none', null, 'No cards left'),
-    hand.length > 0 ? h('p.count-line', null, hand.map((c) => `${cardLabel(c)} ${cardPoints(c)}`).join(' + ')) : null,
+    hand.length > 0 ? h('p.count-line', null, hand.map((c) => `${cardLabel(c)} (${cardPoints(c)})`).join(' + ')) : null,
   ));
   openSheet([
     h('div.review', { 'data-testid': 'review-sheet' }, hands,

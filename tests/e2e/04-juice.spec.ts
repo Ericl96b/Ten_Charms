@@ -167,6 +167,41 @@ test('choose your phase and sprint play through their own flows', async ({ page 
   expect(await page.evaluate(() => (window as any).__TC__.getSave().stats.played)).toBe(1);
 });
 
+test('tapping jumps a celebration to its end, and tapping the boss intro skips it', async ({ page }) => {
+  await openApp(page);
+  await startMatch(page, { lineup: ['pip'], seed: 'c1'.repeat(16), botSeed: 'c2'.repeat(16) });
+  await patch(page, BASE + `
+    me.hand = [n(1,3),n(2,3,'moss'),n(3,3,'honey'),n(4,9),n(5,9,'moss'),n(6,9,'honey'),n(9,1),n(10,1)];
+    game.players[1].phase = 1;
+  `);
+  await tap(page, '[data-testid="suggest"]');
+  await page.waitForTimeout(400);
+  await tap(page, '[data-testid="primary"]');
+  const start = Date.now();
+  await page.waitForTimeout(80);
+  await tap(page, '[data-testid="cloth"]');
+  await waitIdle(page);
+  expect(Date.now() - start).toBeLessThan(1500);
+  expect(await page.evaluate(() => (window as any).__TC__.state().players[0].laidDown)).toBe(true);
+
+  await page.evaluate(() => {
+    const t = (window as any).__TC__;
+    const s = t.getSave();
+    s.match = null;
+    s.campaign.won = [true, true, true, true, false];
+    s.tutorial.done = true;
+    t.loadSave(s);
+  });
+  await tap(page, '[data-testid="stop-5"] .stop-btn');
+  await tap(page, '[data-testid="begin"]');
+  await page.waitForSelector('[data-testid="boss-intro"]');
+  const t0 = Date.now();
+  await page.waitForTimeout(300);
+  await page.locator('[data-testid="boss-intro"]').click({ force: true });
+  await page.waitForSelector('[data-testid="boss-intro"]', { state: 'detached', timeout: 5000 });
+  expect(Date.now() - t0).toBeLessThan(2500);
+});
+
 test('crowded table: five opponents fit and play', async ({ page }, info) => {
   await openApp(page);
   await page.evaluate(() => (window as any).__TC__.setTestScale(0.05));
