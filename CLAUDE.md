@@ -1,6 +1,6 @@
 # Ten Charms
 
-A cozy, Rose Garden themed rummy card game: a static web app with no server, played mainly on an iPhone from the Home Screen. Saves stay on each player's device.
+A cozy, Rose Garden themed rummy card game: a static web app with no server, played mainly on an iPhone from the Home Screen, installed from Chrome for iOS, and also on Android in Chrome. Saves stay on each player's device.
 
 Live at https://ericl96b.github.io/Ten_Charms/. Every push to `main` redeploys it through GitHub Actions, so a push goes straight to the player.
 
@@ -23,10 +23,10 @@ npm ci
 ```
 
 ```bash
-npx playwright install webkit
+npx playwright install webkit chromium
 ```
 
-Run `npm run build` and `npm run build:dev` before `npm run test:e2e`. A full browser run takes about 18 minutes.
+Run `npm run build` and `npm run build:dev` before `npm run test:e2e`. A full browser run takes about 40 minutes.
 
 ## Rules
 
@@ -48,4 +48,5 @@ Windows WebKit still isn't iOS Safari. For risky changes, tell the user what to 
 
 - The "invalid actions" test in `tests/e2e/02-table.spec.ts` can occasionally tap the wrong card in the fanned hand. It passed 10 of 10 repeats after one failure.
 - Nightshade beats Professor Hoot about 52% of the time, against a 60% target. A real fix would have her play out sample futures, which needs bot thinking moved off the main thread.
+- With real safe-area insets, tall phones show about 2 full laid-down rows in a 3-opponent match, not the 3–4 the tests see with zero insets. Showing more would need smaller piles or a smaller hand.
 - Nobody has confirmed how the sound and music come across, and the full iPhone checklist hasn't been run.
