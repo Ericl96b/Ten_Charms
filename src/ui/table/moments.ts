@@ -129,7 +129,8 @@ export async function layDownMoment(t: Table, phase: number, groupIds: number[])
   await Promise.all(flights);
   ghosts.forEach((g) => g.classList.remove('in-flight'));
   fx('lay.trackFill');
-  t.renderPanel();
+  // Hidden, not removed, so the panel holds its height until the moment is over.
+  t.panelEl.querySelectorAll<HTMLElement>('.slot-cards').forEach((held) => { held.style.visibility = 'hidden'; });
   const seg = t.panelEl.querySelector<HTMLElement>(`.track [data-p="${phase}"]`);
   if (seg) {
     seg.classList.add('done', 'filling');

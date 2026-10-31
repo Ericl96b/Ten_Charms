@@ -19,31 +19,32 @@
 .odo-d { display: inline-block; height: 1.2em; overflow: hidden; line-height: 1.2; }
 .odo-c { display: flex; flex-direction: column; }
 
-.opps { position: relative; z-index: 2; display: flex; gap: .6rem; padding: 0 1.2rem; flex: none; overflow-x: auto; scrollbar-width: none; }
-.opps::-webkit-scrollbar { display: none; }
-.chip { position: relative; flex: 1 1 0; min-width: 0; background: var(--panel); border: .15rem solid var(--panel-border); border-radius: 1.6rem; padding: .5rem; box-shadow: var(--shadow); transition: background-color .25s; }
-.crowded .chip { flex: 0 0 13.6rem; }
-.chip-main { display: flex; align-items: center; gap: .5rem; min-width: 0; }
-.chip-text { min-width: 0; display: flex; flex-direction: column; }
-.chip-name { font-family: var(--display); font-weight: 800; color: var(--plum); font-size: 1.35rem; line-height: 1.15; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.chip-info { color: var(--ink-soft); font-size: 1.2rem; line-height: 1.2; font-weight: 700; }
-.chip-status { height: 2.2rem; margin-top: .4rem; border-radius: 1.1rem; display: flex; align-items: center; justify-content: center; gap: .3rem; font-size: 1.2rem; font-weight: 800; }
-.chip-status .icon { font-size: 1.3rem; }
-.st-thinking { background: #F5E6E4; color: var(--ink-soft); }
-.st-laid { background: var(--gold-pale); color: #5E430F; }
-.st-skipped { background: var(--plum); color: #fff; }
-.dots { display: inline-flex; gap: .2rem; margin-left: .2rem; }
+.opps { position: relative; z-index: 2; display: flex; flex-wrap: wrap; justify-content: center; gap: .6rem; padding: 0 1.2rem; flex: none; }
+.chip { position: relative; flex: 1 1 0; min-width: 0; height: 4.2rem; display: flex; align-items: center; gap: .35rem; background: var(--panel); border: .15rem solid var(--panel-border); border-radius: 2.1rem; padding: 0 .4rem 0 .3rem; box-shadow: var(--shadow); transition: background-color .25s; }
+.crowded .chip { flex: 0 0 calc((100% - 1.2rem) / 3); }
+.duel .chip { flex: 0 0 60%; height: 4.6rem; border-radius: 2.3rem; }
+.chip-portrait { position: relative; flex: none; }
+.chip .p-small { width: 2.8rem; height: 2.8rem; font-size: 1.4rem; }
+.duel .chip .p-small { width: 3.6rem; height: 3.6rem; font-size: 1.8rem; }
+.chip-text { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; }
+.chip-name { font-family: var(--display); font-weight: 800; color: var(--plum); font-size: 1.3rem; line-height: 1.15; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.chip.thinking .chip-name { padding-right: 1.9rem; }
+.chip-info { color: var(--ink-soft); font-size: 1.05rem; line-height: 1.2; font-weight: 700; white-space: nowrap; letter-spacing: -.01em; word-spacing: -.08em; }
+.chip-badge { display: none; position: absolute; right: -.3rem; bottom: -.3rem; width: 1.5rem; height: 1.5rem; border-radius: 50%; border: .12rem solid var(--panel); font-size: .95rem; align-items: center; justify-content: center; }
+.chip-badge[data-key='laid'] { display: flex; background: var(--gold-light); color: #5E430F; }
+.chip-badge[data-key='skipped'] { display: flex; background: var(--plum); color: #F9D5E0; }
+.dots { display: none; position: absolute; right: .9rem; top: .9rem; gap: .2rem; color: var(--ink-soft); }
+.chip.thinking .dots { display: inline-flex; }
 .dots i { width: .35rem; height: .35rem; border-radius: 50%; background: currentColor; animation: dot-bounce .9s ease-in-out infinite; }
 .dots i:nth-child(2) { animation-delay: .15s; }
 .dots i:nth-child(3) { animation-delay: .3s; }
 @keyframes dot-bounce { 0%, 60%, 100% { transform: translateY(0); } 30% { transform: translateY(-.35rem); } }
-.chip.active::before { content: ''; position: absolute; inset: -.3rem; border-radius: 1.9rem; border: .25rem solid var(--gold-bright); animation: ring-pulse 1.4s ease-in-out infinite; pointer-events: none; }
+.chip.active::before { content: ''; position: absolute; inset: -.3rem; border-radius: 2.4rem; border: .25rem solid var(--gold-bright); animation: ring-pulse 1.4s ease-in-out infinite; pointer-events: none; }
 @keyframes ring-pulse { 0%, 100% { opacity: .45; transform: scale(1); } 50% { opacity: 1; transform: scale(1.012); } }
 .chip.skipped { background: var(--skipped-bg); border-color: var(--skipped-border); }
 .chip.skipped .portrait { opacity: .75; }
 .chip.frost::after { content: ''; position: absolute; inset: 0; border-radius: inherit; background: linear-gradient(120deg, transparent 20%, rgba(255, 255, 255, .95) 50%, transparent 80%); animation: frost-sweep .6s ease-out both; pointer-events: none; }
 @keyframes frost-sweep { from { transform: translateX(-100%); opacity: 0; } 30% { opacity: 1; } to { transform: translateX(100%); opacity: 0; } }
-.chip-badge { display: none; position: absolute; right: .3rem; top: .3rem; width: 1.8rem; height: 1.8rem; border-radius: 50%; background: var(--plum); color: #fff; font-size: 1.1rem; align-items: center; justify-content: center; }
 
 .cloth { position: relative; z-index: 1; flex: 1 1 0; min-height: 0; margin: 1.4rem 1.2rem .8rem; border-radius: 2.6rem; background-color: var(--tablecloth); border: .15rem solid #EFBAC6; box-shadow: inset 0 0 1.6rem rgba(199, 64, 110, .1); display: flex; flex-direction: column; padding: 1.6rem 1rem .8rem; transition: background-color .6s; }
 .stitch { position: absolute; inset: .7rem; border: .17rem dashed var(--stitch-c, var(--stitch)); border-radius: 2rem; pointer-events: none; }
@@ -80,7 +81,13 @@
 .zone-valid { outline: .25rem solid var(--gold-bright); outline-offset: .15rem; border-radius: 1rem; }
 .zone-dim { opacity: .55; }
 .zone-over { filter: brightness(1.08); transform: scale(1.04); }
-.laid { position: relative; flex: 1 1 0; min-height: 0; margin-top: .4rem; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; touch-action: pan-y; padding: 0 .2rem .3rem; z-index: 2; }
+.laid { position: relative; flex: 1 1 0; min-height: 0; margin-top: .6rem; --fade-top: 0rem; --fade-bottom: 0rem; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; touch-action: pan-y; padding: 0 .2rem .3rem; z-index: 2; }
+.laid.fade-top { --fade-top: 1.8rem; }
+.laid.fade-bottom { --fade-bottom: 1.8rem; }
+.laid.fade-top, .laid.fade-bottom {
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 var(--fade-top), #000 calc(100% - var(--fade-bottom)), transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 var(--fade-top), #000 calc(100% - var(--fade-bottom)), transparent 100%);
+}
 .laid-row { margin-bottom: .3rem; }
 .laid-label { display: block; text-align: center; font-size: 1.2rem; font-weight: 800; color: var(--ink-soft); line-height: 1.3; }
 .laid-groups { display: flex; justify-content: center; gap: .6rem; flex-wrap: wrap; }
@@ -124,7 +131,10 @@
 .slot-status { font-size: 1.2rem; font-weight: 800; color: var(--ink-soft); display: flex; align-items: center; gap: .2rem; line-height: 1.1; text-align: center; }
 .slot.ready .slot-status { color: var(--success-ink); }
 .slot.bad .slot-status { color: #A32C57; }
-.panel-done { margin-top: .4rem; display: flex; align-items: center; justify-content: center; gap: .4rem; color: var(--success-ink); background: var(--success-bg); border-radius: 1rem; font-weight: 800; font-size: 1.3rem; padding: .3rem; }
+.panel.collapsing { overflow: hidden; }
+.panel.compact .medallion { width: 4.4rem; height: 4.4rem; font-size: 2.2rem; }
+.req-row { display: flex; align-items: center; gap: .7rem; }
+.laid-tag { display: inline-flex; align-items: center; gap: .3rem; color: var(--success-ink); background: var(--success-bg); border-radius: 1rem; font-weight: 800; font-size: 1.2rem; padding: .1rem .7rem; white-space: nowrap; }
 
 /* The hand */
 .hand { position: relative; z-index: 4; flex: none; height: 15.2rem; margin-top: .6rem; touch-action: none; transition: opacity .25s; }
@@ -182,11 +192,6 @@
   .garland .lf, .garland .roses { display: none; }
   .topbar { padding-top: 1rem; padding-bottom: .3rem; }
   .pill { min-height: 3.4rem; font-size: 1.5rem; }
-  .chip { padding: .35rem .4rem; }
-  .chip-status { display: none; }
-  .chip.skipped .chip-badge, .chip.down .chip-badge { display: flex; }
-  .chip.down:not(.skipped) .chip-badge { background: var(--gold-pale); color: #5E430F; }
-  .duel .chip .p-small { width: 3.8rem; height: 3.8rem; font-size: 1.9rem; }
   .cloth { margin: 1.2rem 1.2rem .5rem; padding: 1.2rem .7rem .5rem; }
   .decor { display: none; }
   .table-row { justify-content: center; }

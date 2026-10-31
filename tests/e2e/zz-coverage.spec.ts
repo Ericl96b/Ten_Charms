@@ -6,13 +6,13 @@ const FX = [
   'ambient.petals', 'ambient.candle', 'ambient.steam', 'ambient.wildSheen', 'ambient.handBreathing', 'ambient.pileInvite',
   'card.select', 'card.drag', 'card.dragWildTrail', 'card.drop', 'card.draw', 'card.takeDiscard', 'card.discard', 'hand.reflow',
   'group.slotFly', 'group.slotValid', 'group.layReady',
-  'lay.fly', 'lay.ringSweep', 'lay.burst', 'lay.flash', 'lay.banner', 'lay.trackFill', 'lay.coinFlip', 'lay.settle', 'lay.botLay',
+  'lay.fly', 'lay.ringSweep', 'lay.burst', 'lay.flash', 'lay.banner', 'lay.trackFill', 'lay.coinFlip', 'lay.settle', 'lay.panelCompact', 'lay.botLay',
   'hit.human', 'hit.bot', 'skip.onHer', 'skip.shake', 'skip.onBot', 'skip.frost',
   'out.human', 'out.shake', 'out.confetti', 'out.bot',
   'round.flipHands', 'round.tally', 'round.medallionFlip', 'round.screen',
   'invalid.shake', 'invalid.tooltip',
   'victory.bloom', 'victory.star', 'victory.unlock', 'victory.charm', 'loss.petals',
-  'ui.buttonPress', 'ui.odometer', 'ui.sheet', 'ui.charmToast', 'ui.turnGlow', 'ui.botThinking', 'ui.reshuffle', 'ui.deal',
+  'ui.buttonPress', 'ui.odometer', 'ui.sheet', 'ui.charmToast', 'ui.turnGlow', 'ui.botThinking', 'ui.reshuffle', 'ui.deal', 'ui.bubble', 'ui.expression',
   'boss.intro', 'boss.darken', 'boss.clothFade', 'boss.mothsIn', 'boss.portrait', 'boss.line', 'boss.moths', 'boss.tension', 'boss.victory',
 ];
 

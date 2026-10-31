@@ -108,14 +108,12 @@ export class Table {
       const portrait = portraitEl(bot, 'small');
       this.portraits[seat] = portrait;
       const chip = h('div.chip', { 'data-seat': seat, 'data-bot': bot, 'data-testid': `chip-${seat}` },
-        h('div.chip-main', null, portrait,
-          h('div.chip-text', null,
-            h('b.chip-name', null, BOTS[bot].name),
-            h('span.chip-info', null, h('span.chip-phase'), ' · ', h('span.chip-count'), h('span.chip-cards')),
-          ),
+        h('div.chip-portrait', null, portrait, h('i.chip-badge')),
+        h('div.chip-text', null,
+          h('b.chip-name', null, BOTS[bot].name),
+          h('span.chip-info', null, h('span.chip-phase'), ' · ', h('span.chip-count'), h('span.chip-cards')),
         ),
-        h('div.chip-status'),
-        h('i.chip-badge', { html: icon('hourglass') }),
+        h('i.dots', { 'aria-label': 'Thinking' }, h('i'), h('i'), h('i')),
       );
       chip.addEventListener('click', () => this.onTapAnywhere());
       this.chips[seat] = chip;
@@ -153,6 +151,10 @@ export class Table {
     this.root.append(garland, topbar, opps, this.clothEl, this.panelEl, this.handEl, actions, vignette, this.fxEl);
     setFxLayer(this.fxEl);
     this.bindInput();
+    this.laidEl.addEventListener('scroll', () => this.updateFades(), { passive: true });
+    const laidSize = new ResizeObserver(() => this.updateFades());
+    laidSize.observe(this.laidEl);
+    this.cleanups.push(() => laidSize.disconnect());
     return this.root;
   }
 
@@ -285,30 +287,20 @@ export class Table {
       const seat = i + 1;
       const p = this.game.players[seat];
       const chip = this.chips[seat];
-      chip.querySelector('.chip-phase')!.textContent = p.phase === null ? 'Choosing' : `Phase ${p.phase}`;
+      chip.querySelector('.chip-phase')!.textContent = p.phase === null ? 'Choosing' : `Ph ${p.phase}`;
       rollNumber(chip.querySelector('.chip-count') as HTMLElement, p.hand.length);
       chip.querySelector('.chip-cards')!.textContent = p.hand.length === 1 ? ' card' : ' cards';
       const active = this.game.current === seat && (this.game.stage === 'draw' || this.game.stage === 'play');
       chip.classList.toggle('active', active);
       chip.classList.toggle('skipped', p.pendingSkip);
       chip.classList.toggle('down', p.laidDown);
-      const status = chip.querySelector('.chip-status') as HTMLElement;
-      const key = active ? 'thinking' : p.pendingSkip ? 'skipped' : p.laidDown ? 'laid' : 'none';
-      if (status.dataset.key !== key) {
-        status.dataset.key = key;
-        const badge = chip.querySelector('.chip-badge') as HTMLElement;
-        badge.innerHTML = icon(key === 'laid' ? 'check' : key === 'thinking' ? 'sparkle' : 'hourglass');
-        status.className = `chip-status st-${key}`;
-        clear(status);
-        if (key === 'thinking') {
-          status.setAttribute('aria-label', 'Thinking');
-          status.append(h('span', null, 'Thinking'), h('i.dots', null, h('i'), h('i'), h('i')));
-          fx('ui.botThinking');
-        } else if (key === 'skipped') {
-          status.innerHTML = `${icon('hourglass')}<span>Skipped</span>`;
-        } else if (key === 'laid') {
-          status.innerHTML = `${icon('check')}<span>Laid down</span>`;
-        }
+      if (active && !chip.classList.contains('thinking')) fx('ui.botThinking');
+      chip.classList.toggle('thinking', active);
+      const badge = chip.querySelector('.chip-badge') as HTMLElement;
+      const key = p.pendingSkip ? 'skipped' : p.laidDown ? 'laid' : 'none';
+      if (badge.dataset.key !== key) {
+        badge.dataset.key = key;
+        badge.innerHTML = key === 'none' ? '' : icon(key === 'laid' ? 'check' : 'hourglass');
       }
     });
     const nextActive = this.game.current;
@@ -402,6 +394,7 @@ export class Table {
       this.laidEl.append(row);
     }
     this.laidEl.scrollTop = scroll;
+    this.updateFades();
     if (oldRects.size > 0 && !motion.reduced) {
       this.laidEl.querySelectorAll<HTMLElement>('.card').forEach((c) => {
         const before = oldRects.get(c.dataset.cardId!);
@@ -415,6 +408,13 @@ export class Table {
       });
     }
     this.refreshHitGlow();
+  }
+
+  /** iOS hides scrollbars, so a soft fade marks each edge with more cards past it. */
+  updateFades(): void {
+    const el = this.laidEl;
+    el.classList.toggle('fade-top', el.scrollTop > 1);
+    el.classList.toggle('fade-bottom', el.scrollTop + el.clientHeight < el.scrollHeight - 1);
   }
 
   groupEl(g: LaidGroup): HTMLElement {
@@ -433,23 +433,27 @@ export class Table {
     const seq = phaseSequence(this.game.variant);
     const phase = me.phase;
     const panel = this.panelEl;
-    const sig = `${phase}|${me.laidDown}|${me.completed.join(',')}`;
+    // Once she's down the panel compacts, but never during her lay-down moment.
+    const compact = me.laidDown && !this.layingDown;
+    const sig = `${phase}|${compact}|${me.completed.join(',')}`;
     if (panel.dataset.sig !== sig) {
       panel.dataset.sig = sig;
       clear(panel);
+      panel.classList.toggle('compact', compact);
       this.medal = h('div.medallion', { 'data-testid': 'medallion', 'aria-label': phase === null ? 'Choosing a phase' : `Phase ${phase}` }, h('span', null, phase ?? '?'));
       const track = h('div.track', { 'aria-hidden': 'true' });
       for (const p of seq) {
-        track.append(h('i', { class: me.completed.includes(p) ? 'done' : p === phase ? 'now' : '', 'data-p': p }));
+        track.append(h('i', { class: me.completed.includes(p) || (me.laidDown && p === phase) ? 'done' : p === phase ? 'now' : '', 'data-p': p }));
       }
+      const req = h('b.req', { 'data-testid': 'requirement' }, phase === null ? 'Choose your phase' : phaseText(phase));
       const text = h('div.panel-text', null,
-        h('b.req', { 'data-testid': 'requirement' }, phase === null ? 'Choose your phase' : phaseText(phase)),
+        compact ? h('div.req-row', null, req, h('span.laid-tag', { 'data-testid': 'laid-tag', html: `${icon('check')}<span>Laid down</span>` })) : req,
         track,
       );
       const suggest = h('button.chip-btn.suggest', { 'data-testid': 'suggest', onclick: () => this.suggest() }, 'Suggest');
-      const head = h('div.panel-head', null, this.medal, text, !me.laidDown && app.save.settings.hints ? suggest : null);
+      const head = h('div.panel-head', null, this.medal, text, !compact && app.save.settings.hints ? suggest : null);
       panel.append(head);
-      if (phase !== null && !me.laidDown) {
+      if (phase !== null && !compact) {
         const slots = h('div.slots', { class: PHASES[phase].length === 1 ? 'single' : '' });
         PHASES[phase].forEach((req, i) => {
           const slot = h('button.slot', { 'data-slot': i, 'data-testid': `slot-${i}`, 'aria-label': groupLabel(req) },
@@ -460,8 +464,6 @@ export class Table {
           slots.append(slot);
         });
         panel.append(slots);
-      } else if (phase !== null) {
-        panel.append(h('div.panel-done', { html: `${icon('check')}<span>Phase ${phase} is down</span>` }));
       }
     }
     if (phase === null || me.laidDown) return;
@@ -496,6 +498,26 @@ export class Table {
         this.validSlots.delete(i);
       }
     });
+  }
+
+  /** True from the moment she lays down until the panel starts to compact. */
+  layingDown = false;
+
+  async collapsePanel(): Promise<void> {
+    const panel = this.panelEl;
+    const from = panel.offsetHeight;
+    this.layingDown = false;
+    this.renderPanel();
+    const to = panel.offsetHeight;
+    fx('lay.panelCompact');
+    if (motion.reduced) {
+      await animate(panel, [{ opacity: 0.4 }, { opacity: 1 }], { ms: 200, ease: 'linear', fill: 'none' });
+    } else {
+      panel.classList.add('collapsing');
+      await animate(panel, [{ height: `${from}px` }, { height: `${to}px` }], { ms: 300, ease: SPRING, fill: 'none' });
+      panel.classList.remove('collapsing');
+    }
+    this.tutorial.check();
   }
 
   renderHand(): void {
@@ -921,6 +943,7 @@ export class Table {
   }
 
   onSlotTap(index: number): void {
+    if (this.me.laidDown) return;
     const slot = this.panelEl.querySelector<HTMLElement>(`[data-slot="${index}"]`);
     if (!slot) return;
     const ui = this.match.ui;
@@ -1132,6 +1155,7 @@ export class Table {
   commit(action: Action, events: GameEvent[]): void {
     const ui = this.match.ui;
     if (action.type === 'layDown' && events.some((e) => e.type === 'layDown' && e.seat === 0)) {
+      this.layingDown = true;
       ui.slots = ui.slots.map(() => []);
       this.validSlots.clear();
     }
@@ -1172,6 +1196,7 @@ export class Table {
     switch (e.type) {
       case 'roundStart': {
         this.syncSlotShape();
+        this.layingDown = false;
         this.selected = [];
         this.validSlots.clear();
         this.prevPts = this.me.score;
@@ -1220,6 +1245,8 @@ export class Table {
       case 'layDown': {
         if (e.seat === 0) {
           await this.celebrate(() => layDownMoment(this, e.phase, e.groupIds));
+          // Laying down her last card ends the round, and the panel resets with the next one.
+          if (this.me.hand.length > 0) await this.collapsePanel();
           this.match.lineup.forEach((_, i) => this.say(i + 1, 'humanLays'));
         } else {
           await otherLayDownMoment(this, e.seat, e.groupIds);
@@ -1492,6 +1519,7 @@ export class Table {
   setFace(seat: number, expression: Expression): void {
     const p = this.portraits[seat];
     if (!p) return;
+    fx('ui.expression');
     setExpression(p, expression);
     clearTimeout(this.expressionTimers.get(seat));
     this.expressionTimers.set(seat, window.setTimeout(() => {
@@ -1520,12 +1548,14 @@ export class Table {
   showBubble(seat: number, line: string): void {
     this.bubbleEl?.remove();
     const chip = rectOf(this.chips[seat]);
+    const face = rectOf(this.portraits[seat]);
     const host = rectOf(this.fxEl);
+    fx('ui.bubble');
     const bubble = h('button.bubble', { 'data-testid': 'bubble' }, line);
     this.bubbleEl = bubble;
     this.root.append(bubble);
     const w = bubble.offsetWidth;
-    bubble.style.left = `${Math.max(8, Math.min(host.width - w - 8, chip.left - host.left + chip.width / 2 - w / 2))}px`;
+    bubble.style.left = `${Math.max(8, Math.min(host.width - w - 8, face.left - host.left + face.width / 2 - w / 2))}px`;
     bubble.style.top = `${chip.bottom - host.top + 6}px`;
     const done = () => {
       if (this.bubbleEl === bubble) this.bubbleEl = null;

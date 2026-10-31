@@ -232,7 +232,8 @@ test('capture: sheets, round end and match end', async ({ page }, info) => {
   await tap(page, '[data-testid="discard-btn"]');
   await page.waitForSelector('[data-testid="victory"]', { timeout: 30_000 });
   await page.waitForSelector('[data-testid="continue"]', { timeout: 30_000 }).catch(() => {});
-  await shot(page, p, 'victory');
+  // The table shows through this overlay, so its changes show here too.
+  await shot(page, p, 'victory', ['table']);
 });
 
 test('capture: loss, boss table and tutorial', async ({ page }, info) => {
