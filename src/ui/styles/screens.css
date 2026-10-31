@@ -39,10 +39,11 @@
 .stars { display: flex; gap: .2rem; font-size: 1.7rem; margin-bottom: .1rem; }
 .star.on { color: var(--gold-bright); display: flex; }
 .star.off { color: #F4CFD8; display: flex; }
-.stop-cta { position: absolute; left: 5.4rem; top: 1rem; display: flex; flex-direction: column; align-items: flex-start; gap: .5rem; width: 13rem; }
+.stop-cta { position: absolute; left: 5.4rem; top: 1rem; display: flex; flex-direction: column; align-items: flex-start; gap: .5rem; width: max-content; max-width: 13.5rem; }
+.stop-cta[data-side='left'] { align-items: flex-end; }
+.stop-cta[data-side='below'] { align-items: center; }
 .stop-cta .play { min-height: 5rem; padding: 0 2rem; font-size: 2rem; }
 .stop-cta .play .icon { font-size: 1.5rem; }
-.stop.current[style*='left:26rem'] .stop-cta { left: auto; right: 5.4rem; align-items: flex-end; }
 .reward-chip { border: .15rem dashed var(--gold); background: #FFF8E8; border-radius: 1rem; padding: .25rem .7rem; color: #6B4A0D; font-size: 1.2rem; font-weight: 800; line-height: 1.15; max-width: 13.5rem; }
 .boss-stop .stop-btn { width: 14rem; height: 11rem; }
 .moth-wings { position: absolute; left: -2.5rem; right: -2.5rem; top: -1rem; }
@@ -53,8 +54,6 @@
 .boss-plate { text-align: center; background: #3A1640; color: #fff; padding: .4rem 1.2rem; border-radius: 1.2rem; white-space: nowrap; box-shadow: var(--shadow); }
 .boss-plate small { display: block; color: var(--gold-light); letter-spacing: .1em; font-weight: 800; font-size: 1.2rem; }
 .boss-plate b { font-family: var(--display); font-weight: 800; font-size: 1.6rem; }
-.boss-play { margin-top: .6rem; min-height: 4.8rem; transform: translateX(-4rem); }
-.boss-play:active { transform: translateX(-4rem) scale(.94); }
 
 /* Match intro */
 .intro { display: flex; flex-direction: column; align-items: center; gap: .3rem; text-align: center; }

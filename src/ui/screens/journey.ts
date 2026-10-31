@@ -19,6 +19,10 @@ import { settingsScreen } from './settings.ts';
 import { statsScreen } from './stats.ts';
 
 const SPOTS = [{ x: 12.5, y: 57 }, { x: 26, y: 45 }, { x: 12.5, y: 33 }, { x: 26, y: 21 }, { x: 19.5, y: 0.5 }];
+/** How far the current stop's pink halo reaches past its portrait, in rem. */
+const HALO = 1.6;
+/** The Play button and reward chip stay this many points from the screen edges. */
+const EDGE = 16;
 
 export type NavTab = 'journey' | 'free' | 'collection' | 'stats';
 
@@ -82,11 +86,10 @@ export function journey(): HTMLElement {
       boss
         ? h('div.boss-plate', null, h('small', null, 'FINAL BOSS'), h('b', null, 'Nightshade, the Moth Queen'))
         : h('div.name-plate', null, bot.name),
-      isCurrent && !boss ? h('div.stop-cta', null,
+      isCurrent ? h('div.stop-cta', { 'data-testid': 'stop-cta' },
         h('button.btn.primary.play', { onclick: () => matchIntro(i), 'data-testid': 'play', html: `${icon('play')}<span>Play</span>` }),
-        reward ? h('div.reward-chip', null, `Win: ${reward}`) : null,
+        reward ? h('div.reward-chip', { 'data-testid': 'reward-chip' }, `Win: ${reward}`) : null,
       ) : null,
-      isCurrent && boss ? h('button.btn.primary.play.boss-play', { onclick: () => matchIntro(i), 'data-testid': 'play', html: `${icon('play')}<span>Play</span>` }) : null,
     );
     return node;
   });
@@ -110,12 +113,75 @@ export function journey(): HTMLElement {
   );
   requestAnimationFrame(() => {
     const target = stops[allWon ? 4 : current];
+    const cta = target.querySelector<HTMLElement>('.stop-cta');
+    if (cta) {
+      const place = () => placeCta(scroller, target, cta);
+      place();
+      void document.fonts.ready.then(() => { if (cta.isConnected) place(); });
+      window.addEventListener('resize', place);
+      app.onLeave = () => window.removeEventListener('resize', place);
+    }
     if (scroller.scrollHeight > scroller.clientHeight) {
-      const y = target.offsetTop - scroller.clientHeight / 2;
-      scroller.scrollTop = Math.max(0, y);
+      scroller.scrollTop = Math.max(0, cta ? centerOfStop(scroller, target) - scroller.clientHeight / 2 : target.offsetTop - scroller.clientHeight / 2);
     }
   });
   return root;
+}
+
+type Box = { l: number; t: number; r: number; b: number };
+
+/** Puts the Play button and reward chip beside the current stop, on whichever side has room, or else below its plate. */
+function placeCta(scroller: HTMLElement, stop: HTMLElement, cta: HTMLElement): void {
+  const inner = scroller.firstElementChild as HTMLElement;
+  const rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 10;
+  const origin = inner.getBoundingClientRect();
+  const boxOf = (el: Element, grow = 0): Box => {
+    const r = el.getBoundingClientRect();
+    return { l: r.left - origin.left - grow, t: r.top - origin.top - grow, r: r.right - origin.left + grow, b: r.bottom - origin.top + grow };
+  };
+  const node = boxOf(stop.querySelector('.portrait')!, HALO * rem);
+  const blocked = [node, ...[...inner.querySelectorAll('.stop-btn, .moth-wings, .stars, .name-plate, .boss-plate')].map((el) => boxOf(el))];
+  const plate = boxOf(stop.querySelector('.name-plate, .boss-plate')!);
+  const w = cta.offsetWidth;
+  const height = cta.offsetHeight;
+  const gap = 0.8 * rem;
+  const minX = EDGE;
+  const maxX = inner.clientWidth - EDGE - w;
+  const free = (x: number, y: number) => x >= minX && x <= maxX && y >= 0 && y + height <= inner.clientHeight
+    && blocked.every((b) => x + w + gap <= b.l || x >= b.r + gap || y + height + gap <= b.t || y >= b.b + gap);
+
+  const slides = [0, 0.5, -0.5, 1, -1, 1.5, -1.5, 2, -2, 3, -3, 4, -4, 5, -5];
+  const beside = (x: number): { x: number; y: number } | null => {
+    const y = (node.t + node.b) / 2 - height / 2;
+    for (const s of slides) if (free(x, y + s * rem)) return { x, y: y + s * rem };
+    return null;
+  };
+  const below = (): { x: number; y: number } | null => {
+    const middle = Math.min(maxX, Math.max(minX, (node.l + node.r) / 2 - w / 2));
+    for (const down of [0, 1, 2, 3, 4]) {
+      for (const s of slides.concat(6, -6, 7, -7, 8, -8, 9, -9, 10, -10)) {
+        const x = middle + s * rem;
+        const y = plate.b + gap + down * rem;
+        if (free(x, y)) return { x, y };
+      }
+    }
+    return null;
+  };
+  const right = beside(node.r + gap);
+  const left = right ? null : beside(node.l - gap - w);
+  const spot = right ?? left ?? below() ?? { x: Math.min(maxX, Math.max(minX, (node.l + node.r) / 2 - w / 2)), y: plate.b + gap };
+  const home = boxOf(stop);
+  cta.style.left = `${spot.x - home.l}px`;
+  cta.style.top = `${spot.y - home.t}px`;
+  cta.dataset.side = right ? 'right' : left ? 'left' : 'below';
+}
+
+/** The middle of the current stop's node, name plate, button and chip together, for scrolling them all into view. */
+function centerOfStop(scroller: HTMLElement, stop: HTMLElement): number {
+  const parts = [stop.querySelector('.stop-btn')!, stop.querySelector('.name-plate, .boss-plate')!, stop.querySelector('.stop-cta')!];
+  const origin = scroller.getBoundingClientRect().top - scroller.scrollTop;
+  const rects = parts.map((el) => el.getBoundingClientRect());
+  return (Math.min(...rects.map((r) => r.top)) + Math.max(...rects.map((r) => r.bottom))) / 2 - origin;
 }
 
 function wingsSvg(): string {
