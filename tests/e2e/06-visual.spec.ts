@@ -110,12 +110,16 @@ test('capture: menu screens', async ({ page }, info) => {
   await page.waitForTimeout(300);
   await tap(page, '[data-testid="settings"]');
   await shot(page, p, 'settings');
+  // A fixed scroll position, so the page behind each sheet matches the baseline.
+  const centerOn = (id: string) => page.evaluate((i) => document.querySelector(`[data-testid="${i}"]`)!.scrollIntoView({ block: 'center' }), id);
+  await centerOn('backup');
   await tap(page, '[data-testid="backup"]');
   await page.waitForTimeout(300);
   const code = page.locator('[data-testid="export-code"]');
   await code.evaluate((el: HTMLTextAreaElement) => { el.value = 'TC1-test'; });
   await shot(page, p, 'backup');
   await closeSheet(page);
+  await centerOn('credits');
   await tap(page, '[data-testid="credits"]');
   await shot(page, p, 'credits');
 

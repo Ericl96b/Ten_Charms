@@ -61,7 +61,7 @@ export async function pointOn(page: Page, selector: string): Promise<{ x: number
       const el = document.querySelector(sel);
       if (!el) return null;
       // Like a person, scroll a list to reach what's below the fold.
-      if (el.closest('.page-scroll,.sheet-body,.map-scroll,.laid')) el.scrollIntoView({ block: 'center' });
+      if (el.closest('.page-scroll,.sheet-body,.map-scroll,.laid')) el.scrollIntoView({ block: 'nearest' });
       const r = el.getBoundingClientRect();
       for (let fy = 0.5; fy > 0.05; fy -= 0.1) {
         for (let fx = 0.5; fx > 0.02; fx -= 0.06) {
