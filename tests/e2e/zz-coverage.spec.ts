@@ -22,8 +22,8 @@ const SOUNDS = [
   'music.map', 'music.waltz', 'music.boss',
 ];
 
-test('11. juice coverage: every animation and sound event fired during the suite', () => {
-  const file = `${LOG_DIR}/events.log`;
+test('11. juice coverage: every animation and sound event fired during the suite', ({}, info) => {
+  const file = `${LOG_DIR}/events-${info.project.name}.log`;
   expect(existsSync(file)).toBe(true);
   const seen = new Set(readFileSync(file, 'utf8').split('\n'));
   const missing = [...FX.filter((n) => !seen.has(`fx:${n}`)), ...SOUNDS.filter((n) => !seen.has(`sound:${n}`))];

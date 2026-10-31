@@ -267,7 +267,7 @@ async function stopProbe(page: Page): Promise<number> {
   return page.evaluate(() => {
     const w = window as unknown as { __gaps: number[]; __probe: boolean };
     w.__probe = false;
-    return Math.max(...w.__gaps);
+    return w.__gaps.reduce((most, gap) => Math.max(most, gap), 0);
   });
 }
 

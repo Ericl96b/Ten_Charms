@@ -103,14 +103,13 @@ export function card(id: number, num: number, suit = 'rose') {
 }
 
 /** Saves what the app fired during a test, for the coverage check at the end of the suite. */
-export async function saveEventLog(page: Page, name: string): Promise<void> {
+export async function saveEventLog(page: Page, project: string): Promise<void> {
   mkdirSync(LOG_DIR, { recursive: true });
   const events = await page.evaluate(() => {
     const hooks = (window as unknown as { __TC__?: Hooks }).__TC__;
     return hooks ? hooks.events.map((e) => `${e.kind}:${e.name}`) : [];
   }).catch(() => [] as string[]);
-  appendFileSync(`${LOG_DIR}/events.log`, [...new Set(events)].join('\n') + '\n');
-  void name;
+  appendFileSync(`${LOG_DIR}/events-${project}.log`, [...new Set(events)].join('\n') + '\n');
 }
 
 /** Fails on any console error or uncaught exception, and collects the event log. */
@@ -120,7 +119,7 @@ export const test = base.extend<{ errors: string[] }>({
     page.on('console', (m) => { if (m.type() === 'error') errors.push(m.text()); });
     page.on('pageerror', (e) => errors.push(String(e)));
     await use(errors);
-    await saveEventLog(page, info.title);
+    await saveEventLog(page, info.project.name);
     expect(errors, 'no console errors').toEqual([]);
   }, { auto: true }],
 });

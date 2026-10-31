@@ -24,10 +24,21 @@ export default defineConfig({
     trace: 'off',
     video: 'off',
   },
-  projects: viewports.map((v) => ({
-    name: v.name,
-    use: { viewport: { width: v.width, height: v.height } },
-  })),
+  projects: [
+    ...viewports.map((v) => ({
+      name: v.name,
+      use: { viewport: { width: v.width, height: v.height } },
+    })),
+    {
+      name: 'android',
+      use: {
+        browserName: 'chromium' as const,
+        isMobile: true,
+        viewport: { width: 412, height: 892 },
+        userAgent: 'Mozilla/5.0 (Linux; Android 15; SM-S938U) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Mobile Safari/537.36',
+      },
+    },
+  ],
   webServer: [
     { command: 'node scripts/serve.mjs dist-dev 4174', port: 4174, reuseExistingServer: true },
     { command: 'node scripts/serve.mjs dist 4175', port: 4175, reuseExistingServer: true },
