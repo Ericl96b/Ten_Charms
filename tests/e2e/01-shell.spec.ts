@@ -75,17 +75,19 @@ test('production build has no developer hooks and no outside network calls', asy
   expect(js + css).not.toMatch(/fonts\.googleapis|https?:\/\/(?!www\.w3\.org)/);
 });
 
-test('an update shows the toast, never reloads on its own, and applies on tap', async ({ page }) => {
-  const site = 'test-results/update-site';
+test('an update shows the toast, never reloads on its own, and applies on tap', async ({ page }, info) => {
+  // Its own site and port for each worker, because it rewrites the site's files.
+  const site = `test-results/update-site-${info.parallelIndex}`;
+  const port = 4180 + info.parallelIndex;
   rmSync(site, { recursive: true, force: true });
   cpSync('dist', site, { recursive: true });
-  const server = spawn(process.execPath, ['scripts/serve.mjs', site, '4176'], { stdio: 'ignore' });
+  const server = spawn(process.execPath, ['scripts/serve.mjs', site, String(port)], { stdio: 'ignore' });
   try {
-    await new Promise((r) => setTimeout(r, 500));
+    await expect(async () => { await fetch(`http://localhost:${port}/`); }).toPass({ timeout: 15_000 });
     await page.addInitScript(() => {
       if (!localStorage.getItem('ten-charms.save')) localStorage.setItem('ten-charms.save', JSON.stringify({ schema: 1, install: { dismissedAt: Date.now() } }));
     });
-    await page.goto('http://localhost:4176/');
+    await page.goto(`http://localhost:${port}/`);
     await page.evaluate(() => navigator.serviceWorker.ready);
     await page.waitForFunction(() => navigator.serviceWorker.controller !== null, null, { timeout: 15_000 });
     await page.evaluate(() => { (window as any).__sameLoad = true; });

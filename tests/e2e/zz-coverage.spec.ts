@@ -1,4 +1,4 @@
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { LOG_DIR, expect, test } from './helpers.ts';
 
 /** Every animation event in the design, and every sound event. All must fire somewhere in the suite. */
@@ -23,9 +23,10 @@ const SOUNDS = [
 ];
 
 test('11. juice coverage: every animation and sound event fired during the suite', ({}, info) => {
-  const file = `${LOG_DIR}/events-${info.project.name}.log`;
-  expect(existsSync(file)).toBe(true);
-  const seen = new Set(readFileSync(file, 'utf8').split('\n'));
+  // Each worker keeps its own log, so read them all.
+  const files = existsSync(LOG_DIR) ? readdirSync(LOG_DIR).filter((f) => f.startsWith(`events-${info.project.name}-`)) : [];
+  expect(files.length).toBeGreaterThan(0);
+  const seen = new Set(files.flatMap((f) => readFileSync(`${LOG_DIR}/${f}`, 'utf8').split('\n')));
   const missing = [...FX.filter((n) => !seen.has(`fx:${n}`)), ...SOUNDS.filter((n) => !seen.has(`sound:${n}`))];
   expect(missing).toEqual([]);
 });

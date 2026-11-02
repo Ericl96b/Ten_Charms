@@ -41,7 +41,7 @@ for (const name of FIXTURES) {
 
     const rows = await visibleRows(page);
     mkdirSync('test-results', { recursive: true });
-    appendFileSync('test-results/rows.log', `${name} ${p} plain ${rows}\n`);
+    appendFileSync(`test-results/rows-${info.workerIndex}.log`, `${name} ${p} plain ${rows}\n`);
     expect(rows).toBeGreaterThanOrEqual(REQUIRED[p][name]);
     mkdirSync('qa-screenshots/cr01/table', { recursive: true });
     await page.screenshot({ path: `qa-screenshots/cr01/table/${name}-${p}-after.png` });
@@ -98,7 +98,7 @@ for (const name of FIXTURES) {
     await openFixture(page, name);
     await page.waitForTimeout(250);
     const rows = await visibleRows(page);
-    appendFileSync('test-results/rows.log', `${name} ${info.project.name} insets ${rows}\n`);
+    appendFileSync(`test-results/rows-${info.workerIndex}.log`, `${name} ${info.project.name} insets ${rows}\n`);
     console.log(`[rows ${name} ${info.project.name}] with insets ${rows}`);
     expect(rows).toBeGreaterThanOrEqual(1);
   });
