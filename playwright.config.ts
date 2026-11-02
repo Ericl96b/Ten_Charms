@@ -1,4 +1,5 @@
 import { defineConfig } from '@playwright/test';
+import { ALONE, DEFAULT_WORKERS, LAST, SERIAL } from './tests/e2e/stages.ts';
 
 const viewports = [
   { name: 'se', width: 375, height: 667 },
@@ -6,12 +7,25 @@ const viewports = [
   { name: 'max', width: 440, height: 956 },
 ];
 
+/** Set by scripts/gate.mjs and scripts/test-target.mjs. With none set, everything runs one at a time. */
+const stage = process.env.TC_STAGE;
+const parallel = stage === 'parallel' || stage === 'targeted';
+const filters = {
+  parallel: { grepInvert: [SERIAL, ALONE, LAST] },
+  targeted: { grepInvert: [LAST] },
+  serial: { grep: SERIAL },
+  alone: { grep: ALONE },
+  last: { grep: LAST },
+}[stage ?? ''] ?? {};
+
 export default defineConfig({
   testDir: 'tests/e2e',
   globalSetup: './tests/e2e/global-setup.ts',
   timeout: 180_000,
-  fullyParallel: false,
-  workers: 1,
+  retries: 0,
+  fullyParallel: parallel,
+  workers: parallel ? Number(process.env.TC_WORKERS ?? DEFAULT_WORKERS) : 1,
+  ...filters,
   reporter: [['list']],
   outputDir: 'test-results/artifacts',
   use: {
@@ -36,6 +50,8 @@ export default defineConfig({
         isMobile: true,
         viewport: { width: 412, height: 892 },
         userAgent: 'Mozilla/5.0 (Linux; Android 15; SM-S938U) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Mobile Safari/537.36',
+        // No real audio device, so a glitch on this machine can't surface as a console error.
+        launchOptions: { args: ['--disable-audio-output'] },
       },
     },
   ],

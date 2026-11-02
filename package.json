@@ -14,7 +14,12 @@
     "sim": "node scripts/simulate.ts",
     "test:e2e": "playwright test",
     "test:inventory": "node scripts/test-inventory.ts check",
-    "test": "npm run typecheck && npm run test:unit && npm run test:inventory && npm run test:e2e"
+    "test:failed": "node scripts/test-target.mjs failed",
+    "test:file": "node scripts/test-target.mjs file",
+    "test:project": "node scripts/test-target.mjs project",
+    "visual:baseline": "node scripts/test-target.mjs baseline",
+    "gate": "node scripts/gate.mjs",
+    "test": "npm run gate"
   },
   "engines": {
     "node": ">=24"
