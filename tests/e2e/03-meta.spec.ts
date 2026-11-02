@@ -300,6 +300,9 @@ test('tutorial shows tips and can be dismissed; How to Play has the fair play pr
   await expect(page.locator('[data-testid="coach"]')).toContainText('two Sets of 3');
   await page.screenshot({ path: shotPath('tutorial', info.project.name) });
   await tap(page, '[data-testid="coach-next"]');
+  // This deal is random. If a bot goes first and she holds a Skip, the Skip tip comes before the drawing tip.
+  await expect(page.locator('[data-testid="coach"]')).toContainText(/Start your turn by drawing|Skips make someone miss a turn/);
+  if ((await page.locator('[data-testid="coach"]').textContent())!.includes('Skips make')) await tap(page, '[data-testid="coach-next"]');
   await expect(page.locator('[data-testid="coach"]')).toContainText('Start your turn by drawing');
   await tap(page, '[data-testid="coach-skip"]');
   await expect(page.locator('[data-testid="coach"]')).toHaveCount(0);
