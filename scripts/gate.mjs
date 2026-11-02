@@ -1,5 +1,5 @@
 // The gate: the full suite, with nothing left out. Required before every commit that completes a change.
-// Usage: node scripts/gate.mjs. TC_WORKERS sets the workers for the parallel stage.
+// Usage: node scripts/gate.mjs [--no-cache]. TC_WORKERS sets the workers for the parallel stage.
 import { spawnSync } from 'node:child_process';
 import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { DEFAULT_WORKERS } from '../tests/e2e/stages.ts';
@@ -8,6 +8,7 @@ import { clearLogs } from '../tests/e2e/global-setup.ts';
 const OUT = 'test-results/gate';
 const PLAYWRIGHT = 'node_modules/@playwright/test/cli.js';
 const STAGES = ['parallel', 'serial', 'alone', 'last'];
+const noCache = process.argv.includes('--no-cache');
 const results = [];
 
 function step(name, args, env = {}) {
@@ -38,6 +39,7 @@ const prepared = step('build', ['scripts/build.mjs'])
 if (!prepared) process.exit(1);
 
 step('unit', ['--test', 'tests/unit/**/*.test.ts']);
+step('simulation', ['scripts/simulate.ts', ...(noCache ? ['--no-cache'] : [])]);
 
 console.log(`Parallel stage: ${process.env.TC_WORKERS ?? DEFAULT_WORKERS} workers`);
 for (const stage of STAGES) {

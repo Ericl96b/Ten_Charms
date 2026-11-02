@@ -48,9 +48,15 @@ export function playMatch(lineup: readonly BotId[], seed: string, variant: Varia
 
 /** Plays many two-player matches, swapping seats each time. Shared wins count half. */
 export function headToHead(a: BotId, b: BotId, matches: number, seedBase: number): { rate: number; rounds: number } {
+  const { wins, rounds } = headToHeadRange(a, b, 0, matches, seedBase);
+  return { rate: wins / matches, rounds: rounds / matches };
+}
+
+/** The matches from `from` up to `to`, so a long head-to-head can be shared out and added back up. */
+export function headToHeadRange(a: BotId, b: BotId, from: number, to: number, seedBase: number): { wins: number; rounds: number } {
   let wins = 0;
   let rounds = 0;
-  for (let i = 0; i < matches; i++) {
+  for (let i = from; i < to; i++) {
     const swap = i % 2 === 1;
     const lineup: BotId[] = swap ? [b, a] : [a, b];
     const seed = (seedBase * 1000003 + i).toString(16).padStart(32, '0');
@@ -60,5 +66,5 @@ export function headToHead(a: BotId, b: BotId, matches: number, seedBase: number
     const aSeat = swap ? 1 : 0;
     if (out.winners.includes(aSeat)) wins += out.winners.length > 1 ? 0.5 : 1;
   }
-  return { rate: wins / matches, rounds: rounds / matches };
+  return { wins, rounds };
 }
