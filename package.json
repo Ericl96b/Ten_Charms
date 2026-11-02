@@ -13,7 +13,8 @@
     "test:unit": "node --test \"tests/unit/**/*.test.ts\"",
     "sim": "node scripts/simulate.ts",
     "test:e2e": "playwright test",
-    "test": "npm run typecheck && npm run test:unit && npm run test:e2e"
+    "test:inventory": "node scripts/test-inventory.ts check",
+    "test": "npm run typecheck && npm run test:unit && npm run test:inventory && npm run test:e2e"
   },
   "engines": {
     "node": ">=24"

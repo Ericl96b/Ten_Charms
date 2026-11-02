@@ -1,0 +1,1586 @@
+[
+ {
+  "file": "01-shell.spec.ts",
+  "title": "a failure later in startup also shows the message",
+  "project": "android",
+  "skipped": false
+ },
+ {
+  "file": "01-shell.spec.ts",
+  "title": "a startup failure shows a message instead of a blank screen",
+  "project": "android",
+  "skipped": false
+ },
+ {
+  "file": "01-shell.spec.ts",
+  "title": "an update shows the toast, never reloads on its own, and applies on tap",
+  "project": "android",
+  "skipped": false
+ },
+ {
+  "file": "01-shell.spec.ts",
+  "title": "production build has no developer hooks and no outside network calls",
+  "project": "android",
+  "skipped": false
+ },
+ {
+  "file": "01-shell.spec.ts",
+  "title": "production manifest and service worker validate",
+  "project": "android",
+  "skipped": false
+ },
+ {
+  "file": "01-shell.spec.ts",
+  "title": "shell loads offline with no console errors",
+  "project": "android",
+  "skipped": false
+ },
+ {
+  "file": "01-shell.spec.ts",
+  "title": "starts on browsers with strict element names, as iOS Safari 26 and older may be",
+  "project": "android",
+  "skipped": false
+ },
+ {
+  "file": "02-table.spec.ts",
+  "title": "1. the app loads with no console errors",
+  "project": "android",
+  "skipped": false
+ },
+ {
+  "file": "02-table.spec.ts",
+  "title": "2. a full match against Pip finishes through the real UI",
+  "project": "android",
+  "skipped": false
+ },
+ {
+  "file": "02-table.spec.ts",
+  "title": "3. manual play: draw, build slots, lay down, hit, discard, and play a Skip",
+  "project": "android",
+  "skipped": false
+ },
+ {
+  "file": "02-table.spec.ts",
+  "title": "4. invalid actions shake and say why",
+  "project": "android",
+  "skipped": false
+ },
+ {
+  "file": "02-table.spec.ts",
+  "title": "5. reloading mid-turn restores the exact game",
+  "project": "android",
+  "skipped": false
+ },
+ {
+  "file": "02-table.spec.ts",
+  "title": "table renders at each size with the hand inside the screen",
+  "project": "android",
+  "skipped": false
+ },
+ {
+  "file": "03-meta.spec.ts",
+  "title": "6. offline: after first load the production app loads and plays with no network",
+  "project": "android",
+  "skipped": false
+ },
+ {
+  "file": "03-meta.spec.ts",
+  "title": "7. the whole campaign: stars, unlocks, Charms, Free Play, variants and the boss intro",
+  "project": "android",
+  "skipped": false
+ },
+ {
+  "file": "03-meta.spec.ts",
+  "title": "8. backup: export, reset, import restores identical progress",
+  "project": "android",
+  "skipped": false
+ },
+ {
+  "file": "03-meta.spec.ts",
+  "title": "9. landscape shows the rotate card",
+  "project": "android",
+  "skipped": false
+ },
+ {
+  "file": "03-meta.spec.ts",
+  "title": "a loss shows the gentle screen and opens nothing; forfeit counts as a loss",
+  "project": "android",
+  "skipped": false
+ },
+ {
+  "file": "03-meta.spec.ts",
+  "title": "all 15 stars bring Starlight and Bouquet",
+  "project": "android",
+  "skipped": false
+ },
+ {
+  "file": "03-meta.spec.ts",
+  "title": "corrupt save data falls back to the backup, and never crashes",
+  "project": "android",
+  "skipped": false
+ },
+ {
+  "file": "03-meta.spec.ts",
+  "title": "install helper shows in a browser tab, and stays away for a week after Maybe later",
+  "project": "android",
+  "skipped": false
+ },
+ {
+  "file": "03-meta.spec.ts",
+  "title": "screens: every menu screen renders, at every size",
+  "project": "android",
+  "skipped": false
+ },
+ {
+  "file": "03-meta.spec.ts",
+  "title": "tutorial shows tips and can be dismissed; How to Play has the fair play promise",
+  "project": "android",
+  "skipped": false
+ },
+ {
+  "file": "04-juice.spec.ts",
+  "title": "10. reduced motion removes shake, parallax and ambient petals",
+  "project": "android",
+  "skipped": false
+ },
+ {
+  "file": "04-juice.spec.ts",
+  "title": "12. performance: no main-thread task over 50 ms in the lay-down and victory sequences",
+  "project": "android",
+  "skipped": false
+ },
+ {
+  "file": "04-juice.spec.ts",
+  "title": "being skipped, skipping, bots laying down, hitting, going out, and the discard history",
+  "project": "android",
+  "skipped": false
+ },
+ {
+  "file": "04-juice.spec.ts",
+  "title": "boss presentation: intro, lilac candle, moths, tension, and the return to daylight",
+  "project": "android",
+  "skipped": false
+ },
+ {
+  "file": "04-juice.spec.ts",
+  "title": "choose your phase and sprint play through their own flows",
+  "project": "android",
+  "skipped": false
+ },
+ {
+  "file": "04-juice.spec.ts",
+  "title": "crowded table: five opponents fit and play",
+  "project": "android",
+  "skipped": false
+ },
+ {
+  "file": "04-juice.spec.ts",
+  "title": "lay-down moment, slots, sparkles, hit, wild trail, and going out",
+  "project": "android",
+  "skipped": false
+ },
+ {
+  "file": "04-juice.spec.ts",
+  "title": "tapping jumps a celebration to its end, and tapping the boss intro skips it",
+  "project": "android",
+  "skipped": false
+ },
+ {
+  "file": "05-recordings.spec.ts",
+  "title": "recording: being skipped",
+  "project": "android",
+  "skipped": true
+ },
+ {
+  "file": "05-recordings.spec.ts",
+  "title": "recording: boss intro",
+  "project": "android",
+  "skipped": true
+ },
+ {
+  "file": "05-recordings.spec.ts",
+  "title": "recording: going out",
+  "project": "android",
+  "skipped": true
+ },
+ {
+  "file": "05-recordings.spec.ts",
+  "title": "recording: lay down",
+  "project": "android",
+  "skipped": true
+ },
+ {
+  "file": "05-recordings.spec.ts",
+  "title": "recording: victory",
+  "project": "android",
+  "skipped": true
+ },
+ {
+  "file": "06-visual.spec.ts",
+  "title": "capture: first launch and the Journey map",
+  "project": "android",
+  "skipped": false
+ },
+ {
+  "file": "06-visual.spec.ts",
+  "title": "capture: loss, boss table and tutorial",
+  "project": "android",
+  "skipped": false
+ },
+ {
+  "file": "06-visual.spec.ts",
+  "title": "capture: menu screens",
+  "project": "android",
+  "skipped": false
+ },
+ {
+  "file": "06-visual.spec.ts",
+  "title": "capture: sheets, round end and match end",
+  "project": "android",
+  "skipped": false
+ },
+ {
+  "file": "06-visual.spec.ts",
+  "title": "capture: table states",
+  "project": "android",
+  "skipped": false
+ },
+ {
+  "file": "07-settings-icon.spec.ts",
+  "title": "the settings button shows a gear, in the same style and size as the other icons",
+  "project": "android",
+  "skipped": false
+ },
+ {
+  "file": "08-map-play.spec.ts",
+  "title": "at the plain viewport › Briar as the current stop: Play and reward stay on screen, clear of everything",
+  "project": "android",
+  "skipped": false
+ },
+ {
+  "file": "08-map-play.spec.ts",
+  "title": "at the plain viewport › Hoot as the current stop: Play and reward stay on screen, clear of everything",
+  "project": "android",
+  "skipped": false
+ },
+ {
+  "file": "08-map-play.spec.ts",
+  "title": "at the plain viewport › Marigold as the current stop: Play and reward stay on screen, clear of everything",
+  "project": "android",
+  "skipped": false
+ },
+ {
+  "file": "08-map-play.spec.ts",
+  "title": "at the plain viewport › Nightshade as the current stop: Play and reward stay on screen, clear of everything",
+  "project": "android",
+  "skipped": false
+ },
+ {
+  "file": "08-map-play.spec.ts",
+  "title": "at the plain viewport › Pip as the current stop: Play and reward stay on screen, clear of everything",
+  "project": "android",
+  "skipped": false
+ },
+ {
+  "file": "08-map-play.spec.ts",
+  "title": "with simulated safe areas › Briar as the current stop: Play and reward stay on screen, clear of everything",
+  "project": "android",
+  "skipped": false
+ },
+ {
+  "file": "08-map-play.spec.ts",
+  "title": "with simulated safe areas › Hoot as the current stop: Play and reward stay on screen, clear of everything",
+  "project": "android",
+  "skipped": false
+ },
+ {
+  "file": "08-map-play.spec.ts",
+  "title": "with simulated safe areas › Marigold as the current stop: Play and reward stay on screen, clear of everything",
+  "project": "android",
+  "skipped": false
+ },
+ {
+  "file": "08-map-play.spec.ts",
+  "title": "with simulated safe areas › Nightshade as the current stop: Play and reward stay on screen, clear of everything",
+  "project": "android",
+  "skipped": false
+ },
+ {
+  "file": "08-map-play.spec.ts",
+  "title": "with simulated safe areas › Pip as the current stop: Play and reward stay on screen, clear of everything",
+  "project": "android",
+  "skipped": false
+ },
+ {
+  "file": "09-table-layout.spec.ts",
+  "title": "a spoken line sits under its speaker, centered on the portrait where it can be",
+  "project": "android",
+  "skipped": false
+ },
+ {
+  "file": "09-table-layout.spec.ts",
+  "title": "chip arrangement at every opponent count",
+  "project": "android",
+  "skipped": false
+ },
+ {
+  "file": "09-table-layout.spec.ts",
+  "title": "duel fixture with simulated safe areas: reports rows",
+  "project": "android",
+  "skipped": false
+ },
+ {
+  "file": "09-table-layout.spec.ts",
+  "title": "duel fixture: rows, clipping and fades",
+  "project": "android",
+  "skipped": false
+ },
+ {
+  "file": "09-table-layout.spec.ts",
+  "title": "everything tied to a chip still lands on the right chip",
+  "project": "android",
+  "skipped": false
+ },
+ {
+  "file": "09-table-layout.spec.ts",
+  "title": "Midnight Garden keeps its boss styling with slim chips",
+  "project": "android",
+  "skipped": false
+ },
+ {
+  "file": "09-table-layout.spec.ts",
+  "title": "slim chips: badges, skipped color, sizes and text that never wraps",
+  "project": "android",
+  "skipped": false
+ },
+ {
+  "file": "09-table-layout.spec.ts",
+  "title": "the panel is full before laying down, compacts only after the moment, and is full again next round",
+  "project": "android",
+  "skipped": false
+ },
+ {
+  "file": "09-table-layout.spec.ts",
+  "title": "two fixture with simulated safe areas: reports rows",
+  "project": "android",
+  "skipped": false
+ },
+ {
+  "file": "09-table-layout.spec.ts",
+  "title": "two fixture: rows, clipping and fades",
+  "project": "android",
+  "skipped": false
+ },
+ {
+  "file": "09-table-layout.spec.ts",
+  "title": "with Reduced motion the panel still compacts, by a fade",
+  "project": "android",
+  "skipped": false
+ },
+ {
+  "file": "09-table-layout.spec.ts",
+  "title": "worst fixture with simulated safe areas: reports rows",
+  "project": "android",
+  "skipped": false
+ },
+ {
+  "file": "09-table-layout.spec.ts",
+  "title": "worst fixture: rows, clipping and fades",
+  "project": "android",
+  "skipped": false
+ },
+ {
+  "file": "zz-coverage.spec.ts",
+  "title": "11. juice coverage: every animation and sound event fired during the suite",
+  "project": "android",
+  "skipped": false
+ },
+ {
+  "file": "01-shell.spec.ts",
+  "title": "a failure later in startup also shows the message",
+  "project": "max",
+  "skipped": false
+ },
+ {
+  "file": "01-shell.spec.ts",
+  "title": "a startup failure shows a message instead of a blank screen",
+  "project": "max",
+  "skipped": false
+ },
+ {
+  "file": "01-shell.spec.ts",
+  "title": "an update shows the toast, never reloads on its own, and applies on tap",
+  "project": "max",
+  "skipped": false
+ },
+ {
+  "file": "01-shell.spec.ts",
+  "title": "production build has no developer hooks and no outside network calls",
+  "project": "max",
+  "skipped": false
+ },
+ {
+  "file": "01-shell.spec.ts",
+  "title": "production manifest and service worker validate",
+  "project": "max",
+  "skipped": false
+ },
+ {
+  "file": "01-shell.spec.ts",
+  "title": "shell loads offline with no console errors",
+  "project": "max",
+  "skipped": false
+ },
+ {
+  "file": "01-shell.spec.ts",
+  "title": "starts on browsers with strict element names, as iOS Safari 26 and older may be",
+  "project": "max",
+  "skipped": false
+ },
+ {
+  "file": "02-table.spec.ts",
+  "title": "1. the app loads with no console errors",
+  "project": "max",
+  "skipped": false
+ },
+ {
+  "file": "02-table.spec.ts",
+  "title": "2. a full match against Pip finishes through the real UI",
+  "project": "max",
+  "skipped": false
+ },
+ {
+  "file": "02-table.spec.ts",
+  "title": "3. manual play: draw, build slots, lay down, hit, discard, and play a Skip",
+  "project": "max",
+  "skipped": false
+ },
+ {
+  "file": "02-table.spec.ts",
+  "title": "4. invalid actions shake and say why",
+  "project": "max",
+  "skipped": false
+ },
+ {
+  "file": "02-table.spec.ts",
+  "title": "5. reloading mid-turn restores the exact game",
+  "project": "max",
+  "skipped": false
+ },
+ {
+  "file": "02-table.spec.ts",
+  "title": "table renders at each size with the hand inside the screen",
+  "project": "max",
+  "skipped": false
+ },
+ {
+  "file": "03-meta.spec.ts",
+  "title": "6. offline: after first load the production app loads and plays with no network",
+  "project": "max",
+  "skipped": false
+ },
+ {
+  "file": "03-meta.spec.ts",
+  "title": "7. the whole campaign: stars, unlocks, Charms, Free Play, variants and the boss intro",
+  "project": "max",
+  "skipped": false
+ },
+ {
+  "file": "03-meta.spec.ts",
+  "title": "8. backup: export, reset, import restores identical progress",
+  "project": "max",
+  "skipped": false
+ },
+ {
+  "file": "03-meta.spec.ts",
+  "title": "9. landscape shows the rotate card",
+  "project": "max",
+  "skipped": false
+ },
+ {
+  "file": "03-meta.spec.ts",
+  "title": "a loss shows the gentle screen and opens nothing; forfeit counts as a loss",
+  "project": "max",
+  "skipped": false
+ },
+ {
+  "file": "03-meta.spec.ts",
+  "title": "all 15 stars bring Starlight and Bouquet",
+  "project": "max",
+  "skipped": false
+ },
+ {
+  "file": "03-meta.spec.ts",
+  "title": "corrupt save data falls back to the backup, and never crashes",
+  "project": "max",
+  "skipped": false
+ },
+ {
+  "file": "03-meta.spec.ts",
+  "title": "install helper shows in a browser tab, and stays away for a week after Maybe later",
+  "project": "max",
+  "skipped": false
+ },
+ {
+  "file": "03-meta.spec.ts",
+  "title": "screens: every menu screen renders, at every size",
+  "project": "max",
+  "skipped": false
+ },
+ {
+  "file": "03-meta.spec.ts",
+  "title": "tutorial shows tips and can be dismissed; How to Play has the fair play promise",
+  "project": "max",
+  "skipped": false
+ },
+ {
+  "file": "04-juice.spec.ts",
+  "title": "10. reduced motion removes shake, parallax and ambient petals",
+  "project": "max",
+  "skipped": false
+ },
+ {
+  "file": "04-juice.spec.ts",
+  "title": "12. performance: no main-thread task over 50 ms in the lay-down and victory sequences",
+  "project": "max",
+  "skipped": false
+ },
+ {
+  "file": "04-juice.spec.ts",
+  "title": "being skipped, skipping, bots laying down, hitting, going out, and the discard history",
+  "project": "max",
+  "skipped": false
+ },
+ {
+  "file": "04-juice.spec.ts",
+  "title": "boss presentation: intro, lilac candle, moths, tension, and the return to daylight",
+  "project": "max",
+  "skipped": false
+ },
+ {
+  "file": "04-juice.spec.ts",
+  "title": "choose your phase and sprint play through their own flows",
+  "project": "max",
+  "skipped": false
+ },
+ {
+  "file": "04-juice.spec.ts",
+  "title": "crowded table: five opponents fit and play",
+  "project": "max",
+  "skipped": false
+ },
+ {
+  "file": "04-juice.spec.ts",
+  "title": "lay-down moment, slots, sparkles, hit, wild trail, and going out",
+  "project": "max",
+  "skipped": false
+ },
+ {
+  "file": "04-juice.spec.ts",
+  "title": "tapping jumps a celebration to its end, and tapping the boss intro skips it",
+  "project": "max",
+  "skipped": false
+ },
+ {
+  "file": "05-recordings.spec.ts",
+  "title": "recording: being skipped",
+  "project": "max",
+  "skipped": true
+ },
+ {
+  "file": "05-recordings.spec.ts",
+  "title": "recording: boss intro",
+  "project": "max",
+  "skipped": true
+ },
+ {
+  "file": "05-recordings.spec.ts",
+  "title": "recording: going out",
+  "project": "max",
+  "skipped": true
+ },
+ {
+  "file": "05-recordings.spec.ts",
+  "title": "recording: lay down",
+  "project": "max",
+  "skipped": true
+ },
+ {
+  "file": "05-recordings.spec.ts",
+  "title": "recording: victory",
+  "project": "max",
+  "skipped": true
+ },
+ {
+  "file": "06-visual.spec.ts",
+  "title": "capture: first launch and the Journey map",
+  "project": "max",
+  "skipped": false
+ },
+ {
+  "file": "06-visual.spec.ts",
+  "title": "capture: loss, boss table and tutorial",
+  "project": "max",
+  "skipped": false
+ },
+ {
+  "file": "06-visual.spec.ts",
+  "title": "capture: menu screens",
+  "project": "max",
+  "skipped": false
+ },
+ {
+  "file": "06-visual.spec.ts",
+  "title": "capture: sheets, round end and match end",
+  "project": "max",
+  "skipped": false
+ },
+ {
+  "file": "06-visual.spec.ts",
+  "title": "capture: table states",
+  "project": "max",
+  "skipped": false
+ },
+ {
+  "file": "07-settings-icon.spec.ts",
+  "title": "the settings button shows a gear, in the same style and size as the other icons",
+  "project": "max",
+  "skipped": false
+ },
+ {
+  "file": "08-map-play.spec.ts",
+  "title": "at the plain viewport › Briar as the current stop: Play and reward stay on screen, clear of everything",
+  "project": "max",
+  "skipped": false
+ },
+ {
+  "file": "08-map-play.spec.ts",
+  "title": "at the plain viewport › Hoot as the current stop: Play and reward stay on screen, clear of everything",
+  "project": "max",
+  "skipped": false
+ },
+ {
+  "file": "08-map-play.spec.ts",
+  "title": "at the plain viewport › Marigold as the current stop: Play and reward stay on screen, clear of everything",
+  "project": "max",
+  "skipped": false
+ },
+ {
+  "file": "08-map-play.spec.ts",
+  "title": "at the plain viewport › Nightshade as the current stop: Play and reward stay on screen, clear of everything",
+  "project": "max",
+  "skipped": false
+ },
+ {
+  "file": "08-map-play.spec.ts",
+  "title": "at the plain viewport › Pip as the current stop: Play and reward stay on screen, clear of everything",
+  "project": "max",
+  "skipped": false
+ },
+ {
+  "file": "08-map-play.spec.ts",
+  "title": "with simulated safe areas › Briar as the current stop: Play and reward stay on screen, clear of everything",
+  "project": "max",
+  "skipped": false
+ },
+ {
+  "file": "08-map-play.spec.ts",
+  "title": "with simulated safe areas › Hoot as the current stop: Play and reward stay on screen, clear of everything",
+  "project": "max",
+  "skipped": false
+ },
+ {
+  "file": "08-map-play.spec.ts",
+  "title": "with simulated safe areas › Marigold as the current stop: Play and reward stay on screen, clear of everything",
+  "project": "max",
+  "skipped": false
+ },
+ {
+  "file": "08-map-play.spec.ts",
+  "title": "with simulated safe areas › Nightshade as the current stop: Play and reward stay on screen, clear of everything",
+  "project": "max",
+  "skipped": false
+ },
+ {
+  "file": "08-map-play.spec.ts",
+  "title": "with simulated safe areas › Pip as the current stop: Play and reward stay on screen, clear of everything",
+  "project": "max",
+  "skipped": false
+ },
+ {
+  "file": "09-table-layout.spec.ts",
+  "title": "a spoken line sits under its speaker, centered on the portrait where it can be",
+  "project": "max",
+  "skipped": false
+ },
+ {
+  "file": "09-table-layout.spec.ts",
+  "title": "chip arrangement at every opponent count",
+  "project": "max",
+  "skipped": false
+ },
+ {
+  "file": "09-table-layout.spec.ts",
+  "title": "duel fixture with simulated safe areas: reports rows",
+  "project": "max",
+  "skipped": false
+ },
+ {
+  "file": "09-table-layout.spec.ts",
+  "title": "duel fixture: rows, clipping and fades",
+  "project": "max",
+  "skipped": false
+ },
+ {
+  "file": "09-table-layout.spec.ts",
+  "title": "everything tied to a chip still lands on the right chip",
+  "project": "max",
+  "skipped": false
+ },
+ {
+  "file": "09-table-layout.spec.ts",
+  "title": "Midnight Garden keeps its boss styling with slim chips",
+  "project": "max",
+  "skipped": false
+ },
+ {
+  "file": "09-table-layout.spec.ts",
+  "title": "slim chips: badges, skipped color, sizes and text that never wraps",
+  "project": "max",
+  "skipped": false
+ },
+ {
+  "file": "09-table-layout.spec.ts",
+  "title": "the panel is full before laying down, compacts only after the moment, and is full again next round",
+  "project": "max",
+  "skipped": false
+ },
+ {
+  "file": "09-table-layout.spec.ts",
+  "title": "two fixture with simulated safe areas: reports rows",
+  "project": "max",
+  "skipped": false
+ },
+ {
+  "file": "09-table-layout.spec.ts",
+  "title": "two fixture: rows, clipping and fades",
+  "project": "max",
+  "skipped": false
+ },
+ {
+  "file": "09-table-layout.spec.ts",
+  "title": "with Reduced motion the panel still compacts, by a fade",
+  "project": "max",
+  "skipped": false
+ },
+ {
+  "file": "09-table-layout.spec.ts",
+  "title": "worst fixture with simulated safe areas: reports rows",
+  "project": "max",
+  "skipped": false
+ },
+ {
+  "file": "09-table-layout.spec.ts",
+  "title": "worst fixture: rows, clipping and fades",
+  "project": "max",
+  "skipped": false
+ },
+ {
+  "file": "zz-coverage.spec.ts",
+  "title": "11. juice coverage: every animation and sound event fired during the suite",
+  "project": "max",
+  "skipped": false
+ },
+ {
+  "file": "01-shell.spec.ts",
+  "title": "a failure later in startup also shows the message",
+  "project": "ref",
+  "skipped": false
+ },
+ {
+  "file": "01-shell.spec.ts",
+  "title": "a startup failure shows a message instead of a blank screen",
+  "project": "ref",
+  "skipped": false
+ },
+ {
+  "file": "01-shell.spec.ts",
+  "title": "an update shows the toast, never reloads on its own, and applies on tap",
+  "project": "ref",
+  "skipped": false
+ },
+ {
+  "file": "01-shell.spec.ts",
+  "title": "production build has no developer hooks and no outside network calls",
+  "project": "ref",
+  "skipped": false
+ },
+ {
+  "file": "01-shell.spec.ts",
+  "title": "production manifest and service worker validate",
+  "project": "ref",
+  "skipped": false
+ },
+ {
+  "file": "01-shell.spec.ts",
+  "title": "shell loads offline with no console errors",
+  "project": "ref",
+  "skipped": false
+ },
+ {
+  "file": "01-shell.spec.ts",
+  "title": "starts on browsers with strict element names, as iOS Safari 26 and older may be",
+  "project": "ref",
+  "skipped": false
+ },
+ {
+  "file": "02-table.spec.ts",
+  "title": "1. the app loads with no console errors",
+  "project": "ref",
+  "skipped": false
+ },
+ {
+  "file": "02-table.spec.ts",
+  "title": "2. a full match against Pip finishes through the real UI",
+  "project": "ref",
+  "skipped": false
+ },
+ {
+  "file": "02-table.spec.ts",
+  "title": "3. manual play: draw, build slots, lay down, hit, discard, and play a Skip",
+  "project": "ref",
+  "skipped": false
+ },
+ {
+  "file": "02-table.spec.ts",
+  "title": "4. invalid actions shake and say why",
+  "project": "ref",
+  "skipped": false
+ },
+ {
+  "file": "02-table.spec.ts",
+  "title": "5. reloading mid-turn restores the exact game",
+  "project": "ref",
+  "skipped": false
+ },
+ {
+  "file": "02-table.spec.ts",
+  "title": "table renders at each size with the hand inside the screen",
+  "project": "ref",
+  "skipped": false
+ },
+ {
+  "file": "03-meta.spec.ts",
+  "title": "6. offline: after first load the production app loads and plays with no network",
+  "project": "ref",
+  "skipped": false
+ },
+ {
+  "file": "03-meta.spec.ts",
+  "title": "7. the whole campaign: stars, unlocks, Charms, Free Play, variants and the boss intro",
+  "project": "ref",
+  "skipped": false
+ },
+ {
+  "file": "03-meta.spec.ts",
+  "title": "8. backup: export, reset, import restores identical progress",
+  "project": "ref",
+  "skipped": false
+ },
+ {
+  "file": "03-meta.spec.ts",
+  "title": "9. landscape shows the rotate card",
+  "project": "ref",
+  "skipped": false
+ },
+ {
+  "file": "03-meta.spec.ts",
+  "title": "a loss shows the gentle screen and opens nothing; forfeit counts as a loss",
+  "project": "ref",
+  "skipped": false
+ },
+ {
+  "file": "03-meta.spec.ts",
+  "title": "all 15 stars bring Starlight and Bouquet",
+  "project": "ref",
+  "skipped": false
+ },
+ {
+  "file": "03-meta.spec.ts",
+  "title": "corrupt save data falls back to the backup, and never crashes",
+  "project": "ref",
+  "skipped": false
+ },
+ {
+  "file": "03-meta.spec.ts",
+  "title": "install helper shows in a browser tab, and stays away for a week after Maybe later",
+  "project": "ref",
+  "skipped": false
+ },
+ {
+  "file": "03-meta.spec.ts",
+  "title": "screens: every menu screen renders, at every size",
+  "project": "ref",
+  "skipped": false
+ },
+ {
+  "file": "03-meta.spec.ts",
+  "title": "tutorial shows tips and can be dismissed; How to Play has the fair play promise",
+  "project": "ref",
+  "skipped": false
+ },
+ {
+  "file": "04-juice.spec.ts",
+  "title": "10. reduced motion removes shake, parallax and ambient petals",
+  "project": "ref",
+  "skipped": false
+ },
+ {
+  "file": "04-juice.spec.ts",
+  "title": "12. performance: no main-thread task over 50 ms in the lay-down and victory sequences",
+  "project": "ref",
+  "skipped": false
+ },
+ {
+  "file": "04-juice.spec.ts",
+  "title": "being skipped, skipping, bots laying down, hitting, going out, and the discard history",
+  "project": "ref",
+  "skipped": false
+ },
+ {
+  "file": "04-juice.spec.ts",
+  "title": "boss presentation: intro, lilac candle, moths, tension, and the return to daylight",
+  "project": "ref",
+  "skipped": false
+ },
+ {
+  "file": "04-juice.spec.ts",
+  "title": "choose your phase and sprint play through their own flows",
+  "project": "ref",
+  "skipped": false
+ },
+ {
+  "file": "04-juice.spec.ts",
+  "title": "crowded table: five opponents fit and play",
+  "project": "ref",
+  "skipped": false
+ },
+ {
+  "file": "04-juice.spec.ts",
+  "title": "lay-down moment, slots, sparkles, hit, wild trail, and going out",
+  "project": "ref",
+  "skipped": false
+ },
+ {
+  "file": "04-juice.spec.ts",
+  "title": "tapping jumps a celebration to its end, and tapping the boss intro skips it",
+  "project": "ref",
+  "skipped": false
+ },
+ {
+  "file": "05-recordings.spec.ts",
+  "title": "recording: being skipped",
+  "project": "ref",
+  "skipped": false
+ },
+ {
+  "file": "05-recordings.spec.ts",
+  "title": "recording: boss intro",
+  "project": "ref",
+  "skipped": false
+ },
+ {
+  "file": "05-recordings.spec.ts",
+  "title": "recording: going out",
+  "project": "ref",
+  "skipped": false
+ },
+ {
+  "file": "05-recordings.spec.ts",
+  "title": "recording: lay down",
+  "project": "ref",
+  "skipped": false
+ },
+ {
+  "file": "05-recordings.spec.ts",
+  "title": "recording: victory",
+  "project": "ref",
+  "skipped": false
+ },
+ {
+  "file": "06-visual.spec.ts",
+  "title": "capture: first launch and the Journey map",
+  "project": "ref",
+  "skipped": false
+ },
+ {
+  "file": "06-visual.spec.ts",
+  "title": "capture: loss, boss table and tutorial",
+  "project": "ref",
+  "skipped": false
+ },
+ {
+  "file": "06-visual.spec.ts",
+  "title": "capture: menu screens",
+  "project": "ref",
+  "skipped": false
+ },
+ {
+  "file": "06-visual.spec.ts",
+  "title": "capture: sheets, round end and match end",
+  "project": "ref",
+  "skipped": false
+ },
+ {
+  "file": "06-visual.spec.ts",
+  "title": "capture: table states",
+  "project": "ref",
+  "skipped": false
+ },
+ {
+  "file": "07-settings-icon.spec.ts",
+  "title": "the settings button shows a gear, in the same style and size as the other icons",
+  "project": "ref",
+  "skipped": false
+ },
+ {
+  "file": "08-map-play.spec.ts",
+  "title": "at the plain viewport › Briar as the current stop: Play and reward stay on screen, clear of everything",
+  "project": "ref",
+  "skipped": false
+ },
+ {
+  "file": "08-map-play.spec.ts",
+  "title": "at the plain viewport › Hoot as the current stop: Play and reward stay on screen, clear of everything",
+  "project": "ref",
+  "skipped": false
+ },
+ {
+  "file": "08-map-play.spec.ts",
+  "title": "at the plain viewport › Marigold as the current stop: Play and reward stay on screen, clear of everything",
+  "project": "ref",
+  "skipped": false
+ },
+ {
+  "file": "08-map-play.spec.ts",
+  "title": "at the plain viewport › Nightshade as the current stop: Play and reward stay on screen, clear of everything",
+  "project": "ref",
+  "skipped": false
+ },
+ {
+  "file": "08-map-play.spec.ts",
+  "title": "at the plain viewport › Pip as the current stop: Play and reward stay on screen, clear of everything",
+  "project": "ref",
+  "skipped": false
+ },
+ {
+  "file": "08-map-play.spec.ts",
+  "title": "with simulated safe areas › Briar as the current stop: Play and reward stay on screen, clear of everything",
+  "project": "ref",
+  "skipped": false
+ },
+ {
+  "file": "08-map-play.spec.ts",
+  "title": "with simulated safe areas › Hoot as the current stop: Play and reward stay on screen, clear of everything",
+  "project": "ref",
+  "skipped": false
+ },
+ {
+  "file": "08-map-play.spec.ts",
+  "title": "with simulated safe areas › Marigold as the current stop: Play and reward stay on screen, clear of everything",
+  "project": "ref",
+  "skipped": false
+ },
+ {
+  "file": "08-map-play.spec.ts",
+  "title": "with simulated safe areas › Nightshade as the current stop: Play and reward stay on screen, clear of everything",
+  "project": "ref",
+  "skipped": false
+ },
+ {
+  "file": "08-map-play.spec.ts",
+  "title": "with simulated safe areas › Pip as the current stop: Play and reward stay on screen, clear of everything",
+  "project": "ref",
+  "skipped": false
+ },
+ {
+  "file": "09-table-layout.spec.ts",
+  "title": "a spoken line sits under its speaker, centered on the portrait where it can be",
+  "project": "ref",
+  "skipped": false
+ },
+ {
+  "file": "09-table-layout.spec.ts",
+  "title": "chip arrangement at every opponent count",
+  "project": "ref",
+  "skipped": false
+ },
+ {
+  "file": "09-table-layout.spec.ts",
+  "title": "duel fixture with simulated safe areas: reports rows",
+  "project": "ref",
+  "skipped": false
+ },
+ {
+  "file": "09-table-layout.spec.ts",
+  "title": "duel fixture: rows, clipping and fades",
+  "project": "ref",
+  "skipped": false
+ },
+ {
+  "file": "09-table-layout.spec.ts",
+  "title": "everything tied to a chip still lands on the right chip",
+  "project": "ref",
+  "skipped": false
+ },
+ {
+  "file": "09-table-layout.spec.ts",
+  "title": "Midnight Garden keeps its boss styling with slim chips",
+  "project": "ref",
+  "skipped": false
+ },
+ {
+  "file": "09-table-layout.spec.ts",
+  "title": "slim chips: badges, skipped color, sizes and text that never wraps",
+  "project": "ref",
+  "skipped": false
+ },
+ {
+  "file": "09-table-layout.spec.ts",
+  "title": "the panel is full before laying down, compacts only after the moment, and is full again next round",
+  "project": "ref",
+  "skipped": false
+ },
+ {
+  "file": "09-table-layout.spec.ts",
+  "title": "two fixture with simulated safe areas: reports rows",
+  "project": "ref",
+  "skipped": false
+ },
+ {
+  "file": "09-table-layout.spec.ts",
+  "title": "two fixture: rows, clipping and fades",
+  "project": "ref",
+  "skipped": false
+ },
+ {
+  "file": "09-table-layout.spec.ts",
+  "title": "with Reduced motion the panel still compacts, by a fade",
+  "project": "ref",
+  "skipped": false
+ },
+ {
+  "file": "09-table-layout.spec.ts",
+  "title": "worst fixture with simulated safe areas: reports rows",
+  "project": "ref",
+  "skipped": false
+ },
+ {
+  "file": "09-table-layout.spec.ts",
+  "title": "worst fixture: rows, clipping and fades",
+  "project": "ref",
+  "skipped": false
+ },
+ {
+  "file": "zz-coverage.spec.ts",
+  "title": "11. juice coverage: every animation and sound event fired during the suite",
+  "project": "ref",
+  "skipped": false
+ },
+ {
+  "file": "01-shell.spec.ts",
+  "title": "a failure later in startup also shows the message",
+  "project": "se",
+  "skipped": false
+ },
+ {
+  "file": "01-shell.spec.ts",
+  "title": "a startup failure shows a message instead of a blank screen",
+  "project": "se",
+  "skipped": false
+ },
+ {
+  "file": "01-shell.spec.ts",
+  "title": "an update shows the toast, never reloads on its own, and applies on tap",
+  "project": "se",
+  "skipped": false
+ },
+ {
+  "file": "01-shell.spec.ts",
+  "title": "production build has no developer hooks and no outside network calls",
+  "project": "se",
+  "skipped": false
+ },
+ {
+  "file": "01-shell.spec.ts",
+  "title": "production manifest and service worker validate",
+  "project": "se",
+  "skipped": false
+ },
+ {
+  "file": "01-shell.spec.ts",
+  "title": "shell loads offline with no console errors",
+  "project": "se",
+  "skipped": false
+ },
+ {
+  "file": "01-shell.spec.ts",
+  "title": "starts on browsers with strict element names, as iOS Safari 26 and older may be",
+  "project": "se",
+  "skipped": false
+ },
+ {
+  "file": "02-table.spec.ts",
+  "title": "1. the app loads with no console errors",
+  "project": "se",
+  "skipped": false
+ },
+ {
+  "file": "02-table.spec.ts",
+  "title": "2. a full match against Pip finishes through the real UI",
+  "project": "se",
+  "skipped": false
+ },
+ {
+  "file": "02-table.spec.ts",
+  "title": "3. manual play: draw, build slots, lay down, hit, discard, and play a Skip",
+  "project": "se",
+  "skipped": false
+ },
+ {
+  "file": "02-table.spec.ts",
+  "title": "4. invalid actions shake and say why",
+  "project": "se",
+  "skipped": false
+ },
+ {
+  "file": "02-table.spec.ts",
+  "title": "5. reloading mid-turn restores the exact game",
+  "project": "se",
+  "skipped": false
+ },
+ {
+  "file": "02-table.spec.ts",
+  "title": "table renders at each size with the hand inside the screen",
+  "project": "se",
+  "skipped": false
+ },
+ {
+  "file": "03-meta.spec.ts",
+  "title": "6. offline: after first load the production app loads and plays with no network",
+  "project": "se",
+  "skipped": false
+ },
+ {
+  "file": "03-meta.spec.ts",
+  "title": "7. the whole campaign: stars, unlocks, Charms, Free Play, variants and the boss intro",
+  "project": "se",
+  "skipped": false
+ },
+ {
+  "file": "03-meta.spec.ts",
+  "title": "8. backup: export, reset, import restores identical progress",
+  "project": "se",
+  "skipped": false
+ },
+ {
+  "file": "03-meta.spec.ts",
+  "title": "9. landscape shows the rotate card",
+  "project": "se",
+  "skipped": false
+ },
+ {
+  "file": "03-meta.spec.ts",
+  "title": "a loss shows the gentle screen and opens nothing; forfeit counts as a loss",
+  "project": "se",
+  "skipped": false
+ },
+ {
+  "file": "03-meta.spec.ts",
+  "title": "all 15 stars bring Starlight and Bouquet",
+  "project": "se",
+  "skipped": false
+ },
+ {
+  "file": "03-meta.spec.ts",
+  "title": "corrupt save data falls back to the backup, and never crashes",
+  "project": "se",
+  "skipped": false
+ },
+ {
+  "file": "03-meta.spec.ts",
+  "title": "install helper shows in a browser tab, and stays away for a week after Maybe later",
+  "project": "se",
+  "skipped": false
+ },
+ {
+  "file": "03-meta.spec.ts",
+  "title": "screens: every menu screen renders, at every size",
+  "project": "se",
+  "skipped": false
+ },
+ {
+  "file": "03-meta.spec.ts",
+  "title": "tutorial shows tips and can be dismissed; How to Play has the fair play promise",
+  "project": "se",
+  "skipped": false
+ },
+ {
+  "file": "04-juice.spec.ts",
+  "title": "10. reduced motion removes shake, parallax and ambient petals",
+  "project": "se",
+  "skipped": false
+ },
+ {
+  "file": "04-juice.spec.ts",
+  "title": "12. performance: no main-thread task over 50 ms in the lay-down and victory sequences",
+  "project": "se",
+  "skipped": false
+ },
+ {
+  "file": "04-juice.spec.ts",
+  "title": "being skipped, skipping, bots laying down, hitting, going out, and the discard history",
+  "project": "se",
+  "skipped": false
+ },
+ {
+  "file": "04-juice.spec.ts",
+  "title": "boss presentation: intro, lilac candle, moths, tension, and the return to daylight",
+  "project": "se",
+  "skipped": false
+ },
+ {
+  "file": "04-juice.spec.ts",
+  "title": "choose your phase and sprint play through their own flows",
+  "project": "se",
+  "skipped": false
+ },
+ {
+  "file": "04-juice.spec.ts",
+  "title": "crowded table: five opponents fit and play",
+  "project": "se",
+  "skipped": false
+ },
+ {
+  "file": "04-juice.spec.ts",
+  "title": "lay-down moment, slots, sparkles, hit, wild trail, and going out",
+  "project": "se",
+  "skipped": false
+ },
+ {
+  "file": "04-juice.spec.ts",
+  "title": "tapping jumps a celebration to its end, and tapping the boss intro skips it",
+  "project": "se",
+  "skipped": false
+ },
+ {
+  "file": "05-recordings.spec.ts",
+  "title": "recording: being skipped",
+  "project": "se",
+  "skipped": true
+ },
+ {
+  "file": "05-recordings.spec.ts",
+  "title": "recording: boss intro",
+  "project": "se",
+  "skipped": true
+ },
+ {
+  "file": "05-recordings.spec.ts",
+  "title": "recording: going out",
+  "project": "se",
+  "skipped": true
+ },
+ {
+  "file": "05-recordings.spec.ts",
+  "title": "recording: lay down",
+  "project": "se",
+  "skipped": true
+ },
+ {
+  "file": "05-recordings.spec.ts",
+  "title": "recording: victory",
+  "project": "se",
+  "skipped": true
+ },
+ {
+  "file": "06-visual.spec.ts",
+  "title": "capture: first launch and the Journey map",
+  "project": "se",
+  "skipped": false
+ },
+ {
+  "file": "06-visual.spec.ts",
+  "title": "capture: loss, boss table and tutorial",
+  "project": "se",
+  "skipped": false
+ },
+ {
+  "file": "06-visual.spec.ts",
+  "title": "capture: menu screens",
+  "project": "se",
+  "skipped": false
+ },
+ {
+  "file": "06-visual.spec.ts",
+  "title": "capture: sheets, round end and match end",
+  "project": "se",
+  "skipped": false
+ },
+ {
+  "file": "06-visual.spec.ts",
+  "title": "capture: table states",
+  "project": "se",
+  "skipped": false
+ },
+ {
+  "file": "07-settings-icon.spec.ts",
+  "title": "the settings button shows a gear, in the same style and size as the other icons",
+  "project": "se",
+  "skipped": false
+ },
+ {
+  "file": "08-map-play.spec.ts",
+  "title": "at the plain viewport › Briar as the current stop: Play and reward stay on screen, clear of everything",
+  "project": "se",
+  "skipped": false
+ },
+ {
+  "file": "08-map-play.spec.ts",
+  "title": "at the plain viewport › Hoot as the current stop: Play and reward stay on screen, clear of everything",
+  "project": "se",
+  "skipped": false
+ },
+ {
+  "file": "08-map-play.spec.ts",
+  "title": "at the plain viewport › Marigold as the current stop: Play and reward stay on screen, clear of everything",
+  "project": "se",
+  "skipped": false
+ },
+ {
+  "file": "08-map-play.spec.ts",
+  "title": "at the plain viewport › Nightshade as the current stop: Play and reward stay on screen, clear of everything",
+  "project": "se",
+  "skipped": false
+ },
+ {
+  "file": "08-map-play.spec.ts",
+  "title": "at the plain viewport › Pip as the current stop: Play and reward stay on screen, clear of everything",
+  "project": "se",
+  "skipped": false
+ },
+ {
+  "file": "08-map-play.spec.ts",
+  "title": "with simulated safe areas › Briar as the current stop: Play and reward stay on screen, clear of everything",
+  "project": "se",
+  "skipped": false
+ },
+ {
+  "file": "08-map-play.spec.ts",
+  "title": "with simulated safe areas › Hoot as the current stop: Play and reward stay on screen, clear of everything",
+  "project": "se",
+  "skipped": false
+ },
+ {
+  "file": "08-map-play.spec.ts",
+  "title": "with simulated safe areas › Marigold as the current stop: Play and reward stay on screen, clear of everything",
+  "project": "se",
+  "skipped": false
+ },
+ {
+  "file": "08-map-play.spec.ts",
+  "title": "with simulated safe areas › Nightshade as the current stop: Play and reward stay on screen, clear of everything",
+  "project": "se",
+  "skipped": false
+ },
+ {
+  "file": "08-map-play.spec.ts",
+  "title": "with simulated safe areas › Pip as the current stop: Play and reward stay on screen, clear of everything",
+  "project": "se",
+  "skipped": false
+ },
+ {
+  "file": "09-table-layout.spec.ts",
+  "title": "a spoken line sits under its speaker, centered on the portrait where it can be",
+  "project": "se",
+  "skipped": false
+ },
+ {
+  "file": "09-table-layout.spec.ts",
+  "title": "chip arrangement at every opponent count",
+  "project": "se",
+  "skipped": false
+ },
+ {
+  "file": "09-table-layout.spec.ts",
+  "title": "duel fixture with simulated safe areas: reports rows",
+  "project": "se",
+  "skipped": false
+ },
+ {
+  "file": "09-table-layout.spec.ts",
+  "title": "duel fixture: rows, clipping and fades",
+  "project": "se",
+  "skipped": false
+ },
+ {
+  "file": "09-table-layout.spec.ts",
+  "title": "everything tied to a chip still lands on the right chip",
+  "project": "se",
+  "skipped": false
+ },
+ {
+  "file": "09-table-layout.spec.ts",
+  "title": "Midnight Garden keeps its boss styling with slim chips",
+  "project": "se",
+  "skipped": false
+ },
+ {
+  "file": "09-table-layout.spec.ts",
+  "title": "slim chips: badges, skipped color, sizes and text that never wraps",
+  "project": "se",
+  "skipped": false
+ },
+ {
+  "file": "09-table-layout.spec.ts",
+  "title": "the panel is full before laying down, compacts only after the moment, and is full again next round",
+  "project": "se",
+  "skipped": false
+ },
+ {
+  "file": "09-table-layout.spec.ts",
+  "title": "two fixture with simulated safe areas: reports rows",
+  "project": "se",
+  "skipped": false
+ },
+ {
+  "file": "09-table-layout.spec.ts",
+  "title": "two fixture: rows, clipping and fades",
+  "project": "se",
+  "skipped": false
+ },
+ {
+  "file": "09-table-layout.spec.ts",
+  "title": "with Reduced motion the panel still compacts, by a fade",
+  "project": "se",
+  "skipped": false
+ },
+ {
+  "file": "09-table-layout.spec.ts",
+  "title": "worst fixture with simulated safe areas: reports rows",
+  "project": "se",
+  "skipped": false
+ },
+ {
+  "file": "09-table-layout.spec.ts",
+  "title": "worst fixture: rows, clipping and fades",
+  "project": "se",
+  "skipped": false
+ },
+ {
+  "file": "zz-coverage.spec.ts",
+  "title": "11. juice coverage: every animation and sound event fired during the suite",
+  "project": "se",
+  "skipped": false
+ }
+]
