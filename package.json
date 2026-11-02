@@ -18,7 +18,9 @@
     "test:file": "node scripts/test-target.mjs file",
     "test:project": "node scripts/test-target.mjs project",
     "visual:baseline": "node scripts/test-target.mjs baseline",
+    "sim:smoke": "node scripts/simulate.ts --smoke",
     "gate": "node scripts/gate.mjs",
+    "gate:no-cache": "node scripts/gate.mjs --no-cache",
     "test": "npm run gate"
   },
   "engines": {

@@ -9,5 +9,8 @@ export const ALONE = /12\. performance/;
 /** Reads the event logs of every other test, so it runs last and means nothing in a partial run. */
 export const LAST = /11\. juice coverage/;
 
+/** The safety net against timing bugs that scaled-down waits could hide. One full match is enough, at the largest iPhone size. */
+export const REAL_SPEED = /10-real-speed/;
+
 /** The most that ran clean on the 10-core laptop in TESTING.md. Six caused timeouts and an image difference. Override with TC_WORKERS. */
 export const DEFAULT_WORKERS = 4;

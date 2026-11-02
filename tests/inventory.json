@@ -786,6 +786,12 @@
   "skipped": false
  },
  {
+  "file": "10-real-speed.spec.ts",
+  "title": "a full match at real speed finishes through the real UI",
+  "project": "max",
+  "skipped": false
+ },
+ {
   "file": "zz-coverage.spec.ts",
   "title": "11. juice coverage: every animation and sound event fired during the suite",
   "project": "max",

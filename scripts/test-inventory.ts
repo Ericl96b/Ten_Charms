@@ -1,6 +1,6 @@
 // The coverage guarantee: every browser test that must exist, and every test that may be skipped.
 // Usage: node scripts/test-inventory.ts check [report.json ...]
-//        node scripts/test-inventory.ts write <report.json>
+//        node scripts/test-inventory.ts write <report.json> [more reports from the same run]
 // With reports, also checks that each test really ran, with no new skips, failures or retries.
 import { spawnSync } from 'node:child_process';
 import { readFileSync, writeFileSync } from 'node:fs';
@@ -76,7 +76,7 @@ const readReport = (file: string): Report => JSON.parse(readFileSync(file, 'utf8
 function main(): void {
   const [command, ...files] = process.argv.slice(2);
   if (command === 'write') {
-    const rows: Row[] = flatten(readReport(files[0]))
+    const rows: Row[] = files.flatMap((f) => flatten(readReport(f)))
       .map((r) => ({ file: r.file, title: r.title, project: r.project, skipped: r.status === 'skipped' }))
       .sort((a, b) => key(a).localeCompare(key(b)));
     writeFileSync(INVENTORY, JSON.stringify(rows, null, 1) + '\n');

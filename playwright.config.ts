@@ -1,5 +1,5 @@
 import { defineConfig } from '@playwright/test';
-import { ALONE, DEFAULT_WORKERS, LAST, SERIAL } from './tests/e2e/stages.ts';
+import { ALONE, DEFAULT_WORKERS, LAST, REAL_SPEED, SERIAL } from './tests/e2e/stages.ts';
 
 const viewports = [
   { name: 'se', width: 375, height: 667 },
@@ -42,9 +42,11 @@ export default defineConfig({
     ...viewports.map((v) => ({
       name: v.name,
       use: { viewport: { width: v.width, height: v.height } },
+      testIgnore: v.name === 'max' ? undefined : REAL_SPEED,
     })),
     {
       name: 'android',
+      testIgnore: REAL_SPEED,
       use: {
         browserName: 'chromium' as const,
         isMobile: true,
