@@ -8,6 +8,9 @@ const allowed = new Set((process.argv[2] ?? '').split(',').filter(Boolean));
 const other = process.argv[3] ?? 'current';
 /** Per-channel difference that counts as a change. Anti-aliasing can wobble by a few levels. */
 const TOLERANCE = 8;
+/** These flip between two renderings in Chromium with no code change, with 2 pixels reaching a difference of 9. */
+const WOBBLY = new Set(['top', 'middle', 'bottom'].map((at) => `fixture-two-${at}-android.png`));
+const WOBBLY_TOLERANCE = 10;
 
 async function raw(file) {
   const { data, info } = await sharp(file).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
@@ -30,12 +33,13 @@ for (const name of baseNames) {
   const [x, y] = await Promise.all([raw(a), raw(b)]);
   compared++;
   if (x.width !== y.width || x.height !== y.height) { console.log(`SIZE     ${name}`); failed++; continue; }
+  const tolerance = WOBBLY.has(name) ? WOBBLY_TOLERANCE : TOLERANCE;
   let changed = 0, left = Infinity, top = Infinity, right = -1, bottom = -1;
   for (let py = 0; py < x.height; py++) {
     for (let px = 0; px < x.width; px++) {
       if (box && px >= box.l && px < box.r && py >= box.t && py < box.b) continue;
       const i = (py * x.width + px) * 4;
-      if (Math.abs(x.data[i] - y.data[i]) > TOLERANCE || Math.abs(x.data[i + 1] - y.data[i + 1]) > TOLERANCE || Math.abs(x.data[i + 2] - y.data[i + 2]) > TOLERANCE) {
+      if (Math.abs(x.data[i] - y.data[i]) > tolerance || Math.abs(x.data[i + 1] - y.data[i + 1]) > tolerance || Math.abs(x.data[i + 2] - y.data[i + 2]) > tolerance) {
         changed++;
         if (px < left) left = px;
         if (px > right) right = px;

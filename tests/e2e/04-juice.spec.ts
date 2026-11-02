@@ -245,7 +245,10 @@ test('10. reduced motion removes shake, parallax and ambient petals', async ({ p
   expect(await page.evaluate(() => document.documentElement.classList.contains('reduced'))).toBe(true);
 });
 
-/** Watches the main thread for any task over the limit, during real-speed set pieces. */
+/**
+ * Watches the main thread for any task over the limit, during real-speed set pieces.
+ * Each message posts the next directly: a timer between them would add its own 46 ms gap on Windows WebKit.
+ */
 async function startProbe(page: Page): Promise<void> {
   await page.evaluate(() => {
     const w = window as unknown as { __gaps: number[]; __probe: boolean };
@@ -257,7 +260,7 @@ async function startProbe(page: Page): Promise<void> {
       const now = performance.now();
       w.__gaps.push(now - last);
       last = now;
-      if (w.__probe) setTimeout(() => ch.port2.postMessage(0), 0);
+      if (w.__probe) ch.port2.postMessage(0);
     };
     ch.port2.postMessage(0);
   });

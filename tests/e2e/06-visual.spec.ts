@@ -2,7 +2,7 @@
 import { mkdirSync, writeFileSync } from 'node:fs';
 import type { Page } from '@playwright/test';
 import { LINEUPS, openFixture } from './fixtures.ts';
-import { openApp, patch, prepare, startMatch, tap, test, waitIdle } from './helpers.ts';
+import { expect, openApp, patch, prepare, startMatch, tap, test, waitIdle } from './helpers.ts';
 
 const DIR = `qa-screenshots/cr01/${process.env.VISUAL_DIR ?? 'current'}`;
 
@@ -287,9 +287,10 @@ test('capture: loss, boss table and tutorial', async ({ page }, info) => {
   await shot(page, p, 'boss-match-intro', ['map-current', 'settings-icon']);
   await closeSheet(page);
   await page.evaluate(() => (window as any).__TC__.startMatch({ lineup: ['nightshade'], seed: '1b'.repeat(16), botSeed: '1c'.repeat(16), mode: { kind: 'campaign', stop: 4 } }));
-  await page.waitForSelector('[data-testid="boss-intro"]');
-  await page.locator('[data-testid="boss-intro"]').click({ force: true });
+  // At this test scale the intro is over in under 100 ms, too fast to wait for or tap, so check that it ran.
+  await page.waitForSelector('[data-screen="table"].boss');
   await page.waitForSelector('[data-testid="boss-intro"]', { state: 'detached', timeout: 15_000 });
+  expect(await page.evaluate(() => (window as any).__TC__.events.map((e: { name: string }) => e.name))).toContain('boss.intro');
   await waitIdle(page);
   await shot(page, p, 'boss-table', ['table']);
 });
