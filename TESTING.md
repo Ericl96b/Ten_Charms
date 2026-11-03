@@ -16,7 +16,7 @@ How the tests are organized, what they cost, and how reliable they are.
 | `npm run gate:no-cache` | The gate, with the simulation run fresh | 21 min |
 | `npm run test:failed` | Only the tests that failed in the last run | Seconds |
 | `npm run test:file -- 09-table` | One test file or area | Seconds to minutes |
-| `npm run test:project -- max` | One viewport (`se`, `ref`, `max`, `android`) | 2–4 min |
+| `npm run test:project -- max` | One viewport (`se`, `ref`, `max`, `android`). `max` is the slowest, because it has the real-speed match | 7.5 min for `max` |
 | `npm run test:unit` | Unit tests only | 30 s |
 | `npm run sim:smoke` | Small simulation, written to `test-results/sim-smoke.md`. Its numbers are never final | 2 s |
 | `npm run visual:baseline` | Captures the image baseline, which stays on each machine. The gate refuses to run without one | 7 min |
