@@ -2,9 +2,27 @@
 import type { BotId } from '../bots/profiles.ts';
 import type { GameState } from '../engine/types.ts';
 
-export const SCHEMA = 1;
+export const SCHEMA = 2;
 const KEY = 'ten-charms.save';
 const BACKUP_KEY = 'ten-charms.save.backup';
+/** One untouched copy of the save as it was before the Moonlit Glade update. Written once, never changed. */
+const SNAPSHOT_KEY = 'ten-charms.save.pre-map2';
+
+export type GladeStopId = 'g1' | 'a1' | 'a2' | 'b1' | 'b2' | 'g2' | 'g3';
+
+/** Moonlit Glade progress. Map 2 access itself comes from campaign.won, so it needs no flag here. */
+export type GladeProgress = {
+  /** Stops won, earliest first. The order decides which open stop gets the Play button. */
+  winOrder: GladeStopId[];
+  stars: Partial<Record<GladeStopId, number>>;
+  bestRounds: Partial<Record<GladeStopId, number>>;
+  fogLifted: boolean;
+  /** The one-time path reveal has started, so it can never play again. */
+  revealSeen: boolean;
+  /** The fog-lift scene is owed and hasn't started yet. */
+  liftScenePending: boolean;
+  lastMap: 'garden' | 'glade';
+};
 
 export type Settings = {
   music: number;
@@ -60,6 +78,7 @@ export type SaveData = {
   schema: number;
   settings: Settings;
   campaign: { won: boolean[]; stars: number[]; bestRounds: (number | null)[] };
+  glade: GladeProgress;
   equipped: { back: string; cloth: string; music: string };
   charms: string[];
   stats: Stats;
@@ -69,12 +88,17 @@ export type SaveData = {
   match: SavedMatch | null;
 };
 
+function defaultGlade(): GladeProgress {
+  return { winOrder: [], stars: {}, bestRounds: {}, fogLifted: false, revealSeen: false, liftScenePending: false, lastMap: 'garden' };
+}
+
 export function defaultSave(): SaveData {
   const prefersReduced = typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
   return {
     schema: SCHEMA,
     settings: { music: 0.5, sfx: 0.8, botSpeed: 'normal', animSpeed: 'normal', reducedMotion: prefersReduced, hints: true, confirmDiscard: false },
     campaign: { won: [false, false, false, false, false], stars: [0, 0, 0, 0, 0], bestRounds: [null, null, null, null, null] },
+    glade: defaultGlade(),
     equipped: { back: 'rose-lattice', cloth: 'blush-gingham', music: 'garden-waltz' },
     charms: [],
     stats: {
@@ -92,7 +116,10 @@ export function defaultSave(): SaveData {
 }
 
 /** Each entry upgrades a save from version N to N + 1. Add to this list; never rewrite old entries. */
-const MIGRATIONS: Record<number, (old: Record<string, unknown>) => Record<string, unknown>> = {};
+const MIGRATIONS: Record<number, (old: Record<string, unknown>) => Record<string, unknown>> = {
+  // The Moonlit Glade. Everything already saved stays exactly as it was.
+  1: (old) => ({ ...old, glade: defaultGlade() }),
+};
 
 /** Brings any readable save up to the current shape, filling in anything missing from defaults. */
 export function migrate(raw: unknown): SaveData {
@@ -109,6 +136,8 @@ export function migrate(raw: unknown): SaveData {
   const merged = { ...base, ...data, schema: SCHEMA } as SaveData;
   merged.settings = { ...base.settings, ...(data.settings as object) };
   merged.campaign = { ...base.campaign, ...(data.campaign as object) };
+  merged.glade = { ...base.glade, ...(data.glade as object) };
+  if (!Array.isArray(merged.glade.winOrder)) throw new Error('Bad save');
   merged.equipped = { ...base.equipped, ...(data.equipped as object) };
   merged.tutorial = { ...base.tutorial, ...(data.tutorial as object) };
   merged.install = { ...base.install, ...(data.install as object) };
@@ -131,7 +160,18 @@ function read(key: string): SaveData | null {
   }
 }
 
+/** Keeps the save as it stood before its first upgrade to the Moonlit Glade schema. */
+function snapshotOldSave(): void {
+  try {
+    const text = localStorage.getItem(KEY);
+    if (!text || localStorage.getItem(SNAPSHOT_KEY)) return;
+    const version = (JSON.parse(text) as { schema?: unknown }).schema;
+    if (typeof version === 'number' && version < 2) localStorage.setItem(SNAPSHOT_KEY, text);
+  } catch { /* the upgrade still goes ahead; the rolling backup remains */ }
+}
+
 export function loadSave(): SaveData {
+  snapshotOldSave();
   return read(KEY) ?? read(BACKUP_KEY) ?? defaultSave();
 }
 

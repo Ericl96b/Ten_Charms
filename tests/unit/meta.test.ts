@@ -3,7 +3,7 @@ import { describe, test } from 'node:test';
 import { createGame } from '../../src/engine/game.ts';
 import type { GameEvent, RoundResult } from '../../src/engine/types.ts';
 import { applyEvents, finishMatch, isUnlocked, newTracker, saveSummary, standings, starsFor, totalStars } from '../../src/meta/progress.ts';
-import { defaultSave, exportCode, importCode, migrate, type SavedMatch } from '../../src/meta/save.ts';
+import { SCHEMA, defaultSave, exportCode, importCode, migrate, type SavedMatch } from '../../src/meta/save.ts';
 
 function match(lineup: SavedMatch['lineup'] = ['pip'], mode: SavedMatch['mode'] = { kind: 'campaign', stop: 0 }): SavedMatch {
   const { state } = createGame({ playerCount: lineup.length + 1, seed: 'aa'.repeat(16) });
@@ -151,7 +151,7 @@ describe('save data', () => {
 
   test('old or partial saves fill in from defaults, and garbage throws', () => {
     const m = migrate({ schema: 0, charms: ['rainbow'], settings: { sfx: 0.1 } });
-    assert.equal(m.schema, 1);
+    assert.equal(m.schema, SCHEMA);
     assert.deepEqual(m.charms, ['rainbow']);
     assert.equal(m.settings.sfx, 0.1);
     assert.equal(m.settings.music, 0.5);
