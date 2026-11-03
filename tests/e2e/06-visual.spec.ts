@@ -10,6 +10,10 @@ const DIR = `qa-screenshots/cr01/${process.env.VISUAL_DIR ?? 'current'}`;
 async function shot(page: Page, project: string, name: string, tags: string[] = []): Promise<void> {
   mkdirSync(DIR, { recursive: true });
   await page.evaluate(() => document.fonts.ready.then(() => undefined));
+  // Stop the loops first (steam, candle, piles). Chromium can otherwise keep a layer rendered from mid-loop.
+  await page.evaluate(() => {
+    for (const a of document.getAnimations()) if (a.effect?.getTiming().iterations === Infinity) a.cancel();
+  });
   await page.waitForTimeout(450);
   const file = `${DIR}/${name}-${project}`;
   await page.screenshot({ path: `${file}.png`, animations: 'disabled' });

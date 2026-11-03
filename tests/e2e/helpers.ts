@@ -60,6 +60,8 @@ export async function pointOn(page: Page, selector: string): Promise<{ x: number
     const found = await page.evaluate((sel) => {
       const el = document.querySelector(sel);
       if (!el) return null;
+      // A card in the fan may be about to move, even while it looks still, and a tap would land on its neighbor.
+      if (el.closest('.hc') && [el, el.parentElement].some((n) => n?.getAnimations().some((a) => a.effect?.getTiming().iterations !== Infinity))) return null;
       // Like a person, scroll a list to reach what's below the fold.
       if (el.closest('.page-scroll,.sheet-body,.map-scroll,.laid')) el.scrollIntoView({ block: 'nearest' });
       const r = el.getBoundingClientRect();
