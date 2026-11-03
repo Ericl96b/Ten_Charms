@@ -3,7 +3,7 @@ import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { dirname, join, relative, resolve } from 'node:path';
 import { describe, test } from 'node:test';
 import { fileURLToPath } from 'node:url';
-import { BOT_IDS, decide } from '../../src/bots/profiles.ts';
+import { ALL_BOT_IDS, decide } from '../../src/bots/profiles.ts';
 import { createGame, step } from '../../src/engine/game.ts';
 import { observe, type Observation } from '../../src/engine/observation.ts';
 import { createRng, shuffle } from '../../src/engine/rng.ts';
@@ -110,7 +110,7 @@ describe('fairness', () => {
       const after = observe(altered, seat);
       assert.deepEqual(after, before);
 
-      for (const id of BOT_IDS) {
+      for (const id of ALL_BOT_IDS) {
         const dice = () => 0.42;
         assert.deepEqual(decide(id, after, dice), decide(id, before, dice), `${id} reacted to hidden state`);
       }

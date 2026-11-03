@@ -3,7 +3,7 @@ import { decide, type BotId } from '../bots/profiles.ts';
 import { createGame, nextRound, step } from '../engine/game.ts';
 import { observe } from '../engine/observation.ts';
 import { createRng } from '../engine/rng.ts';
-import type { GameState, Variant } from '../engine/types.ts';
+import type { GameState, MatchRules, Variant } from '../engine/types.ts';
 
 export type MatchOutcome = {
   winners: number[];
@@ -17,8 +17,8 @@ export type MatchOutcome = {
 
 const MAX_ACTIONS_PER_ROUND = 6000;
 
-export function playMatch(lineup: readonly BotId[], seed: string, variant: Variant = 'standard'): MatchOutcome {
-  const { state } = createGame({ playerCount: lineup.length, variant, seed });
+export function playMatch(lineup: readonly BotId[], seed: string, variant: Variant = 'standard', rules?: MatchRules): MatchOutcome {
+  const { state } = createGame({ playerCount: lineup.length, variant, seed, rules });
   const botRng = createRng(seed, 0x626f74);
   const rand = () => botRng.next() / 0x100000000;
   const illegal: string[] = [];

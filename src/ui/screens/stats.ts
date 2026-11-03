@@ -4,6 +4,7 @@ import { BOT_IDS } from '../../bots/profiles.ts';
 import { app } from '../app.ts';
 import { portraitEl } from '../art.ts';
 import { h } from '../dom.ts';
+import type { StatBotId } from '../../meta/save.ts';
 import { bottomNav } from './journey.ts';
 
 export function statsScreen(): HTMLElement {
@@ -27,7 +28,7 @@ export function statsScreen(): HTMLElement {
         stat('Wilds used', s.wildsUsed),
       ),
       h('h2.sec', null, 'Against each opponent'),
-      h('div.bot-stats', null, BOT_IDS.map((id) => h('div.bot-stat', { 'data-bot': id },
+      h('div.bot-stats', null, (BOT_IDS as readonly StatBotId[]).map((id) => h('div.bot-stat', { 'data-bot': id },
         portraitEl(id, 'small'),
         h('b', null, BOTS[id].name),
         h('span', null, `${s.perBot[id].wins} wins · ${s.perBot[id].losses} losses`),

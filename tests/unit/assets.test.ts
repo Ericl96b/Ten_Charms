@@ -60,7 +60,7 @@ describe('dialogue', () => {
 
   // The spec is kept out of the public repo, so this runs only where private/ exists.
   test('uses the exact lines from the spec', { skip: !existsSync('private/SPEC.md') }, () => {
-    const spec = readFileSync('private/SPEC.md', 'utf8');
+    const spec = readFileSync('private/SPEC.md', 'utf8') + (existsSync('private/MAP2_SPEC.md') ? readFileSync('private/MAP2_SPEC.md', 'utf8') : '');
     for (const bot of Object.values(LINES)) for (const line of Object.values(bot)) assert.ok(spec.includes(`"${line}"`), line);
   });
 });

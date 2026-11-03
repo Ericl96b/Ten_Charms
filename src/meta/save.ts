@@ -34,6 +34,9 @@ export type Settings = {
   confirmDiscard: boolean;
 };
 
+/** Every bot with a line in Stats. Lunaria's wisps have none. */
+export type StatBotId = Exclude<BotId, 'puff' | 'haze'>;
+
 export type Stats = {
   played: number;
   won: number;
@@ -45,10 +48,10 @@ export type Stats = {
   skipsPlayed: number;
   timesSkipped: number;
   wildsUsed: number;
-  perBot: Record<BotId, { wins: number; losses: number }>;
+  perBot: Record<StatBotId, { wins: number; losses: number }>;
 };
 
-export type MatchMode = { kind: 'campaign'; stop: number } | { kind: 'free' };
+export type MatchMode = { kind: 'campaign'; stop: number } | { kind: 'glade'; stop: GladeStopId } | { kind: 'free' };
 
 /** What the Charms need to remember across a match. */
 export type MatchTracker = {
@@ -57,6 +60,8 @@ export type MatchTracker = {
   neverFailedTwice: boolean;
   wasFarBehind: boolean;
   laidThisTurn: boolean;
+  /** The human lost a turn to a Skip this match. Missing in matches saved before Map 2. */
+  wasSkipped?: boolean;
 };
 
 export type SavedMatch = {
@@ -106,6 +111,8 @@ export function defaultSave(): SaveData {
       perBot: {
         pip: { wins: 0, losses: 0 }, marigold: { wins: 0, losses: 0 }, briar: { wins: 0, losses: 0 },
         hoot: { wins: 0, losses: 0 }, nightshade: { wins: 0, losses: 0 },
+        lumi: { wins: 0, losses: 0 }, mallow: { wins: 0, losses: 0 }, velvet: { wins: 0, losses: 0 }, fennel: { wins: 0, losses: 0 },
+        sable: { wins: 0, losses: 0 }, mossback: { wins: 0, losses: 0 }, lunaria: { wins: 0, losses: 0 },
       },
     },
     tutorial: { done: false, seen: [] },

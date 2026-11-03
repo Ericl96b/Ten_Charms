@@ -1,6 +1,6 @@
 // Collection: card backs, tablecloths, music and Charms.
-import { CHARMS, UNLOCKABLES, requirementText, type Unlockable, type UnlockType } from '../../content.ts';
-import { isUnlocked } from '../../meta/progress.ts';
+import { CHARMS, GLADE_CHARMS, UNLOCKABLES, requirementText, type Unlockable, type UnlockType } from '../../content.ts';
+import { gladeOpen, isUnlocked } from '../../meta/progress.ts';
 import { app, persist } from '../app.ts';
 import { backEl, icon } from '../art.ts';
 import { playMusic } from '../audio/audio.ts';
@@ -23,6 +23,9 @@ const TABS: { id: UnlockType | 'charms'; label: string }[] = [
   { id: 'charms', label: 'Charms' },
 ];
 
+/** Rewards from the Moonlit Glade. They get their own heading, once the Glade is open. */
+const fromGlade = (u: Unlockable) => u.req.kind === 'glade' || u.req.kind === 'gladeStars';
+
 export function collectionScreen(): HTMLElement {
   let tab: UnlockType | 'charms' = 'back';
   const tabs = h('div.seg.tabs', { role: 'tablist' });
@@ -36,21 +39,33 @@ export function collectionScreen(): HTMLElement {
       tabs.append(h('button.seg-btn', { class: tab === t.id ? 'on' : '', role: 'tab', 'aria-selected': tab === t.id ? 'true' : 'false', 'data-testid': `tab-${t.id}`, onclick: () => { tab = t.id; draw(); } }, t.label));
     }
     clear(body);
+    const glade = gladeOpen(app.save);
     if (tab === 'charms') {
-      const grid = h('div.charm-grid', { 'data-testid': 'charm-grid' });
-      for (const c of CHARMS) {
-        const earned = app.save.charms.includes(c.id);
-        grid.append(h('div.charm-item', { class: earned ? 'earned' : '', 'data-charm': c.id, 'data-earned': earned ? '1' : '0' },
-          h('span.pendant', { html: icon(earned ? 'sparkle' : 'lock') }),
-          h('b', null, c.name),
-          h('small', null, c.text),
-        ));
-      }
-      body.append(grid);
+      const charmGrid = (list: typeof CHARMS, testid: string) => {
+        const grid = h('div.charm-grid', { 'data-testid': testid });
+        for (const c of list) {
+          const earned = app.save.charms.includes(c.id);
+          grid.append(h('div.charm-item', { class: earned ? 'earned' : '', 'data-charm': c.id, 'data-earned': earned ? '1' : '0' },
+            h('span.pendant', { html: icon(earned ? 'sparkle' : 'lock') }),
+            h('b', null, c.name),
+            h('small', null, c.text),
+          ));
+        }
+        return grid;
+      };
+      body.append(charmGrid(CHARMS.filter((c) => !GLADE_CHARMS.includes(c.id)), 'charm-grid'));
+      if (glade) body.append(h('h2.sec.glade-sec', null, 'Moonlit Glade'), charmGrid(CHARMS.filter((c) => GLADE_CHARMS.includes(c.id)), 'charm-grid-glade'));
       return;
     }
+    const items = UNLOCKABLES.filter((x) => x.type === tab);
+    body.append(itemGrid(items.filter((u) => !fromGlade(u))));
+    const gladeItems = items.filter(fromGlade);
+    if (glade && gladeItems.length > 0) body.append(h('h2.sec.glade-sec', null, 'Moonlit Glade'), itemGrid(gladeItems));
+  };
+
+  const itemGrid = (list: Unlockable[]): HTMLElement => {
     const grid = h('div.item-grid');
-    for (const u of UNLOCKABLES.filter((x) => x.type === tab)) {
+    for (const u of list) {
       const open = isUnlocked(app.save, u.id);
       const key = equippedKey(u.type);
       const equipped = app.save.equipped[key] === u.id;
@@ -67,7 +82,7 @@ export function collectionScreen(): HTMLElement {
       if (open) item.addEventListener('click', () => preview(u, draw));
       grid.append(item);
     }
-    body.append(grid);
+    return grid;
   };
   draw();
 

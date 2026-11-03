@@ -5,7 +5,9 @@ import { createGame, nextRound, step } from '../src/engine/game.ts';
 import { observe } from '../src/engine/observation.ts';
 import { PHASES } from '../src/engine/phases.ts';
 import { createRng } from '../src/engine/rng.ts';
-import type { GroupReq } from '../src/engine/types.ts';
+import type { BotId } from '../src/bots/profiles.ts';
+import type { GroupReq, MatchRules } from '../src/engine/types.ts';
+import { playMatch } from '../src/sim/driver.ts';
 
 const seedOf = (base: number, i: number) => (base * 1000003 + i).toString(16).padStart(32, '0');
 const MAX_ACTIONS_PER_ROUND = 6000;
@@ -17,11 +19,46 @@ export type Job =
    */
   | { kind: 'phase'; id: number; reqs: GroupReq[]; from: number; to: number; seedBase: number }
   /** Whole matches with four Professor Hoots, over a given Moonlit list, or the classic list if there is none. */
-  | { kind: 'matches'; list: GroupReq[][] | null; from: number; to: number; seedBase: number };
+  | { kind: 'matches'; list: GroupReq[][] | null; from: number; to: number; seedBase: number }
+  /** A Glade stop's exact lineup, with Professor Hoot in the human's seat. */
+  | { kind: 'stop'; lineup: BotId[]; rules: MatchRules; from: number; to: number; seedBase: number }
+  /** Bot-only Moonlit matches with the given lineups, checking only that every one finishes legally. */
+  | { kind: 'stress'; group: number; matches: { lineup: BotId[]; seed: string }[] };
 
 export type Result =
   | { kind: 'phase'; attempts: number; completions: number; stalled: number }
-  | { kind: 'matches'; rounds: number; matches: number; stalled: number };
+  | { kind: 'matches'; rounds: number; matches: number; stalled: number }
+  /** `winRounds` lists the length of each match the human's seat won. */
+  | { kind: 'stop'; matches: number; wins: number; winRounds: number[]; stalled: number; illegal: number }
+  | { kind: 'stress'; group: number; matches: number; crashes: number; illegal: number; stalled: number; rounds: number };
+
+function runStress(job: Extract<Job, { kind: 'stress' }>): Result {
+  let crashes = 0, illegal = 0, stalled = 0, rounds = 0;
+  for (const { lineup, seed } of job.matches) {
+    try {
+      const out = playMatch(lineup, seed, 'moonlit');
+      if (out.illegal.length > 0) { illegal++; console.error(out.illegal); }
+      if (out.stalled) { stalled++; console.error('stalled', lineup, seed); }
+      rounds += out.rounds;
+    } catch (err) {
+      crashes++;
+      console.error(err);
+    }
+  }
+  return { kind: 'stress', group: job.group, matches: job.matches.length, crashes, illegal, stalled, rounds };
+}
+
+function runStop(job: Extract<Job, { kind: 'stop' }>): Result {
+  let wins = 0, stalled = 0, illegal = 0;
+  const winRounds: number[] = [];
+  for (let i = job.from; i < job.to; i++) {
+    const out = playMatch(job.lineup, seedOf(job.seedBase, i), 'moonlit', job.rules);
+    if (out.illegal.length > 0) { illegal++; console.error(out.illegal); continue; }
+    if (out.stalled) { stalled++; continue; }
+    if (out.winners.includes(0)) { wins++; winRounds.push(out.rounds); }
+  }
+  return { kind: 'stop', matches: job.to - job.from, wins, winRounds, stalled, illegal };
+}
 
 function dice(seed: string): () => number {
   const rng = createRng(seed, 0x626f74);
@@ -72,5 +109,6 @@ function runMatches(job: Extract<Job, { kind: 'matches' }>): Result {
 }
 
 parentPort!.on('message', (job: Job) => {
-  parentPort!.postMessage(job.kind === 'phase' ? runPhase(job) : runMatches(job));
+  const result = job.kind === 'phase' ? runPhase(job) : job.kind === 'stop' ? runStop(job) : job.kind === 'stress' ? runStress(job) : runMatches(job);
+  parentPort!.postMessage(result);
 });

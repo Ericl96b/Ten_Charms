@@ -77,4 +77,38 @@ Mean rounds in a full match: four Professor Hoots, 2000 matches per list.
 
 Difference: +17.4%. Target: within ±20%. Met.
 
+## Stress test
+
+Bot-only matches with the Moonlit Phases and random lineups from all twelve Rose Garden and Glade bots (the wisps only ever play at Lunaria's table), 1000 per player count.
+
+| Players | Matches | Crashes | Illegal moves | Stalled | Avg rounds |
+|---|---|---|---|---|---|
+| 2 | 1000 | 0 | 0 | 0 | 11.9 |
+| 3 | 1000 | 0 | 0 | 0 | 14.2 |
+| 4 | 1000 | 0 | 0 | 0 | 16.4 |
+| 5 | 1000 | 0 | 0 | 0 | 18.8 |
+| 6 | 1000 | 0 | 0 | 0 | 21.1 |
+
+0 problems in total.
+
+## The Glade's stops
+
+2000 matches per stop with its exact lineup and seating, Professor Hoot in the human's seat, the Moonlit Phases, and the fog on, as on a first visit. The boss match also has the Thorned Crown.
+
+| Stop | Lineup | Human-seat win rate | Target | Met | 2 stars: at most | 3 stars: at most | Stalled | Illegal moves |
+|---|---|---|---|---|---|---|---|---|
+| G1 Firefly Clearing | Lumi, Briar | 35.1% | 40–55% | No | 14 rounds | 13 rounds | 0 | 0 |
+| A1 Lantern Lane | Mallow, Lumi, Marigold | 33.2% | 35–50% | No | 16 rounds | 15 rounds | 0 | 0 |
+| A2 Lantern Lane | Velvet, Mallow, Briar | 28.0% | 30–45% | No | 17 rounds | 16 rounds | 0 | 0 |
+| B1 Lily Pond | Fennel, Lumi, Marigold | 32.5% | 35–50% | No | 17 rounds | 16 rounds | 0 | 0 |
+| B2 Lily Pond | Sable, Fennel, Briar | 26.9% | 30–45% | No | 17 rounds | 16 rounds | 0 | 0 |
+| G2 The Old Stones | Old Mossback, Velvet, Sable | 23.4% | 25–40% | No | 17 rounds | 16 rounds | 0 | 0 |
+| G3 The Weaver's Bower | Puff, Lunaria, Haze | 13.3% | 15–30% | No | 14 rounds | 13 rounds | 0 | 0 |
+
+The two paths at the same depth should be within 5 points of each other. A1 and B1: 0.8 points apart (met). A2 and B2: 1.2 points apart (met).
+
+Star thresholds use only the matches the human seat won: 2 stars at the median length, 3 stars at the 25th percentile, each rounded down.
+
+Thresholds in `src/content.ts`: G1 match, A1 match, A2 match, B1 match, B2 match, G2 match, G3 match.
+
 The list in `src/engine/phases.ts` matches this order.

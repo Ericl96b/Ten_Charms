@@ -134,7 +134,7 @@ test('all 15 stars bring Starlight and Bouquet', async ({ page }) => {
   await expect(page.locator('[data-testid="item-starlight"]')).toHaveAttribute('data-unlocked', '1');
   await tap(page, '[data-testid="tab-charms"]');
   await expect(page.locator('[data-charm="bouquet"]')).toHaveAttribute('data-earned', '1');
-  await expect(page.locator('.charm-item')).toHaveCount(10);
+  await expect(page.locator('[data-testid="charm-grid"] .charm-item')).toHaveCount(10);
 });
 
 test('a loss shows the gentle screen and opens nothing; forfeit counts as a loss', async ({ page }, info) => {

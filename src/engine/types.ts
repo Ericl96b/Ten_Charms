@@ -39,6 +39,14 @@ export type Stage = 'choose' | 'draw' | 'play' | 'roundOver' | 'matchOver';
 
 export type PlayerState = {
   hand: Card[];
+  /** The hand as dealt this round. Its owner saw it, so it is the owner's to remember. */
+  dealt?: Card[];
+  /** Turns this player has started this round. A skipped turn isn't one. */
+  turns?: number;
+  /** `turns` when this player laid down this round. */
+  laidTurn?: number;
+  /** 1 for the first player to lay down this round, 2 for the next, and so on. */
+  laidOrder?: number;
   /** The phase being attempted this round, or null while choosing. */
   phase: number | null;
   completed: number[];
@@ -60,8 +68,21 @@ export type RoundResult = {
   history: HistoryEntry[];
 };
 
+/** Table rules beyond the classic game. A match without them plays exactly as before. */
+export type MatchRules = {
+  /** Moonlit Fog: no one sees anyone else's card count. */
+  fog?: boolean;
+  /** The Thorned Crown: only this seat may add to its own laid-down groups. */
+  crownSeat?: number;
+  /** The crown wearer's name, for the reason given when a hit is refused. */
+  crownName?: string;
+};
+
 export type GameState = {
   version: 1;
+  rules?: MatchRules;
+  /** How many players have laid down this round. */
+  layCount?: number;
   variant: Variant;
   playerCount: number;
   matchSeed: string;
