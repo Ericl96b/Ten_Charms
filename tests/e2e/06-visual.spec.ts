@@ -303,3 +303,115 @@ test('capture: loss, boss table and tutorial', async ({ page }, info) => {
   await waitIdle(page);
   await shot(page, p, 'boss-table', ['table']);
 });
+
+/** Like shot(), but the fog's clouds are held still at their starting places instead of being cancelled. */
+async function gladeShot(page: Page, project: string, name: string): Promise<void> {
+  await page.evaluate(() => (window as any).__TC__.freezeFog());
+  await page.evaluate(() => {
+    for (const a of document.getAnimations()) {
+      const target = (a.effect as KeyframeEffect | null)?.target as Element | null;
+      if (target?.closest?.('.fog')) continue;
+      if (a.effect?.getTiming().iterations === Infinity) a.cancel();
+    }
+    // Where the map scrolls (the smallest phone), a fixed place, set after the loops stop since they can change its size.
+    const m = document.querySelector('.map-scroll');
+    if (m) m.scrollTop = m.scrollHeight;
+  });
+  await shot(page, project, name, ['glade']);
+  mkdirSync('qa-screenshots/map2', { recursive: true });
+  await page.screenshot({ path: `qa-screenshots/map2/${name}-${project}.png`, animations: 'disabled' });
+}
+
+const gladeAt = (page: Page, winOrder: string[], extra: Record<string, unknown> = {}) => page.evaluate(([order, more]) => {
+  const t = (window as any).__TC__;
+  const save = t.getSave();
+  save.match = null;
+  save.tutorial.done = true;
+  save.backupPrompted = true;
+  save.campaign.won = [true, true, true, true, true];
+  save.campaign.stars = [3, 3, 3, 3, 3];
+  save.glade = { ...save.glade, winOrder: order, stars: Object.fromEntries((order as string[]).map((id, i) => [id, [3, 2, 1, 2, 3, 1, 2][i]])), revealSeen: true, lastMap: 'glade', fogLifted: false, liftScenePending: false, ...(more as object) };
+  t.loadSave(save);
+}, [winOrder, extra] as const);
+
+/** The boss table's worst case from the mock-up: round 11, all four down, a 6-card Odds group beside a 4-card Evens group. */
+const BOSS_ROWS = `
+  const n = (id, num, suit) => ({ card: { id, kind: 'num', num, suit } });
+  const w = (id) => ({ card: { id, kind: 'wild' } });
+  game.round = 11;
+  for (const s of [0, 1, 2, 3]) { game.players[s].laidDown = true; game.players[s].phase = 12; game.players[s].completed = [11]; }
+  game.groups = [
+    { id: 731, owner: 0, type: 'odds', cards: [n(841, 1, 'rose'), n(842, 3, 'moss'), n(843, 5, 'honey'), n(844, 7, 'rose')] },
+    { id: 732, owner: 0, type: 'evens', cards: [n(845, 2, 'rose'), n(846, 4, 'moss'), n(847, 6, 'honey'), w(848)] },
+    { id: 733, owner: 1, type: 'odds', cards: [n(851, 7, 'moss'), n(852, 7, 'moonstone'), w(853), n(854, 9, 'rose')] },
+    { id: 734, owner: 1, type: 'evens', cards: [n(855, 2, 'rose'), n(856, 2, 'honey'), n(857, 2, 'moonstone'), n(858, 10, 'moss')] },
+    { id: 735, owner: 2, type: 'odds', cards: [n(861, 1, 'honey'), n(862, 3, 'rose'), n(863, 5, 'moss'), w(864), n(865, 9, 'moonstone'), n(866, 11, 'moss')] },
+    { id: 736, owner: 2, type: 'evens', cards: [n(867, 2, 'honey'), n(868, 4, 'rose'), n(869, 8, 'moss'), n(870, 12, 'moonstone')] },
+    { id: 737, owner: 3, type: 'odds', cards: [n(871, 1, 'honey'), n(872, 3, 'moss'), n(873, 5, 'rose'), w(874), n(875, 9, 'moonstone'), n(876, 11, 'moss')] },
+    { id: 738, owner: 3, type: 'evens', cards: [n(877, 2, 'rose'), n(878, 4, 'moss'), n(879, 8, 'honey'), n(880, 12, 'moonstone')] },
+  ];
+`;
+
+test('capture: the Moonlit Glade', async ({ page }, info) => {
+  test.setTimeout(170_000);
+  const p = info.project.name;
+  await steady(page);
+  await openApp(page, { tutorial: { done: true } });
+
+  // The maps, as in the mock-ups.
+  await gladeAt(page, ['g1', 'b1', 'a1']);
+  await page.waitForTimeout(600);
+  await gladeShot(page, p, 'glade-map-fogged');
+  await gladeAt(page, ['g1', 'a1', 'a2', 'b1', 'g2', 'g3'], { fogLifted: true });
+  await page.waitForTimeout(600);
+  await gladeShot(page, p, 'glade-map-lifted');
+  await gladeAt(page, []);
+  await page.waitForTimeout(600);
+  await gladeShot(page, p, 'glade-map-start');
+  await gladeAt(page, ['g1', 'a1', 'a2', 'g2']);
+  await tap(page, '[data-testid="glade-g3"] .stop-btn');
+  await page.waitForTimeout(500);
+  await gladeShot(page, p, 'glade-boss-intro-sheet');
+  await closeSheet(page);
+
+  // A normal stop, fogged, on Blush Gingham.
+  await gladeAt(page, ['g1', 'b1', 'a1']);
+  await startMatch(page, { lineup: ['velvet', 'mallow', 'briar'], seed: '61'.repeat(16), botSeed: '62'.repeat(16), variant: 'moonlit', mode: { kind: 'glade', stop: 'a2' }, cloth: 'blush-gingham' });
+  await expect(page.locator('[data-testid="fog-wisp"]').first()).toBeAttached();
+  await gladeShot(page, p, 'glade-table-stop-fogged');
+
+  // The boss, fogged, at its worst case.
+  await toMap(page);
+  await startMatch(page, { lineup: ['puff', 'lunaria', 'haze'], seed: '63'.repeat(16), botSeed: '64'.repeat(16), variant: 'moonlit', mode: { kind: 'glade', stop: 'g3' }, cloth: 'mistveil' });
+  await page.waitForSelector('[data-testid="boss-intro"]', { state: 'detached', timeout: 20_000 });
+  await waitIdle(page);
+  await patch(page, BOSS_ROWS);
+  await expect(page.locator('[data-testid="fog-wisp"]').first()).toBeAttached();
+  await gladeShot(page, p, 'glade-table-boss-fogged');
+
+  // The same, after the fog has lifted.
+  await toMap(page);
+  await gladeAt(page, ['g1', 'a1', 'a2', 'g2', 'g3'], { fogLifted: true });
+  await startMatch(page, { lineup: ['puff', 'lunaria', 'haze'], seed: '63'.repeat(16), botSeed: '64'.repeat(16), variant: 'moonlit', mode: { kind: 'glade', stop: 'g3' }, cloth: 'mistveil' });
+  await page.waitForSelector('[data-testid="boss-intro"]', { state: 'detached', timeout: 20_000 });
+  await waitIdle(page);
+  await patch(page, BOSS_ROWS);
+  await gladeShot(page, p, 'glade-table-boss-lifted');
+
+  // Sable's stop with Bunny Hop and Trinket Quilt equipped.
+  await toMap(page);
+  await gladeAt(page, ['g1', 'b1'], { fogLifted: true });
+  await startMatch(page, { lineup: ['sable', 'fennel', 'briar'], seed: '67'.repeat(16), botSeed: '68'.repeat(16), variant: 'moonlit', mode: { kind: 'glade', stop: 'b2' }, back: 'bunny-hop', cloth: 'trinket-quilt' });
+  await expect(page.locator('[data-testid="round-end"]')).toHaveCount(0);
+  await gladeShot(page, p, 'glade-table-new-rewards');
+
+  // The Glade's rewards in the Collection.
+  await toMap(page);
+  await gladeAt(page, ['g1', 'a1', 'a2', 'b1', 'b2', 'g2', 'g3'], { fogLifted: true });
+  await tap(page, '[data-testid="nav-collection"]');
+  await page.evaluate(() => document.querySelector('.glade-sec')?.scrollIntoView({ block: 'start' }));
+  await gladeShot(page, p, 'glade-collection-backs');
+  await tap(page, '[data-testid="tab-cloth"]');
+  await page.evaluate(() => document.querySelector('.glade-sec')?.scrollIntoView({ block: 'start' }));
+  await gladeShot(page, p, 'glade-collection-cloths');
+});

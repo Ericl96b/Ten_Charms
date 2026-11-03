@@ -163,17 +163,20 @@ export function gladeView(onStop: (id: GladeStopId) => void, onLocked: (id: Glad
       startFireflies(inner, target, fireflies);
     }
     const cta = target.querySelector<HTMLElement>('.stop-cta');
-    if (cta) {
-      const place = () => placeCta(scroller, target, cta, true);
-      place();
-      void document.fonts.ready.then(() => { if (cta.isConnected) place(); });
-    }
-    if (scroller.scrollHeight > scroller.clientHeight) {
+    // On a map that scrolls, bring the stop and its button into view, again once the fonts settle the button's size.
+    const scrollTo = () => {
+      if (scroller.scrollHeight <= scroller.clientHeight) return;
       const r = target.getBoundingClientRect();
       const origin = scroller.getBoundingClientRect().top - scroller.scrollTop;
       const middle = cta ? centerOfStop(scroller, target) : r.top + r.height / 2 - origin;
       scroller.scrollTop = Math.max(0, middle - scroller.clientHeight / 2);
+    };
+    if (cta) {
+      const place = () => placeCta(scroller, target, cta, true);
+      place();
+      void document.fonts.ready.then(() => { if (cta.isConnected) { place(); scrollTo(); } });
     }
+    scrollTo();
   };
 
   const leave = () => {

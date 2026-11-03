@@ -107,6 +107,8 @@ Bot-only matches with the Moonlit Phases and random lineups from all twelve Rose
 
 The two paths at the same depth should be within 5 points of each other. A1 and B1: 0.8 points apart (met). A2 and B2: 1.2 points apart (met).
 
+Missed targets (G1, A1, A2, B1, B2, G2, G3) are reported rather than forced, as the spec directs. Professor Hoot stands in for the player here, and in 3- and 4-player Moonlit matches it is only a little stronger than the field: an even share at a 3-player table is 33%, and at a 4-player table 25%. Several of the lineups include Map 1 bots, which may not be tuned, and a tuning pass on the Glade bots' own weights moved nothing beyond noise, so the profiles stay as the spec describes them.
+
 Star thresholds use only the matches the human seat won: 2 stars at the median length, 3 stars at the 25th percentile, each rounded down.
 
 Thresholds in `src/content.ts`: G1 match, A1 match, A2 match, B1 match, B2 match, G2 match, G3 match.

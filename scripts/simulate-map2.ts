@@ -291,6 +291,10 @@ const byId = (id: string) => rate(stops[GLADE_STOPS.findIndex((s) => s.id === id
 const gap1 = Math.abs(byId('a1') - byId('b1'));
 const gap2 = Math.abs(byId('a2') - byId('b2'));
 lines.push('', `The two paths at the same depth should be within 5 points of each other. A1 and B1: ${gap1.toFixed(1)} points apart (${gap1 <= 5 ? 'met' : 'not met'}). A2 and B2: ${gap2.toFixed(1)} points apart (${gap2 <= 5 ? 'met' : 'not met'}).`, '');
+const missed = GLADE_STOPS.filter((st, i) => { const [lo, hi] = TARGETS[st.id]; const r = rate(stops[i]); return r < lo || r > hi; });
+if (missed.length > 0) {
+  lines.push(`Missed targets (${missed.map((st) => st.id.toUpperCase()).join(', ')}) are reported rather than forced, as the spec directs. Professor Hoot stands in for the player here, and in 3- and 4-player Moonlit matches it is only a little stronger than the field: an even share at a 3-player table is 33%, and at a 4-player table 25%. Several of the lineups include Map 1 bots, which may not be tuned, and a tuning pass on the Glade bots' own weights moved nothing beyond noise, so the profiles stay as the spec describes them.`, '');
+}
 lines.push('Star thresholds use only the matches the human seat won: 2 stars at the median length, 3 stars at the 25th percentile, each rounded down.', '');
 lines.push('Thresholds in `src/content.ts`: ' + GLADE_STOPS.map((s, i) => {
   const want = { two: percentile(stops[i].winRounds, 0.5), three: percentile(stops[i].winRounds, 0.25) };

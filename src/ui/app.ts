@@ -45,6 +45,8 @@ export function show(next: HTMLElement, music: MusicId | null, mode: 'fade' | 'n
   if (mode === 'fade' && old) {
     void animate(next, [{ opacity: 0, transform: 'translateY(8px)' }, { opacity: 1, transform: 'none' }], { ms: 240, ease: SOFT });
     void animate(old, [{ opacity: 1 }, { opacity: 0 }], { ms: 200, ease: 'linear' }).then(() => old.remove());
+    // A busy phone can hold a fade back; the old screen still goes, so two screens never stay stacked.
+    setTimeout(() => old.remove(), 1000);
   } else {
     old?.remove();
   }

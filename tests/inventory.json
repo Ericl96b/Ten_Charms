@@ -246,6 +246,12 @@
   "skipped": false
  },
  {
+  "file": "06-visual.spec.ts",
+  "title": "capture: the Moonlit Glade",
+  "project": "android",
+  "skipped": false
+ },
+ {
   "file": "07-settings-icon.spec.ts",
   "title": "the settings button shows a gear, in the same style and size as the other icons",
   "project": "android",
@@ -486,6 +492,41 @@
   "project": "android",
   "skipped": false,
   "timing": "fast"
+ },
+ {
+  "file": "12-glade-polish.spec.ts",
+  "title": "12. performance: no main-thread task over 50 ms in Lunaria's intro or the fog-lift scene",
+  "project": "android",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "12-glade-polish.spec.ts",
+  "title": "12. performance: no main-thread task over 50 ms with the clouds drifting for 10 s",
+  "project": "android",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "13-glade-recordings.spec.ts",
+  "title": "recording: Lunaria's entrance",
+  "project": "android",
+  "skipped": true,
+  "timing": "real"
+ },
+ {
+  "file": "13-glade-recordings.spec.ts",
+  "title": "recording: the fog lifts",
+  "project": "android",
+  "skipped": true,
+  "timing": "real"
+ },
+ {
+  "file": "13-glade-recordings.spec.ts",
+  "title": "recording: the path appears beyond the garden",
+  "project": "android",
+  "skipped": true,
+  "timing": "real"
  },
  {
   "file": "zz-coverage.spec.ts",
@@ -736,6 +777,12 @@
  {
   "file": "06-visual.spec.ts",
   "title": "capture: table states",
+  "project": "max",
+  "skipped": false
+ },
+ {
+  "file": "06-visual.spec.ts",
+  "title": "capture: the Moonlit Glade",
   "project": "max",
   "skipped": false
  },
@@ -988,6 +1035,41 @@
   "timing": "fast"
  },
  {
+  "file": "12-glade-polish.spec.ts",
+  "title": "12. performance: no main-thread task over 50 ms in Lunaria's intro or the fog-lift scene",
+  "project": "max",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "12-glade-polish.spec.ts",
+  "title": "12. performance: no main-thread task over 50 ms with the clouds drifting for 10 s",
+  "project": "max",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "13-glade-recordings.spec.ts",
+  "title": "recording: Lunaria's entrance",
+  "project": "max",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "13-glade-recordings.spec.ts",
+  "title": "recording: the fog lifts",
+  "project": "max",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "13-glade-recordings.spec.ts",
+  "title": "recording: the path appears beyond the garden",
+  "project": "max",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
   "file": "zz-coverage.spec.ts",
   "title": "11. juice coverage: every animation and sound event fired during the suite",
   "project": "max",
@@ -1240,6 +1322,12 @@
   "skipped": false
  },
  {
+  "file": "06-visual.spec.ts",
+  "title": "capture: the Moonlit Glade",
+  "project": "ref",
+  "skipped": false
+ },
+ {
   "file": "07-settings-icon.spec.ts",
   "title": "the settings button shows a gear, in the same style and size as the other icons",
   "project": "ref",
@@ -1480,6 +1568,41 @@
   "project": "ref",
   "skipped": false,
   "timing": "fast"
+ },
+ {
+  "file": "12-glade-polish.spec.ts",
+  "title": "12. performance: no main-thread task over 50 ms in Lunaria's intro or the fog-lift scene",
+  "project": "ref",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "12-glade-polish.spec.ts",
+  "title": "12. performance: no main-thread task over 50 ms with the clouds drifting for 10 s",
+  "project": "ref",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "13-glade-recordings.spec.ts",
+  "title": "recording: Lunaria's entrance",
+  "project": "ref",
+  "skipped": true,
+  "timing": "real"
+ },
+ {
+  "file": "13-glade-recordings.spec.ts",
+  "title": "recording: the fog lifts",
+  "project": "ref",
+  "skipped": true,
+  "timing": "real"
+ },
+ {
+  "file": "13-glade-recordings.spec.ts",
+  "title": "recording: the path appears beyond the garden",
+  "project": "ref",
+  "skipped": true,
+  "timing": "real"
  },
  {
   "file": "zz-coverage.spec.ts",
@@ -1734,6 +1857,12 @@
   "skipped": false
  },
  {
+  "file": "06-visual.spec.ts",
+  "title": "capture: the Moonlit Glade",
+  "project": "se",
+  "skipped": false
+ },
+ {
   "file": "07-settings-icon.spec.ts",
   "title": "the settings button shows a gear, in the same style and size as the other icons",
   "project": "se",
@@ -1974,6 +2103,41 @@
   "project": "se",
   "skipped": false,
   "timing": "fast"
+ },
+ {
+  "file": "12-glade-polish.spec.ts",
+  "title": "12. performance: no main-thread task over 50 ms in Lunaria's intro or the fog-lift scene",
+  "project": "se",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "12-glade-polish.spec.ts",
+  "title": "12. performance: no main-thread task over 50 ms with the clouds drifting for 10 s",
+  "project": "se",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "13-glade-recordings.spec.ts",
+  "title": "recording: Lunaria's entrance",
+  "project": "se",
+  "skipped": true,
+  "timing": "real"
+ },
+ {
+  "file": "13-glade-recordings.spec.ts",
+  "title": "recording: the fog lifts",
+  "project": "se",
+  "skipped": true,
+  "timing": "real"
+ },
+ {
+  "file": "13-glade-recordings.spec.ts",
+  "title": "recording: the path appears beyond the garden",
+  "project": "se",
+  "skipped": true,
+  "timing": "real"
  },
  {
   "file": "zz-coverage.spec.ts",

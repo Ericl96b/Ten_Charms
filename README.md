@@ -22,6 +22,7 @@ npm run preview
 | `npm run typecheck` | TypeScript check |
 | `npm run test:unit` | Rules, bots, fairness, saves, assets |
 | `npm run sim` | Headless simulation on all cores; rewrites `SIMULATION.md` (about a minute, or instant if nothing that affects it changed) |
+| `node scripts/simulate-map2.ts` | The Moonlit Glade's simulation: phase difficulty, match length, a stress test and every stop's win rate and star thresholds. Rewrites `SIMULATION_MAP2.md` (about 25 minutes, cached like `npm run sim`) |
 | `npm run gate` | **Everything, required before committing** (about 20 minutes). `TESTING.md` has the targeted commands for iterating |
 | `npm run test:e2e` | Browser suite one test at a time, about 40 minutes (WebKit at 375×667, 390×844, 440×956; Chromium with an Android user agent at 412×892). Run both builds first |
 | `node scripts/compare-shots.mjs [tags]` | Compares the screenshots from the last browser run with a saved baseline in `qa-screenshots/cr01/baseline/`. Tags name what may differ: `settings-icon`, `map-current`, `table` |
@@ -31,11 +32,11 @@ npm run preview
 | Path | Contents |
 |---|---|
 | `src/engine/` | Rules engine: deterministic, no presentation. `observation.ts` is all a bot may see |
-| `src/bots/` | The five profiles and hand evaluation. A test proves this code cannot reach hidden state |
+| `src/bots/` | The bot profiles (the Rose Garden's five, the Moonlit Glade's seven, and Lunaria's two wisps) and hand evaluation. A test proves this code cannot reach hidden state, or any card count under the fog |
 | `src/sim/` | Headless match driver |
 | `src/meta/` | Saves, backup codes, progression, Charms, stats |
 | `src/content.ts` | Title, roster, dialogue, stops, unlocks, Charms |
-| `src/ui/` | Table, set pieces, screens, audio, styles |
+| `src/ui/` | Table, set pieces, screens, audio, styles. `screens/glade.ts` is the Moonlit Glade's map and `fx/fog.ts` its drifting clouds |
 | `src/dev/` | Test hooks, compiled out of production builds |
 | `assets/portraits/`, `assets/audio/` | Drop-in art and sound |
 

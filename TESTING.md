@@ -42,6 +42,12 @@ Finally, it compares images with `scripts/compare-shots.mjs` and checks the inve
 
 **Simulation.** Lineups and seeds are drawn in one fixed order and only sums come back from the workers, so results don't depend on the worker count. The cache key hashes every file the simulation imports, plus its sample sizes and the Node version. Results are in `test-results/sim-cache/`.
 
+## Map 2 tests
+
+The Moonlit Glade's browser tests are in `11-glade.spec.ts`, `12-glade-polish.spec.ts` (performance) and `13-glade-recordings.spec.ts`, and its screenshots are in the `capture: the Moonlit Glade` test in `06-visual.spec.ts`. Fogged screens hold their clouds still for screenshots with the `freezeFog` test hook, which is compiled out of production builds like the others.
+
+Each Map 2 test is classed `real` or `fast` in `tests/inventory.json`: `fast` if it speeds up waits with `setTestScale`, `real` otherwise. Performance checks, recordings and image captures are always `real`. `FAST_CLOCK` in `tests/e2e/stages.ts` lists the fast ones, and the inventory check fails if a Map 2 test has no class.
+
 ## Coverage guarantee
 
 `tests/inventory.json` lists every browser test: its file, title, project, and whether it's skipped. `npm run test:inventory` fails if any listed test is gone. Given run reports, `scripts/test-inventory.ts check` also fails if a listed test didn't run exactly once, was newly skipped, failed, or needed a retry. New tests are allowed. The gate runs this with its reports, so a test dropped by a stage filter fails the gate.
