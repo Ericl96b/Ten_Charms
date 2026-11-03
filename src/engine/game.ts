@@ -216,9 +216,10 @@ export function step(state: GameState, action: Action): StepResult {
       const check = checkHit(group, card);
       if (!check.ok) return fail(check.reason);
       let end = action.end;
-      if (group.type === 'run') {
+      if (group.type === 'run' || group.type === 'colorRun') {
+        const name = group.type === 'run' ? 'Runs' : 'Color runs';
         if (end === undefined) end = check.ends[0];
-        if (!check.ends.includes(end)) return fail(end === 'high' ? "Runs can't go past 12." : "Runs can't go below 1.");
+        if (!check.ends.includes(end)) return fail(end === 'high' ? `${name} can't go past 12.` : `${name} can't go below 1.`);
       }
       placeHit(group, card, end);
       player.hand = player.hand.filter((c) => c.id !== card.id);

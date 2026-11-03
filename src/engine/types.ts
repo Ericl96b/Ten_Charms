@@ -6,10 +6,11 @@ export type WildCard = { id: number; kind: 'wild' };
 export type SkipCard = { id: number; kind: 'skip' };
 export type Card = NumberCard | WildCard | SkipCard;
 
-export type GroupType = 'set' | 'run' | 'color';
-export type GroupReq = { type: GroupType; size: number };
+export type GroupType = 'set' | 'run' | 'color' | 'colorRun' | 'evens' | 'odds';
+/** `pair` only changes the label: a Pair follows the Set rules. */
+export type GroupReq = { type: GroupType; size: number; pair?: boolean };
 
-export type Variant = 'standard' | 'sprint' | 'choose';
+export type Variant = 'standard' | 'sprint' | 'choose' | 'moonlit';
 
 /** A placed card: what it was, and the value its position fixes it to. */
 export type Placed = { card: Card; num?: number; suit?: Suit };
@@ -18,11 +19,11 @@ export type LaidGroup = {
   id: number;
   owner: number;
   type: GroupType;
-  /** Run cards are kept low to high. */
+  /** Run and color run cards are kept low to high. */
   cards: Placed[];
-  /** The number of a set, the first number of a run. */
+  /** The number of a set, the first number of a run or color run. */
   num?: number;
-  /** The suit of a color group. */
+  /** The suit of a color group or color run. */
   suit?: Suit;
 };
 

@@ -1,5 +1,5 @@
 // How to Play: the rules in plain, friendly language.
-import { PHASES, phaseText } from '../../engine/phases.ts';
+import { phaseSequence, phaseText } from '../../engine/phases.ts';
 import { app, persist } from '../app.ts';
 import { cardEl, icon } from '../art.ts';
 import { h } from '../dom.ts';
@@ -30,7 +30,7 @@ export function howToPlay(onClose: () => void): void {
     ),
     h('div.page-scroll', null,
       sec('The goal', 'Complete all ten phases, in order, before anyone else. When someone finishes the last one, the player among those finishers with the lowest score wins the match.'),
-      sec('The phases', h('ol.phase-list', null, Object.keys(PHASES).map((p) => h('li', null, h('b', null, `Phase ${p}`), h('span', null, phaseText(Number(p))))))),
+      sec('The phases', h('ol.phase-list', null, phaseSequence('standard').map((p) => h('li', null, h('b', null, `Phase ${p}`), h('span', null, phaseText(p)))))),
       sec('Sets, Runs and Color',
         h('p', null, h('b', null, 'A Set'), ' is cards of the same number. The suit doesn\'t matter.'),
         sample([c(0, 7, 'rose'), c(1, 7, 'moss'), c(2, 7, 'honey')]),

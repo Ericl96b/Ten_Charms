@@ -43,7 +43,7 @@ function allHits(obs: Observation, ownOnly = false): Hit[] {
     if (ownOnly && g.owner !== obs.seat) continue;
     for (const c of obs.hand) {
       const check = checkHit(g, c);
-      if (check.ok) out.push({ card: c, group: g, end: g.type === 'run' ? check.ends[0] : undefined });
+      if (check.ok) out.push({ card: c, group: g, end: g.type === 'run' || g.type === 'colorRun' ? check.ends[0] : undefined });
     }
   }
   return out;
@@ -129,6 +129,12 @@ function leftoverAfterLay(ctx: Ctx, plan: GroupPlan[]): number {
       const start = p.runStart ?? 1;
       return { id: -1 - i, owner: ctx.obs.seat, type: 'run', num: start, cards: Array.from({ length: req.size }, (_, k) => ({ card: cards[0], num: start + k })) };
     }
+    if (req.type === 'colorRun') {
+      const start = p.runStart ?? 1;
+      const suit = natural?.kind === 'num' ? natural.suit : 'rose';
+      return { id: -1 - i, owner: ctx.obs.seat, type: 'colorRun', num: start, suit, cards: Array.from({ length: req.size }, (_, k) => ({ card: cards[0], num: start + k, suit })) };
+    }
+    if (req.type === 'evens' || req.type === 'odds') return { id: -1 - i, owner: ctx.obs.seat, type: req.type, cards: [] };
     if (req.type === 'set') return { id: -1 - i, owner: ctx.obs.seat, type: 'set', num: natural?.kind === 'num' ? natural.num : 0, cards: [] };
     return { id: -1 - i, owner: ctx.obs.seat, type: 'color', suit: natural?.kind === 'num' ? natural.suit : 'rose', cards: [] };
   });
@@ -194,6 +200,12 @@ function appeal(obs: Observation, opp: PublicPlayer, card: Card, u: Unseen): num
       for (const c of reads.picked) if (c.kind === 'num' && Math.abs(c.num - card.num) <= 2 && c.num !== card.num) score += 2;
       for (const c of reads.picked) if (c.kind === 'num' && c.num === card.num) score -= 1;
       for (const c of reads.passed) if (c.kind === 'num' && c.num === card.num) score -= 0.8;
+    } else if (req.type === 'colorRun') {
+      score += 0.8;
+      for (const c of reads.picked) if (c.kind === 'num' && c.suit === card.suit && Math.abs(c.num - card.num) <= 2 && c.num !== card.num) score += 4;
+      for (const c of reads.passed) if (c.kind === 'num' && c.suit === card.suit) score -= 0.4;
+    } else if (req.type === 'evens' || req.type === 'odds') {
+      score += (card.num % 2 === 0) === (req.type === 'evens') ? 2 : 0;
     } else {
       score += 0.8;
       for (const c of reads.picked) if (c.kind === 'num' && c.suit === card.suit) score += 3;
@@ -381,7 +393,7 @@ function futureHits(card: Card, groups: readonly LaidGroup[]): number {
   if (card.kind !== 'num') return 0;
   let n = 0;
   for (const g of groups) {
-    if (g.type !== 'run') continue;
+    if (g.type !== 'run' && !(g.type === 'colorRun' && g.suit === card.suit)) continue;
     const lo = g.cards[0].num!;
     const hi = g.cards[g.cards.length - 1].num!;
     if (card.num === hi + 2 || card.num === lo - 2) n += 1;
