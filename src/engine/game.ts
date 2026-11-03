@@ -7,6 +7,8 @@ import type { Action, Card, GameEvent, GameState, LaidGroup, PlayerState, RoundR
 export type NewGameOptions = { playerCount: number; variant?: Variant; seed?: string };
 
 const HAND_SIZE = 10;
+/** After this many reshuffles in a row with no lay-down or hit, no one can go out, so the round ends. */
+const STALEMATE_RESHUFFLES = 3;
 
 export function nextUncompleted(variant: Variant, completed: readonly number[]): number | null {
   for (const p of phaseSequence(variant)) if (!completed.includes(p)) return p;
@@ -52,6 +54,7 @@ function startRound(state: GameState, events: GameEvent[]): void {
   if (state.round > 1) state.dealer = (state.dealer + 1) % state.playerCount;
   state.roundSeed = deriveRoundSeed(state.matchSeed, state.round);
   state.reshuffles = 0;
+  if (state.quietReshuffles !== undefined) state.quietReshuffles = 0;
   state.groups = [];
   state.history = [];
   const deck = shuffle(createDeck(), createRng(state.roundSeed, 0));
@@ -86,6 +89,10 @@ function beginTurn(state: GameState, events: GameEvent[]): void {
   state.stage = 'draw';
   events.push({ type: 'turnStart', seat: state.current });
   prepareDraw(state, events);
+  if ((state.quietReshuffles ?? 0) >= STALEMATE_RESHUFFLES) {
+    events.push({ type: 'stalemate' });
+    endRound(state, -1, events);
+  }
 }
 
 /** Refills an empty draw pile, and moves on if there is truly nothing to draw. */
@@ -102,6 +109,7 @@ function reshuffle(state: GameState, events: GameEvent[]): void {
   if (state.discardPile.length <= 1) return;
   const top = state.discardPile.pop()!;
   state.reshuffles += 1;
+  state.quietReshuffles = (state.quietReshuffles ?? 0) + 1;
   state.drawPile = shuffle(state.discardPile, createRng(state.roundSeed, state.reshuffles));
   state.discardPile = [top];
   state.history.push({ kind: 'reshuffle' });
@@ -200,6 +208,7 @@ export function step(state: GameState, action: Action): StepResult {
       }
       player.hand = player.hand.filter((c) => !seen.has(c.id));
       player.laidDown = true;
+      if (state.quietReshuffles) state.quietReshuffles = 0;
       events.push({ type: 'layDown', seat, phase, groupIds, wilds });
       if (player.hand.length === 0) goOut(state, seat, 'hit', events);
       return { ok: true, events };
@@ -222,6 +231,7 @@ export function step(state: GameState, action: Action): StepResult {
         if (!check.ends.includes(end)) return fail(end === 'high' ? `${name} can't go past 12.` : `${name} can't go below 1.`);
       }
       placeHit(group, card, end);
+      if (state.quietReshuffles) state.quietReshuffles = 0;
       player.hand = player.hand.filter((c) => c.id !== card.id);
       events.push({ type: 'hit', seat, card, groupId: group.id, end });
       if (player.hand.length === 0) goOut(state, seat, 'hit', events);
@@ -270,6 +280,11 @@ export function step(state: GameState, action: Action): StepResult {
 
 function goOut(state: GameState, seat: number, by: 'discard' | 'hit', events: GameEvent[]): void {
   events.push({ type: 'goOut', seat, by });
+  endRound(state, seat, events);
+}
+
+/** Scores the round. `seat` went out, or is -1 when no one could. */
+function endRound(state: GameState, seat: number, events: GameEvent[]): void {
   const phasesBefore = state.players.map((p) => p.phase);
   const advanced = state.players.map((p) => p.laidDown);
   const hands = state.players.map((p) => p.hand.slice());

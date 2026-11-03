@@ -16,6 +16,13 @@ const evens = (size: number): GroupReq => ({ type: 'evens', size });
 const odds = (size: number): GroupReq => ({ type: 'odds', size });
 const pair: GroupReq = { type: 'set', size: 2, pair: true };
 
+/** The Moonlit phase id with this requirement, wherever the simulation put it. */
+const idOf = (text: string): number => {
+  const id = phaseSequence('moonlit').find((p) => phaseText(p) === text);
+  assert.ok(id, `no Moonlit phase reads ${text}`);
+  return id;
+};
+
 const fail = (req: GroupReq, cards: Card[], runStart?: number): string => {
   const c = checkGroup(req, cards, runStart);
   assert.ok(!c.ok, 'should not be valid');
@@ -207,17 +214,17 @@ describe('the Moonlit list', () => {
 describe('finding an arrangement', () => {
   test('a Set does not take the one card a color run needs', () => {
     const hand = [n(4), n(4, 'moss'), n(4, 'honey'), n(4, 'moonstone'), n(5), n(6)];
-    const plan = findArrangement(hand, 13)!;
+    const plan = findArrangement(hand, idOf('Color run of 3 + Set of 3'))!;
     assert.ok(plan, 'the rose 4 goes to the color run');
     const state = table(2, [[...hand, n(12, 'honey')], [n(1), n(2)]]);
-    state.players[0].phase = 13;
+    state.players[0].phase = idOf('Color run of 3 + Set of 3');
     state.stage = 'play';
     ok(step(state, { type: 'layDown', groups: plan }));
   });
 
   test('a Set does not take the cards a color group needs', () => {
     const hand = [n(9), n(9, 'moss'), n(9, 'honey'), n(9, 'moonstone'), n(1), n(2), n(3), n(9)];
-    assert.ok(findArrangement(hand, 18), 'one rose 9 is left for the color group');
+    assert.ok(findArrangement(hand, idOf('Set of 4 + 4 of one Color')), 'one rose 9 is left for the color group');
   });
 
   test('a group left with no real card borrows one from a group with spare cards', () => {
@@ -230,21 +237,21 @@ describe('finding an arrangement', () => {
   });
 
   test('three groups need three real cards', () => {
-    assert.equal(findArrangement([n(5), n(6, 'moss'), w(), w(), w(), w(), w(), w(), w()], 12), null);
-    assert.ok(findArrangement([n(5), n(6, 'moss'), n(9), w(), w(), w(), w(), w(), w()], 12));
+    assert.equal(findArrangement([n(5), n(6, 'moss'), w(), w(), w(), w(), w(), w(), w()], idOf('Run of 4 + 2 Pairs')), null);
+    assert.ok(findArrangement([n(5), n(6, 'moss'), n(9), w(), w(), w(), w(), w(), w()], idOf('Run of 4 + 2 Pairs')));
   });
 
   test('uses as few Wilds as it can', () => {
     const wild = w();
     const hand = [n(1), n(2), n(3), wild, n(2, 'moss')];
-    const plan = findArrangement(hand, 20);
+    const plan = findArrangement(hand, idOf('Color run of 6'));
     assert.equal(plan, null, 'six positions, four cards');
-    const ok6 = findArrangement([n(1), n(2), n(3), n(4), n(5), n(6), wild], 20)!;
+    const ok6 = findArrangement([n(1), n(2), n(3), n(4), n(5), n(6), wild], idOf('Color run of 6'))!;
     assert.ok(!ok6[0].cardIds.includes(wild.id));
   });
 
   test('a color run can hold a Wild at any position', () => {
-    const plan = findArrangement([n(1), w(), n(3), n(4), w(), n(6)], 20)!;
+    const plan = findArrangement([n(1), w(), n(3), n(4), w(), n(6)], idOf('Color run of 6'))!;
     assert.equal(plan[0].runStart, 1);
     assert.equal(plan[0].cardIds.length, 6);
   });
@@ -253,11 +260,11 @@ describe('finding an arrangement', () => {
 describe('hints', () => {
   test('the shimmer covers each new group type', () => {
     const hand = [n(1), n(2), n(3), n(9, 'moss'), n(9, 'honey'), n(9, 'moonstone'), n(11, 'honey')];
-    const used = usedCards(hand, evaluate(tally(hand), 13, simpleUnseen(hand)).picks);
+    const used = usedCards(hand, evaluate(tally(hand), idOf('Color run of 3 + Set of 3'), simpleUnseen(hand)).picks);
     assert.equal(used.size, 6);
     assert.ok(!used.has(hand[6].id));
     const parity = [n(2), n(4), n(6), n(3), n(5)];
-    const usedEvens = usedCards(parity, evaluate(tally(parity), 14, simpleUnseen(parity)).picks);
+    const usedEvens = usedCards(parity, evaluate(tally(parity), idOf('7 Evens'), simpleUnseen(parity)).picks);
     assert.deepEqual([...usedEvens].sort(), [parity[0].id, parity[1].id, parity[2].id].sort());
   });
 });

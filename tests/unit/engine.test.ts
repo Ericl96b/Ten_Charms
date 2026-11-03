@@ -467,6 +467,47 @@ describe('draw pile', () => {
     assert.ok(res.events.some((e) => e.type === 'noDraw'));
     assert.equal(state.stage, 'play');
   });
+
+  /** Two players, both down, each holding one card nothing can take, passing three cards around forever. */
+  function deadlocked() {
+    const state = table(2, [[n(11, 'honey')], [n(11, 'moss')]], { stage: 'draw', drawPile: [n(9), n(9, 'moss')], discardPile: [n(9, 'honey')] });
+    state.players.forEach((p) => { p.laidDown = true; p.phase = 2; });
+    return state;
+  }
+  const lap = (state: ReturnType<typeof deadlocked>) => {
+    ok(step(state, { type: 'draw', source: 'pile' }));
+    const drawn = state.players[state.current].hand[1];
+    return ok(step(state, { type: 'discard', cardId: drawn.id }));
+  };
+
+  test('when no one can go out, the round ends after three quiet reshuffles', () => {
+    const state = deadlocked();
+    let reshuffles = 0;
+    for (let t = 0; t < 40 && state.stage !== 'roundOver'; t++) {
+      const res = lap(state);
+      reshuffles += res.events.filter((e) => e.type === 'reshuffle').length;
+      if (res.events.some((e) => e.type === 'roundEnd')) {
+        assert.ok(res.events.some((e) => e.type === 'stalemate'));
+        assert.ok(!res.events.some((e) => e.type === 'goOut'));
+      }
+    }
+    assert.equal(state.stage, 'roundOver');
+    assert.equal(reshuffles, 3);
+    const r = state.lastRound!;
+    assert.equal(r.wentOut, -1);
+    assert.deepEqual(r.points, [10, 10], 'everyone scores the hand they hold');
+    assert.deepEqual(r.advanced, [true, true], 'players who laid down still complete their phase');
+  });
+
+  test('a hit or a lay-down resets the count', () => {
+    const state = deadlocked();
+    state.quietReshuffles = 2;
+    state.groups = [{ id: 1, owner: 1, type: 'set', num: 9, cards: [{ card: n(9), num: 9 }] }];
+    state.drawPile = [n(9, 'honey')];
+    ok(step(state, { type: 'draw', source: 'pile' }));
+    ok(step(state, { type: 'hit', cardId: state.players[0].hand[1].id, groupId: 1 }));
+    assert.equal(state.quietReshuffles, 0);
+  });
 });
 
 describe('variants', () => {

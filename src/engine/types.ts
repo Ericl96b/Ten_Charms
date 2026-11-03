@@ -50,6 +50,7 @@ export type PlayerState = {
 export type RoundResult = {
   round: number;
   seed: string;
+  /** -1 when the round ended because no one could go out. */
   wentOut: number;
   hands: Card[][];
   points: number[];
@@ -67,6 +68,8 @@ export type GameState = {
   round: number;
   roundSeed: string;
   reshuffles: number;
+  /** Reshuffles in a row with no lay-down or hit between them. Missing in saves from before it existed. */
+  quietReshuffles?: number;
   dealer: number;
   current: number;
   stage: Stage;
@@ -104,6 +107,8 @@ export type GameEvent =
   | { type: 'skipPlayed'; seat: number; target: number; targetCards: number; targetLaidDown: boolean }
   | { type: 'skipNoTarget'; seat: number }
   | { type: 'goOut'; seat: number; by: 'discard' | 'hit' }
+  /** No one could go out, so the round ended with every hand still held. */
+  | { type: 'stalemate' }
   | { type: 'roundEnd'; result: RoundResult }
   | { type: 'matchEnd'; winners: number[]; shared: boolean };
 
