@@ -1,0 +1,204 @@
+/* The Moonlit Glade: its map, its fog, and its tables. Pink and cozy throughout, never dark. */
+
+/* Palette tokens (§10.1), fogged at dusk by default and lifted at sunrise. */
+.glade-screen {
+  --sky-top: #E9D7EE; --sky-bottom: #F7DDE7; --ground: #F3E1EA; --path: #FFF4F8; --path-dash: #E2B6CC;
+  --mist-underside: #E2CFEA; --moon-glow: #FFF6FA; --firefly: #FFE9A8; --bloom-bud: #E9A9C2; --bloom-open: #E8789A;
+  background: linear-gradient(180deg, var(--sky-top) 0%, var(--sky-bottom) 45%, var(--ground) 100%);
+}
+.glade-screen.lifted {
+  --sky-top: #FFD6E2; --sky-bottom: #FFEFD9; --ground: #FCEAEA; --path: #FFF8F1; --path-dash: #E9A9B9; --moon-glow: #FFE7B0;
+}
+
+/* Drifting clouds. One layer for the whole screen: above the scenery, below everything she reads or taps. */
+.fog { position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+.fog .cloud { position: absolute; left: 0; height: auto; pointer-events: none; will-change: transform; }
+
+/* Map */
+/* Centered when the screen has room to spare, scrolled when it doesn't. */
+.glade-screen .map-scroll { display: flex; flex-direction: column; }
+.glade-screen .map-inner { overflow: visible; flex: none; margin: auto 0; }
+.glade-screen .stop { z-index: 1; }
+/* A little narrower than Map 1's, so the boss stop's Play button fits beside the Old Stones. */
+.glade-screen .stop-cta, .glade-screen .reward-chip { max-width: 11rem; }
+.glade-inner .sky-glow { position: absolute; left: -4rem; right: -4rem; top: -12rem; height: 46rem; border-radius: 50%; background: radial-gradient(ellipse at 50% 30%, rgba(255, 231, 176, .85) 0%, rgba(255, 214, 226, .4) 45%, transparent 70%); opacity: 0; pointer-events: none; }
+.glade-inner.lifted .sky-glow { opacity: 1; }
+.glade-inner .sun-rays { position: absolute; left: 50%; top: -6rem; width: 44rem; height: 30rem; margin-left: -22rem; opacity: 0; pointer-events: none;
+  background: repeating-conic-gradient(from 180deg at 50% 20%, rgba(255, 231, 176, .5) 0deg 6deg, transparent 6deg 18deg); -webkit-mask-image: radial-gradient(ellipse at 50% 20%, #000 0%, transparent 70%); mask-image: radial-gradient(ellipse at 50% 20%, #000 0%, transparent 70%); }
+.glade-inner.lifted .sun-rays { opacity: 1; }
+.glade-inner .moon { position: absolute; left: 7rem; top: 0; width: 5.6rem; height: 5.6rem; filter: drop-shadow(0 0 .8rem rgba(255, 246, 250, .9)); }
+.glade-inner.lifted .moon, .glade-inner.lifted .sparkle, .glade-inner.lifted .firefly { display: none; }
+.glade-inner .sparkle { position: absolute; width: 1.2rem; height: 1.2rem; background: radial-gradient(circle, #FFFFFF 0 18%, transparent 20%), linear-gradient(0deg, transparent 44%, #FFFFFF 44% 56%, transparent 56%), linear-gradient(90deg, transparent 44%, #FFFFFF 44% 56%, transparent 56%); opacity: .9; animation: twinkle 3.2s ease-in-out infinite; }
+.glade-inner .sparkle:nth-of-type(2n) { animation-delay: 1.4s; }
+@keyframes twinkle { 0%, 100% { opacity: .9; transform: scale(1); } 50% { opacity: .35; transform: scale(.7); } }
+.reduced .glade-inner .sparkle { animation: none; }
+.glade-inner .mound { position: absolute; border-radius: 50%; background: var(--ground); opacity: .8; }
+.glade-inner .mound.a { left: -10rem; top: 30rem; width: 26rem; height: 18rem; }
+.glade-inner .mound.b { right: -12rem; top: 14rem; width: 28rem; height: 20rem; }
+.glade-inner .mound.c { right: -6rem; top: 50rem; width: 22rem; height: 14rem; }
+.map-path .glade-path { position: absolute; left: 0; top: 0; width: 39rem; height: 65rem; overflow: visible; }
+.glade-path .gp-bed { fill: none; stroke: var(--path); stroke-width: 26; stroke-linecap: round; filter: drop-shadow(0 1px 1px rgba(201, 150, 180, .35)); }
+.glade-path .gp-dash { fill: none; stroke: var(--path-dash); stroke-width: 3; stroke-dasharray: 3 10; stroke-linecap: round; }
+.glade-inner .bud { position: absolute; width: 1.4rem; height: 1.8rem; margin: -.9rem 0 0 -.7rem; }
+.glade-inner .bud svg { width: 100%; height: 100%; overflow: visible; }
+.glade-inner .bud .open { opacity: 0; transform: scale(.3); transform-origin: 8px 7px; transition: opacity .35s, transform .45s var(--spring); }
+.glade-inner .bud.bloomed .open, .glade-inner.lifted .bud .open { opacity: 1; transform: scale(1); }
+.glade-inner .bud.bloomed .closed, .glade-inner.lifted .bud .closed { opacity: 0; }
+.glade-inner .lantern { position: absolute; width: 1.8rem; height: 4.6rem; }
+.glade-inner .lantern svg { width: 100%; height: 100%; }
+.glade-inner .lantern .lamp { fill: #FFF4E0; stroke: #C9973F; stroke-width: 1.4; }
+.glade-inner .lantern .flame { fill: #F3D9A0; }
+.glade-inner .lantern.lit .lamp { fill: #FFE9A8; }
+.glade-inner .lantern.lit .flame { fill: #F2A23C; filter: drop-shadow(0 0 3px #FFE9A8); }
+.glade-inner .pond { position: absolute; left: 20.6rem; top: 41.4rem; width: 9rem; height: 5.2rem; }
+.glade-inner .pond svg { width: 100%; height: 100%; }
+.glade-inner .pond .water { fill: #F2C4D3; stroke: #E9B0C5; stroke-width: 1.5; }
+.glade-inner .old-stones { position: absolute; width: 3.2rem; height: 2.4rem; }
+.glade-inner .old-stones svg { width: 100%; height: 100%; }
+.glade-inner .firefly { position: absolute; width: .7rem; height: .7rem; margin: -.35rem 0 0 -.35rem; border-radius: 50%; background: var(--firefly); box-shadow: 0 0 .6rem .2rem rgba(255, 233, 168, .7); pointer-events: none; }
+
+/* The signpost at the fork: decoration only, never tappable. */
+.signpost { position: absolute; left: 19.5rem; top: 48.4rem; width: 0; height: 4.4rem; pointer-events: none; }
+.signpost .post { position: absolute; left: -.2rem; top: 0; width: .4rem; height: 4.4rem; border-radius: .2rem; background: #A97E93; }
+.signpost .board { position: absolute; padding: .1rem .6rem; background: var(--panel); border: .12rem solid var(--panel-border); font-family: var(--display); font-weight: 800; color: var(--plum); font-size: .95rem; white-space: nowrap; line-height: 1.25; }
+.signpost .board.left { right: .2rem; top: .3rem; border-radius: .8rem .3rem .3rem .8rem; clip-path: polygon(0 50%, .8rem 0, 100% 0, 100% 100%, .8rem 100%); padding-left: 1rem; }
+.signpost .board.right { left: .2rem; top: 2rem; border-radius: .3rem .8rem .8rem .3rem; clip-path: polygon(0 0, calc(100% - .8rem) 0, 100% 50%, calc(100% - .8rem) 100%, 0 100%); padding-right: 1rem; }
+
+/* Stops: placed by the center of their medallion, so every state lines up the same. */
+.glade-screen .gstop { width: 0; height: 0; transform: none; display: block; }
+.glade-screen .gstop .stop-btn { position: absolute; left: -4rem; top: -4rem; }
+.glade-screen .gstop .stars { position: absolute; bottom: 3.8rem; left: 0; transform: translateX(-50%); }
+.glade-screen .gstop .name-plate { position: absolute; top: 3.7rem; left: 0; transform: translateX(-50%); margin: 0; }
+.glade-screen .gstop.current .stars { display: none; }
+.glade-screen .gstop.open .portrait { border-color: var(--primary); }
+.glade-screen .gstop.locked .portrait { filter: saturate(.3) brightness(1.1); border-color: #E6D9F2; }
+.mist-veil { position: absolute; inset: -.2rem; border-radius: 50%; pointer-events: none; }
+.mist-veil svg { width: 100%; height: 100%; }
+.glade-screen .boss-stop .stop-btn { left: -7rem; top: -5.5rem; }
+.glade-screen .boss-stop .glade-plate { position: absolute; top: 5rem; left: 0; transform: translateX(-50%); }
+.glade-screen .boss-stop .stars { bottom: 5.4rem; }
+.mist-wings { position: absolute; left: -2.5rem; right: -2.5rem; top: -1rem; }
+.mist-wings svg { width: 100%; height: auto; }
+.glade-plate { background: linear-gradient(180deg, #FDF9FF, #F1E8F7); color: var(--plum); border: .15rem solid #DCCDEA; }
+.glade-plate small { color: var(--gold); }
+.glade-screen .boss-stop.locked .portrait { border-color: #DCCDEA; }
+
+/* The one-time scenes */
+.scene-skip { position: absolute; inset: 0; z-index: 50; background: transparent; }
+.lift-banner { position: absolute; left: 50%; top: 42%; z-index: 52; display: flex; flex-direction: column; align-items: center; gap: .2rem; text-align: center; padding: 1rem 2rem; border-radius: 2rem; background: var(--panel); border: .15rem solid var(--gold-light); box-shadow: var(--shadow); pointer-events: none; }
+.lift-banner b { font-family: var(--display); font-weight: 800; font-size: 2.2rem; color: var(--plum); white-space: nowrap; }
+.lift-banner small { font-size: 1.3rem; color: var(--ink-soft); font-weight: 700; }
+
+/* The map switcher, in place of the title */
+.map-switch { flex: 1 1 auto; min-width: 0; margin: 0 .5rem; display: flex; padding: .2rem; gap: .2rem; border-radius: 2rem; background: var(--panel); border: .15rem solid var(--panel-border); box-shadow: var(--shadow); }
+.map-opt { flex: 1 1 0; min-width: 0; min-height: 3.6rem; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 1.6rem; padding: .2rem .2rem; line-height: 1.1; }
+.map-opt b { font-family: var(--display); font-weight: 800; color: var(--plum); font-size: max(11px, 1.25rem); letter-spacing: -.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+/* Never under the 11 point minimum, even on the smallest phone. */
+.map-opt small { display: flex; align-items: center; gap: .2rem; color: var(--ink-soft); font-size: max(11px, 1.1rem); font-weight: 800; white-space: nowrap; }
+.map-opt small .icon { color: var(--gold-bright); font-size: 1.1rem; }
+.map-opt.on { background: #F9D5E0; box-shadow: inset 0 0 0 .12rem #E8A9BE; }
+.map-opt.locked b { color: var(--ink-soft); }
+.map-opt .opt-note { display: block; white-space: normal; text-align: center; font-size: 11px; line-height: 1.05; }
+/* Never taller than the gear beside it, so the map below sits exactly where it always has. */
+.map-switch { max-height: 4.6rem; overflow: hidden; }
+.map-opt.locked { padding-top: 0; padding-bottom: 0; }
+.map-opt.locked b { display: flex; align-items: center; gap: .2rem; font-size: max(11px, 1.15rem); line-height: 1.15; }
+.map-opt.locked b .icon { color: var(--ink-soft); font-size: 1.1rem; }
+.map-opt .opt-note .icon { color: var(--ink-soft); flex: none; }
+
+/* Match Intro additions */
+.rule-chips { display: flex; flex-direction: column; align-items: center; gap: .5rem; margin: .2rem 0 .6rem; }
+.rule-chips:empty { display: none; }
+.rule-chip { display: inline-flex; align-items: center; gap: .5rem; padding: .35rem 1rem; border-radius: 1.4rem; background: #F4EEF8; border: .12rem solid #DCCDEA; color: var(--plum); font-size: 1.25rem; font-weight: 800; text-align: left; }
+.rule-chip .icon { flex: none; font-size: 1.6rem; color: #B79BC0; }
+.rule-chip[data-testid='rule-crown'] .icon, .li-chips .rule-chip:last-child .icon { color: var(--gold); }
+.star-targets { color: var(--ink-soft); font-size: 1.25rem; font-weight: 700; margin: -.4rem 0 .8rem; }
+
+/* The one-time reveal */
+.reveal-veil { position: absolute; inset: 0; z-index: 48; pointer-events: none; background: radial-gradient(ellipse at 50% 0%, #FFF4F8 0%, #F7DDE7 45%, #E9D7EE 100%); opacity: 0; }
+.reveal-veil.out { opacity: 1; }
+.reveal-banner { position: absolute; left: 50%; top: 30%; z-index: 49; transform: translateX(-50%); padding: .8rem 1.8rem; border-radius: 2rem; background: var(--panel); border: .15rem solid var(--panel-border); box-shadow: var(--shadow); font-family: var(--display); font-style: italic; font-weight: 600; font-size: 1.8rem; color: var(--plum); white-space: nowrap; pointer-events: none; }
+.reveal-path { position: absolute; left: 13.5rem; top: -20rem; width: 12rem; height: 22rem; pointer-events: none; }
+.reveal-path svg { width: 100%; height: 100%; }
+
+/* Fogged tables: the cloth stops being its own layer, so one cloud layer can pass over it and under its contents. */
+.table-screen.fogged .cloth { z-index: auto; }
+.table-screen.fogged .cloth > .table-row, .table-screen.fogged .cloth > .laid { position: relative; z-index: 1; }
+.table-screen.fogged .cloth > .stitch, .table-screen.fogged .cloth > .rest-petal { z-index: 1; }
+.fog-wisp { display: inline-flex; vertical-align: -.15em; color: #B79BC0; font-size: 1.3rem; }
+
+/* The Thorned Crown */
+.chip-crown { position: absolute; left: 50%; top: -.95rem; z-index: 1; transform: translateX(-50%); font-size: 1.3rem; color: var(--gold-bright); display: flex; filter: drop-shadow(0 .05rem .05rem rgba(91, 35, 64, .3)); }
+.label-crown { display: inline-flex; vertical-align: -.1em; margin-right: .3rem; color: var(--gold-bright); font-size: 1.2rem; }
+.group.crowned { position: relative; margin-top: .5rem; margin-bottom: .2rem; }
+.group .thorns { position: absolute; inset: -.35rem; border: .15rem solid var(--gold); border-radius: .8rem; pointer-events: none; }
+/* Gold points along the top, with rosebuds between them; smaller points along the bottom. */
+.group .thorns::before { content: ''; position: absolute; left: .3rem; right: .3rem; top: -.7rem; height: .7rem;
+  background: radial-gradient(circle at 50% 100%, #E8789A .2rem, transparent .22rem) .6rem 0 / 1.2rem .6rem repeat-x, conic-gradient(from 150deg at 50% 0, var(--gold-bright) 60deg, transparent 0) 0 0 / 1.2rem .7rem repeat-x; }
+.group .thorns::after { content: ''; position: absolute; left: .5rem; right: .5rem; bottom: -.45rem; height: .45rem;
+  background: conic-gradient(from -30deg at 50% 100%, var(--gold) 60deg, transparent 0) 0 0 / 1.4rem .45rem repeat-x; }
+.group .thorn-sides::before, .group .thorn-sides::after { content: ''; position: absolute; top: 50%; width: .45rem; height: .7rem; margin-top: -.35rem; background: var(--gold); }
+.group .thorn-sides::before { left: -.55rem; clip-path: polygon(100% 0, 0 50%, 100% 100%); }
+.group .thorn-sides::after { right: -.55rem; clip-path: polygon(0 0, 100% 50%, 0 100%); }
+.group .thorn-sheen { position: absolute; inset: -.15rem; border-radius: .8rem; box-shadow: 0 0 .6rem .1rem rgba(246, 210, 127, .9); opacity: 0; animation: thorn-shimmer 4.5s ease-in-out infinite; }
+@keyframes thorn-shimmer { 0%, 70%, 100% { opacity: 0; } 82% { opacity: 1; } }
+.reduced .group .thorn-sheen { animation: none; }
+
+/* Lunaria's wisps, drawn in code */
+.portrait.wisp { background: #FBF7FD; border-color: #E6D9F2; overflow: visible; display: flex; }
+.portrait.wisp .wisp-art { width: 82%; height: 82%; margin: auto; animation: wisp-bob 3s ease-in-out infinite; }
+@keyframes wisp-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6%); } }
+.reduced .portrait.wisp .wisp-art { animation: none; }
+
+/* Lunaria's table: pale lavender, silver and rose, never dark */
+.lunaria-boss .stitch { border-color: #C8C4D6; }
+.lunaria-boss .cloth { border-color: #DCCDEA; }
+.lunaria-intro { background: transparent; }
+.li-mist { position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 45%, rgba(255, 246, 250, .92) 30%, rgba(230, 217, 242, .96) 75%); }
+.li-threads { position: absolute; left: 10%; right: 10%; top: 8%; }
+.li-threads svg { width: 100%; height: auto; overflow: visible; }
+.li-threads path { fill: none; stroke: #BFC3D6; stroke-width: 1.6; stroke-dasharray: 400; stroke-linecap: round; stroke-linejoin: round; }
+.li-threads .crown-line { stroke: #D9A441; stroke-width: 2; }
+.li-glow { background: radial-gradient(circle, rgba(201, 182, 221, .9), transparent 70%); }
+.li-title { color: var(--plum); }
+.li-line { color: var(--ink-soft); }
+.li-chips { margin-top: .4rem; }
+.li-dissolve { position: absolute; width: 10rem; height: 10rem; border-radius: 50%; background: radial-gradient(circle, rgba(242, 167, 188, .9), rgba(249, 213, 224, .5) 50%, transparent 70%); pointer-events: none; }
+
+/* The Glade's card backs */
+.card-back .medal svg { width: 100%; height: 100%; }
+.b-lantern-glow { background-color: #E9A3B6; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Cpath d='M12 0L24 12L12 24L0 12Z' fill='none' stroke='%23F6D27F' stroke-opacity='.55' stroke-width='1'/%3E%3Crect x='10' y='9' width='4' height='6' rx='1.5' fill='%23FFE9A8'/%3E%3C/svg%3E"); background-size: 1.8rem 1.8rem; }
+.b-lantern-glow .medal { width: 3.4rem; height: 3.4rem; margin: -1.7rem 0 0 -1.7rem; background: radial-gradient(circle, #FFF6E0 55%, rgba(255, 233, 168, .6) 70%, transparent 72%); padding: .5rem; }
+.b-bunny-hop { background-color: #F0A7BD; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Cg fill='%23FFF4EA'%3E%3Cpath d='M7 9c-1-4 0-6 1-6s1 3 0 6zM10 9c0-4 1-6 2-6s1 3-1 6z'/%3E%3Cellipse cx='9.5' cy='12' rx='3.6' ry='3'/%3E%3Ccircle cx='6' cy='13' r='1.2'/%3E%3Cpath d='M27 29c-1-4 0-6 1-6s1 3 0 6zM30 29c0-4 1-6 2-6s1 3-1 6z'/%3E%3Cellipse cx='29.5' cy='32' rx='3.6' ry='3'/%3E%3Ccircle cx='26' cy='33' r='1.2'/%3E%3C/g%3E%3Cpath d='M30 8l-6 7 1 1 7-6z' fill='%23F5A97A'/%3E%3Cpath d='M30 8l2-3M31 9l3-1' stroke='%237FAE77' stroke-width='1.2'/%3E%3Cpath d='M10 28l-6 7 1 1 7-6z' fill='%23F5A97A'/%3E%3Cpath d='M10 28l2-3M11 29l3-1' stroke='%237FAE77' stroke-width='1.2'/%3E%3C/svg%3E"); background-size: 2.6rem 2.6rem; }
+.b-bunny-hop .medal { width: 3.2rem; height: 3.2rem; margin: -1.6rem 0 0 -1.6rem; background: #FFF6EE; border: .25rem solid #D9A441; padding: .3rem; }
+.b-lily-pad { background-color: #B9D3B0; background-image: radial-gradient(circle at 30% 30%, #9FC58F .5rem, transparent .52rem), radial-gradient(circle at 75% 70%, #8FB58A .45rem, transparent .47rem), radial-gradient(circle at 70% 25%, #F2C4D3 .3rem, transparent .32rem); background-size: 2.2rem 2.2rem; }
+.b-lily-pad .medal { width: 3rem; height: 3rem; margin: -1.5rem 0 0 -1.5rem; background: #FFF6EE; border: .2rem solid #E8A9BE; padding: .3rem; }
+.b-dawn-bloom { background-color: #F7A08A; background-image: linear-gradient(180deg, #E8789A 0%, #F3A08E 55%, #FFD3A0 100%); }
+.b-dawn-bloom .medal { width: 4.2rem; height: 4.2rem; margin: -2.1rem 0 0 -2.1rem; }
+
+/* The Glade's tablecloths */
+.c-firefly-meadow, [data-cloth='firefly-meadow'] .cloth {
+  --stitch-c: #EBB9C8;
+  background-color: #FBE1E6;
+  background-image: radial-gradient(circle at 20% 30%, #F2C94C .14rem, transparent .17rem), radial-gradient(circle at 65% 15%, #E9B94A .1rem, transparent .13rem), radial-gradient(circle at 80% 70%, #F2C94C .13rem, transparent .16rem), radial-gradient(circle at 35% 80%, #E9B94A .11rem, transparent .14rem);
+  background-size: 4.4rem 4.4rem;
+}
+.c-trinket-quilt, [data-cloth='trinket-quilt'] .cloth {
+  --stitch-c: #E7A9B9;
+  background-color: #F7DCE2;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150'%3E%3Crect width='50' height='50' fill='%23F7DCE2'/%3E%3Crect x='50' width='50' height='50' fill='%23FBE6DA'/%3E%3Crect x='100' width='50' height='50' fill='%23FFF4F0'/%3E%3Crect y='50' width='50' height='50' fill='%23EFE2F3'/%3E%3Crect x='50' y='50' width='50' height='50' fill='%23E6EFDD'/%3E%3Crect x='100' y='50' width='50' height='50' fill='%23F7DCE2'/%3E%3Crect y='100' width='50' height='50' fill='%23FFF4F0'/%3E%3Crect x='50' y='100' width='50' height='50' fill='%23F7DCE2'/%3E%3Crect x='100' y='100' width='50' height='50' fill='%23FBE6DA'/%3E%3Cg stroke='%23E7A9B9' stroke-width='1' stroke-dasharray='3 3' fill='none'%3E%3Cpath d='M50 0V150M100 0V150M0 50H150M0 100H150'/%3E%3C/g%3E%3Ccircle cx='75' cy='25' r='4.5' fill='none' stroke='%23E7A9B9'/%3E%3Ccircle cx='73.5' cy='23.5' r='.9' fill='%23E7A9B9'/%3E%3Ccircle cx='76.5' cy='26.5' r='.9' fill='%23E7A9B9'/%3E%3Cpath d='M118 77a3 3 0 1 1 0 .1zm3 0h9m-3 0v3m3-3v2' fill='none' stroke='%23D9B36A' stroke-width='1.2'/%3E%3Cpath d='M25 121l1.6 3.4 3.6.3-2.8 2.4.9 3.6-3.3-2-3.3 2 .9-3.6-2.8-2.4 3.6-.3z' fill='%23F0D48A'/%3E%3Cpath d='M75 128c-3-2-5-4-5-6a2.5 2.5 0 0 1 5-1 2.5 2.5 0 0 1 5 1c0 2-2 4-5 6z' fill='%23EFA3B8'/%3E%3C/svg%3E");
+  background-size: 15rem 15rem;
+}
+.c-mistveil, [data-cloth='mistveil'] .cloth {
+  --stitch-c: #C8C4D6;
+  background-color: #EEDDEE;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cg fill='none' stroke='%23FFFFFF' stroke-opacity='.75' stroke-width='1.2' stroke-linecap='round'%3E%3Cpath d='M10 30c10-12 26-12 30 0s20 14 30 2'/%3E%3Cpath d='M60 90c8-10 22-10 26 0s18 12 26 0'/%3E%3Cpath d='M20 100c4-6 12-6 14 0'/%3E%3C/g%3E%3Cg fill='none' stroke='%23C8C4D6' stroke-opacity='.8' stroke-width='.8' stroke-linecap='round'%3E%3Cpath d='M70 20c6-6 14-4 14 2s-8 8-10 2'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 12rem 12rem;
+}
+.c-sunrise-garden, [data-cloth='sunrise-garden'] .cloth {
+  --stitch-c: #F3B49A;
+  background-color: #FCDDE2;
+  box-shadow: inset 0 0 0 .7rem #FBD6BC, inset 0 0 1.6rem rgba(199, 64, 110, .1);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Cpath d='M18 24c0-4 3-6 6-4' fill='none' stroke='%237FAE77' stroke-width='1.4' stroke-linecap='round'/%3E%3Ccircle cx='18' cy='24' r='3' fill='%23E8789A'/%3E%3Ccircle cx='18' cy='24' r='1.6' fill='%23F2A7BC'/%3E%3Cpath d='M48 52c0-3 2-5 5-3' fill='none' stroke='%237FAE77' stroke-width='1.2' stroke-linecap='round'/%3E%3Ccircle cx='48' cy='52' r='2.4' fill='%23F2A7BC'/%3E%3C/svg%3E");
+  background-size: 6rem 6rem;
+}

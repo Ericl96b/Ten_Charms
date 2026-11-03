@@ -1,6 +1,7 @@
 // Overall and per-bot stats.
 import { BOTS } from '../../content.ts';
-import { BOT_IDS } from '../../bots/profiles.ts';
+import { BOT_IDS, GLADE_BOT_IDS } from '../../bots/profiles.ts';
+import { gladeOpen } from '../../meta/progress.ts';
 import { app } from '../app.ts';
 import { portraitEl } from '../art.ts';
 import { h } from '../dom.ts';
@@ -28,7 +29,7 @@ export function statsScreen(): HTMLElement {
         stat('Wilds used', s.wildsUsed),
       ),
       h('h2.sec', null, 'Against each opponent'),
-      h('div.bot-stats', null, (BOT_IDS as readonly StatBotId[]).map((id) => h('div.bot-stat', { 'data-bot': id },
+      h('div.bot-stats', null, ([...BOT_IDS, ...(gladeOpen(app.save) ? GLADE_BOT_IDS : [])] as StatBotId[]).map((id) => h('div.bot-stat', { 'data-bot': id },
         portraitEl(id, 'small'),
         h('b', null, BOTS[id].name),
         h('span', null, `${s.perBot[id].wins} wins · ${s.perBot[id].losses} losses`),

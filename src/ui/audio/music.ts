@@ -51,12 +51,27 @@ const BOSS_PLAN = [
   ...repeat(['Am', 'Dm', 'E', 'Am'], 2),
 ];
 
+const GLADE_PLAN = [
+  ...repeat(['F', 'Dm', 'A#', 'C'], 2), ...repeat(['Dm', 'A#', 'Gm', 'C'], 2), ...repeat(['A#', 'F', 'Gm', 'C'], 2), ...repeat(['F', 'A#', 'C', 'F'], 2),
+];
+const MOON_WALTZ_PLAN = [
+  ...repeat(['D', 'Bm', 'G', 'A'], 4), ...repeat(['G', 'A', 'F#m', 'Bm'], 2), ...repeat(['Em', 'A', 'D', 'D'], 2),
+  ...repeat(['Bm', 'G', 'D', 'A'], 2), ...repeat(['G', 'Em', 'A', 'D'], 2),
+];
+
 export const MUSIC = {
   map: track(88, 4, MAP_PLAN, MAJOR, 'box', 'harp', 0.8),
   waltz: track(100, 3, WALTZ_PLAN, MAJOR, 'harp', 'harp', 0.75),
   musicbox: track(104, 3, BOX_PLAN, MAJOR, 'box', 'box', 0.75),
   boss: track(92, 4, BOSS_PLAN, MINOR, 'harpsichord', 'harp', 0.7),
   tension: track(92, 4, BOSS_PLAN, MINOR, 'pulse', 'pulse', 0.55, true),
+  /** The Glade at dusk: slow, harp and celesta, gently mysterious but warm. */
+  gladeFog: track(70, 4, GLADE_PLAN, MAJOR, 'box', 'harp', 0.7),
+  /** The same melody, brighter and fuller, a morning feel. */
+  gladeLift: track(84, 4, GLADE_PLAN, MAJOR, 'harp', 'box', 0.82),
+  moonwaltz: track(96, 3, MOON_WALTZ_PLAN, MAJOR, 'box', 'harp', 0.75),
+  /** Shimmering and minor-leaning, never dark. It shares the boss chords and bars, so the tension layer fits it. */
+  lunaria: track(92, 4, BOSS_PLAN, MINOR, 'box', 'harp', 0.7),
 } as const;
 
 const midi = (m: number) => 440 * 2 ** ((m - 69) / 12);

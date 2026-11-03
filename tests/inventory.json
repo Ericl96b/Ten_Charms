@@ -390,6 +390,104 @@
   "skipped": false
  },
  {
+  "file": "11-glade.spec.ts",
+  "title": "glade: before Nightshade falls, the switcher shows the Glade locked",
+  "project": "android",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "11-glade.spec.ts",
+  "title": "glade: both paths lead through the Old Stones to the boss, and the fog lifts for good",
+  "project": "android",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "11-glade.spec.ts",
+  "title": "glade: fog layering — no cloud ever covers a stop, card, pile, chip, button or the Phase Panel",
+  "project": "android",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "11-glade.spec.ts",
+  "title": "glade: in the fog, every count is hidden, the picker shows no counts, and the intro shows the rule",
+  "project": "android",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "11-glade.spec.ts",
+  "title": "glade: new rewards on the table, and the Moonlight Waltz",
+  "project": "android",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "11-glade.spec.ts",
+  "title": "glade: no fog on the lifted map, after the lift, on Map 1, or in Free Play",
+  "project": "android",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "11-glade.spec.ts",
+  "title": "glade: Sunrise Garden, the Glade Charms heading, How to Play and Stats",
+  "project": "android",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "11-glade.spec.ts",
+  "title": "glade: the clouds drift, and stand still but stay visible under Reduced Motion",
+  "project": "android",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "11-glade.spec.ts",
+  "title": "glade: the Play button and reward chip stay on screen and clear of everything, for every stop",
+  "project": "android",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "11-glade.spec.ts",
+  "title": "glade: the Play button follows the open-stop rules in every case",
+  "project": "android",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "11-glade.spec.ts",
+  "title": "glade: the reveal plays once, then the map switcher remembers the map",
+  "project": "android",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "11-glade.spec.ts",
+  "title": "glade: the Thorned Crown blocks hits on her groups and shows at every table she plays",
+  "project": "android",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "11-glade.spec.ts",
+  "title": "glade: the whole map fits on one screen on big phones, and the signpost clears every stop",
+  "project": "android",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "11-glade.spec.ts",
+  "title": "glade: the worst-case boss row fits on one row at 412 points",
+  "project": "android",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
   "file": "zz-coverage.spec.ts",
   "title": "11. juice coverage: every animation and sound event fired during the suite",
   "project": "android",
@@ -792,6 +890,104 @@
   "skipped": false
  },
  {
+  "file": "11-glade.spec.ts",
+  "title": "glade: before Nightshade falls, the switcher shows the Glade locked",
+  "project": "max",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "11-glade.spec.ts",
+  "title": "glade: both paths lead through the Old Stones to the boss, and the fog lifts for good",
+  "project": "max",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "11-glade.spec.ts",
+  "title": "glade: fog layering — no cloud ever covers a stop, card, pile, chip, button or the Phase Panel",
+  "project": "max",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "11-glade.spec.ts",
+  "title": "glade: in the fog, every count is hidden, the picker shows no counts, and the intro shows the rule",
+  "project": "max",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "11-glade.spec.ts",
+  "title": "glade: new rewards on the table, and the Moonlight Waltz",
+  "project": "max",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "11-glade.spec.ts",
+  "title": "glade: no fog on the lifted map, after the lift, on Map 1, or in Free Play",
+  "project": "max",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "11-glade.spec.ts",
+  "title": "glade: Sunrise Garden, the Glade Charms heading, How to Play and Stats",
+  "project": "max",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "11-glade.spec.ts",
+  "title": "glade: the clouds drift, and stand still but stay visible under Reduced Motion",
+  "project": "max",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "11-glade.spec.ts",
+  "title": "glade: the Play button and reward chip stay on screen and clear of everything, for every stop",
+  "project": "max",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "11-glade.spec.ts",
+  "title": "glade: the Play button follows the open-stop rules in every case",
+  "project": "max",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "11-glade.spec.ts",
+  "title": "glade: the reveal plays once, then the map switcher remembers the map",
+  "project": "max",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "11-glade.spec.ts",
+  "title": "glade: the Thorned Crown blocks hits on her groups and shows at every table she plays",
+  "project": "max",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "11-glade.spec.ts",
+  "title": "glade: the whole map fits on one screen on big phones, and the signpost clears every stop",
+  "project": "max",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "11-glade.spec.ts",
+  "title": "glade: the worst-case boss row fits on one row at 412 points",
+  "project": "max",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
   "file": "zz-coverage.spec.ts",
   "title": "11. juice coverage: every animation and sound event fired during the suite",
   "project": "max",
@@ -1188,6 +1384,104 @@
   "skipped": false
  },
  {
+  "file": "11-glade.spec.ts",
+  "title": "glade: before Nightshade falls, the switcher shows the Glade locked",
+  "project": "ref",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "11-glade.spec.ts",
+  "title": "glade: both paths lead through the Old Stones to the boss, and the fog lifts for good",
+  "project": "ref",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "11-glade.spec.ts",
+  "title": "glade: fog layering — no cloud ever covers a stop, card, pile, chip, button or the Phase Panel",
+  "project": "ref",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "11-glade.spec.ts",
+  "title": "glade: in the fog, every count is hidden, the picker shows no counts, and the intro shows the rule",
+  "project": "ref",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "11-glade.spec.ts",
+  "title": "glade: new rewards on the table, and the Moonlight Waltz",
+  "project": "ref",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "11-glade.spec.ts",
+  "title": "glade: no fog on the lifted map, after the lift, on Map 1, or in Free Play",
+  "project": "ref",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "11-glade.spec.ts",
+  "title": "glade: Sunrise Garden, the Glade Charms heading, How to Play and Stats",
+  "project": "ref",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "11-glade.spec.ts",
+  "title": "glade: the clouds drift, and stand still but stay visible under Reduced Motion",
+  "project": "ref",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "11-glade.spec.ts",
+  "title": "glade: the Play button and reward chip stay on screen and clear of everything, for every stop",
+  "project": "ref",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "11-glade.spec.ts",
+  "title": "glade: the Play button follows the open-stop rules in every case",
+  "project": "ref",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "11-glade.spec.ts",
+  "title": "glade: the reveal plays once, then the map switcher remembers the map",
+  "project": "ref",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "11-glade.spec.ts",
+  "title": "glade: the Thorned Crown blocks hits on her groups and shows at every table she plays",
+  "project": "ref",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "11-glade.spec.ts",
+  "title": "glade: the whole map fits on one screen on big phones, and the signpost clears every stop",
+  "project": "ref",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "11-glade.spec.ts",
+  "title": "glade: the worst-case boss row fits on one row at 412 points",
+  "project": "ref",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
   "file": "zz-coverage.spec.ts",
   "title": "11. juice coverage: every animation and sound event fired during the suite",
   "project": "ref",
@@ -1582,6 +1876,104 @@
   "title": "worst fixture: rows, clipping and fades",
   "project": "se",
   "skipped": false
+ },
+ {
+  "file": "11-glade.spec.ts",
+  "title": "glade: before Nightshade falls, the switcher shows the Glade locked",
+  "project": "se",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "11-glade.spec.ts",
+  "title": "glade: both paths lead through the Old Stones to the boss, and the fog lifts for good",
+  "project": "se",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "11-glade.spec.ts",
+  "title": "glade: fog layering — no cloud ever covers a stop, card, pile, chip, button or the Phase Panel",
+  "project": "se",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "11-glade.spec.ts",
+  "title": "glade: in the fog, every count is hidden, the picker shows no counts, and the intro shows the rule",
+  "project": "se",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "11-glade.spec.ts",
+  "title": "glade: new rewards on the table, and the Moonlight Waltz",
+  "project": "se",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "11-glade.spec.ts",
+  "title": "glade: no fog on the lifted map, after the lift, on Map 1, or in Free Play",
+  "project": "se",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "11-glade.spec.ts",
+  "title": "glade: Sunrise Garden, the Glade Charms heading, How to Play and Stats",
+  "project": "se",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "11-glade.spec.ts",
+  "title": "glade: the clouds drift, and stand still but stay visible under Reduced Motion",
+  "project": "se",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "11-glade.spec.ts",
+  "title": "glade: the Play button and reward chip stay on screen and clear of everything, for every stop",
+  "project": "se",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "11-glade.spec.ts",
+  "title": "glade: the Play button follows the open-stop rules in every case",
+  "project": "se",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "11-glade.spec.ts",
+  "title": "glade: the reveal plays once, then the map switcher remembers the map",
+  "project": "se",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "11-glade.spec.ts",
+  "title": "glade: the Thorned Crown blocks hits on her groups and shows at every table she plays",
+  "project": "se",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "11-glade.spec.ts",
+  "title": "glade: the whole map fits on one screen on big phones, and the signpost clears every stop",
+  "project": "se",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "11-glade.spec.ts",
+  "title": "glade: the worst-case boss row fits on one row at 412 points",
+  "project": "se",
+  "skipped": false,
+  "timing": "fast"
  },
  {
   "file": "zz-coverage.spec.ts",

@@ -4,7 +4,7 @@ import { existsSync, mkdirSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import sharp from 'sharp';
 
-const NAME = /^(pip|marigold|briar|hoot|nightshade)-(neutral|happy|sad|smug|intense)\.png$/;
+const NAME = /^(pip|marigold|briar|hoot|nightshade|lumi|mallow|velvet|fennel|sable|mossback|lunaria)-(neutral|happy|sad|smug|intense)\.png$/;
 
 export async function buildPortraits(srcDir, outDir) {
   const found = [];

@@ -4,7 +4,7 @@ import { simpleUnseen, tally, evaluate, usedCards } from '../../bots/analysis.ts
 import { BOTS, LINES, type LineTrigger } from '../../content.ts';
 import { eligibleSkipTargets, nextRound, step } from '../../engine/game.ts';
 import { observe } from '../../engine/observation.ts';
-import { PHASES, checkGroup, checkHit, findArrangement, groupLabel, phaseSequence, phaseText } from '../../engine/phases.ts';
+import { PHASES, checkGroup, checkHit, findArrangement, groupLabel, phaseNumber, phaseSequence, phaseText } from '../../engine/phases.ts';
 import { createRng } from '../../engine/rng.ts';
 import type { Action, Card, GameEvent, GameState, LaidGroup } from '../../engine/types.ts';
 import { applyEvents, finishMatch, type MatchSummary } from '../../meta/progress.ts';
@@ -15,13 +15,13 @@ import { setTension, sfx } from '../audio/audio.ts';
 import { clear, h, rectOf, wait } from '../dom.ts';
 import { SPRING, animate, burst, center, finishAll, fx, motion, pause, rollNumber, setFxLayer, setRate } from '../fx/motion.ts';
 import { charmToast, closeAllSheets, confirmSheet, invalid, noteToast, openSheet, tooltip } from '../overlays.ts';
-import { startAmbient, startBossAmbient } from './ambient.ts';
+import { startAmbient, startBossAmbient, startFogAmbient } from './ambient.ts';
 import { dealAnimation, hitMoment, layDownMoment, otherLayDownMoment, outMoment, reshuffleMoment, roundEndMoment, skipOnHerMoment, skipOnBotMoment } from './moments.ts';
-import { bossDefeatMoment } from './boss.ts';
+import { bossDefeatMoment, lunariaDefeatMoment } from './boss.ts';
 import { reviewSheet, historySheet, showRoundEnd, showMatchEnd } from '../screens/end.ts';
 import { howToPlay } from '../screens/howto.ts';
 import { settingsScreen } from '../screens/settings.ts';
-import { journey } from '../screens/journey.ts';
+import { isLunariaBoss, journey, mapMusic } from '../screens/journey.ts';
 import { Tutorial } from './tutorial.ts';
 
 const SPEED: Record<string, [number, number]> = { relaxed: [1600, 2400], normal: [900, 1400], brisk: [400, 700] };
@@ -87,6 +87,11 @@ export class Table {
     activeTable = this;
   }
 
+  /** Moonlit Fog: no one's card count shows. */
+  get fogged(): boolean { return this.game.rules?.fog === true; }
+  /** The seat under the Thorned Crown, if any. */
+  get crownSeat(): number | undefined { return this.game.rules?.crownSeat; }
+
   /* ---------- Building the screen ---------- */
 
   mount(): HTMLElement {
@@ -94,7 +99,7 @@ export class Table {
     const opponents = m.lineup.length;
     this.root = h('div.screen.table-screen', {
       'data-screen': 'table', 'data-cloth': m.boss ? 'midnight-garden' : m.cloth, 'data-back': m.back,
-      class: `${m.boss ? 'boss' : ''} ${opponents === 1 ? 'duel' : ''} ${opponents > 3 ? 'crowded' : ''}`,
+      class: `${m.boss ? 'boss' : ''} ${isLunariaBoss(m) ? 'lunaria-boss' : ''} ${this.fogged ? 'fogged' : ''} ${opponents === 1 ? 'duel' : ''} ${opponents > 3 ? 'crowded' : ''}`,
     });
     const garland = h('div.garland', { html: garlandSvg() });
     const menuBtn = h('button.round-btn', { 'aria-label': 'Menu', html: icon('menu'), onclick: () => this.pauseMenu(), 'data-testid': 'menu' });
@@ -107,11 +112,14 @@ export class Table {
       const seat = i + 1;
       const portrait = portraitEl(bot, 'small');
       this.portraits[seat] = portrait;
-      const chip = h('div.chip', { 'data-seat': seat, 'data-bot': bot, 'data-testid': `chip-${seat}` },
-        h('div.chip-portrait', null, portrait, h('i.chip-badge')),
+      const crowned = seat === this.crownSeat;
+      const chip = h('div.chip', { 'data-seat': seat, 'data-bot': bot, 'data-testid': `chip-${seat}`, class: crowned ? 'crowned' : '' },
+        h('div.chip-portrait', null, crowned ? h('i.chip-crown', { 'data-testid': 'chip-crown', html: icon('crown') }) : null, portrait, h('i.chip-badge')),
         h('div.chip-text', null,
           h('b.chip-name', null, BOTS[bot].name),
-          h('span.chip-info', null, h('span.chip-phase'), ' · ', h('span.chip-count'), h('span.chip-cards')),
+          this.fogged
+            ? h('span.chip-info', null, h('span.chip-phase'), ' · ', h('span.fog-wisp', { 'data-testid': 'fog-wisp', 'aria-label': 'Card count hidden by the fog', html: icon('wisp') }))
+            : h('span.chip-info', null, h('span.chip-phase'), ' · ', h('span.chip-count'), h('span.chip-cards')),
         ),
         h('i.dots', { 'aria-label': 'Thinking' }, h('i'), h('i'), h('i')),
       );
@@ -162,6 +170,11 @@ export class Table {
   start(events: GameEvent[]): void {
     this.measure();
     this.ambientStop = startAmbient(this);
+    if (this.fogged) {
+      const stop = startFogAmbient(this);
+      const prev = this.ambientStop;
+      this.ambientStop = () => { prev(); stop(); };
+    }
     if (this.match.boss) {
       const stop = startBossAmbient(this);
       const prev = this.ambientStop;
@@ -231,8 +244,13 @@ export class Table {
     return hand.map((c) => c.id);
   }
 
+  /** Under the Thorned Crown, her groups never count as somewhere to hit. */
   hitTargets(card: Card): LaidGroup[] {
-    return this.game.groups.filter((g) => checkHit(g, card).ok);
+    return this.game.groups.filter((g) => !this.isCrowned(g) && checkHit(g, card).ok);
+  }
+
+  isCrowned(g: LaidGroup): boolean {
+    return this.crownSeat !== undefined && g.owner === this.crownSeat;
   }
 
   /** The cards worth a shimmer: those in the best partial grouping for her phase. Her own hand only. */
@@ -287,9 +305,11 @@ export class Table {
       const seat = i + 1;
       const p = this.game.players[seat];
       const chip = this.chips[seat];
-      chip.querySelector('.chip-phase')!.textContent = p.phase === null ? 'Choosing' : `Ph ${p.phase}`;
-      rollNumber(chip.querySelector('.chip-count') as HTMLElement, p.hand.length);
-      chip.querySelector('.chip-cards')!.textContent = p.hand.length === 1 ? ' card' : ' cards';
+      chip.querySelector('.chip-phase')!.textContent = p.phase === null ? 'Choosing' : `Ph ${phaseNumber(p.phase)}`;
+      if (!this.fogged) {
+        rollNumber(chip.querySelector('.chip-count') as HTMLElement, p.hand.length);
+        chip.querySelector('.chip-cards')!.textContent = p.hand.length === 1 ? ' card' : ' cards';
+      }
       const active = this.game.current === seat && (this.game.stage === 'draw' || this.game.stage === 'play');
       chip.classList.toggle('active', active);
       chip.classList.toggle('skipped', p.pendingSkip);
@@ -387,8 +407,9 @@ export class Table {
       if (groups.length === 0) continue;
       const p = g.players[seat];
       const name = seat === 0 ? 'Your' : `${BOTS[this.match.lineup[seat - 1]].name}'s`;
+      const crowned = seat === this.crownSeat;
       const row = h('div.laid-row', { 'data-seat': seat },
-        h('span.laid-label', null, `${name} Phase ${p.phase}`),
+        h('span.laid-label', null, crowned ? h('i.label-crown', { 'data-testid': 'label-crown', html: icon('crown') }) : null, `${name} Phase ${p.phase === null ? '' : phaseNumber(p.phase)}`),
         h('div.laid-groups', null, groups.map((x) => this.groupEl(x))),
       );
       this.laidEl.append(row);
@@ -418,12 +439,18 @@ export class Table {
   }
 
   groupEl(g: LaidGroup): HTMLElement {
+    const name = g.type === 'set' ? `Set of ${g.num}s`
+      : g.type === 'run' ? `Run from ${g.cards[0].num} to ${g.cards[g.cards.length - 1].num}`
+      : g.type === 'colorRun' ? `${g.suit} Color run from ${g.cards[0].num} to ${g.cards[g.cards.length - 1].num}`
+      : g.type === 'evens' ? 'Evens' : g.type === 'odds' ? 'Odds' : `${g.suit} Color group`;
+    const crowned = this.isCrowned(g);
     const el = h('button.group', {
       'data-group-id': g.id, 'data-testid': `group-${g.id}`,
-      'aria-label': `${g.type === 'set' ? `Set of ${g.num}s` : g.type === 'run' ? `Run from ${g.cards[0].num} to ${g.cards[g.cards.length - 1].num}` : `${g.suit} Color group`}, ${g.cards.length} cards`,
-      class: `${g.type === 'run' && g.cards.length > 5 ? 'long' : ''} t-${g.type}`,
+      'aria-label': `${name}, ${g.cards.length} cards${crowned ? ", Lunaria's, no one else can add to it" : ''}`,
+      class: `${(g.type === 'run' || g.type === 'colorRun') && g.cards.length > 5 ? 'long' : ''} t-${g.type} ${crowned ? 'crowned' : ''}`,
     });
     for (const p of g.cards) el.append(cardEl(p.card, true));
+    if (crowned) el.append(h('i.thorns', { 'aria-hidden': 'true', 'data-testid': 'thorn-border' }, h('i.thorn-sides'), h('i.thorn-sheen')));
     el.addEventListener('click', (e) => this.onGroupTap(g.id, e as MouseEvent));
     return el;
   }
@@ -440,7 +467,7 @@ export class Table {
       panel.dataset.sig = sig;
       clear(panel);
       panel.classList.toggle('compact', compact);
-      this.medal = h('div.medallion', { 'data-testid': 'medallion', 'aria-label': phase === null ? 'Choosing a phase' : `Phase ${phase}` }, h('span', null, phase ?? '?'));
+      this.medal = h('div.medallion', { 'data-testid': 'medallion', 'aria-label': phase === null ? 'Choosing a phase' : `Phase ${phaseNumber(phase)}` }, h('span', null, phase === null ? '?' : phaseNumber(phase)));
       const track = h('div.track', { 'aria-hidden': 'true' });
       for (const p of seq) {
         track.append(h('i', { class: me.completed.includes(p) || (me.laidDown && p === phase) ? 'done' : p === phase ? 'now' : '', 'data-p': p }));
@@ -603,7 +630,7 @@ export class Table {
       if (hittable) { label = 'Hit'; mode = 'hit'; active = my && g.stage === 'play' && !!sel; }
       else { label = 'Discard'; mode = 'discard'; active = my && g.stage === 'play' && !!sel; }
     } else {
-      label = me.phase === null ? 'Lay down' : `Lay down Phase ${me.phase}`;
+      label = me.phase === null ? 'Lay down' : `Lay down Phase ${phaseNumber(me.phase)}`;
       active = my && g.stage === 'play' && this.allSlotsReady();
     }
     this.primaryBtn.dataset.mode = mode;
@@ -1045,7 +1072,23 @@ export class Table {
     if (this.game.stage === 'draw') { invalid(el, 'You need to draw first.'); return; }
     if (!this.me.laidDown) { invalid(el, 'Lay down your phase before hitting.'); return; }
     if (this.selected.length !== 1) { invalid(el, 'Select one card first.'); return; }
+    const group = this.game.groups.find((g) => g.id === id);
+    if (group && this.isCrowned(group)) { this.thornBlock(el); return; }
     this.hitOn(id, el!, e.clientX);
+  }
+
+  /** Lunaria's groups refuse her cards: the thorns bristle, and Lunaria may say so once a round. */
+  thornsSaidRound = -1;
+  thornBlock(el: Element | null): void {
+    invalid(el, "No one can add to Lunaria's groups.");
+    fx('crown.thornBlock');
+    sfx('thornBlock');
+    const thorns = el?.querySelector('.thorns');
+    if (thorns && !motion.reduced) void animate(thorns, [{ transform: 'scale(1)' }, { transform: 'scale(1.08)', offset: 0.4 }, { transform: 'scale(1)' }], { ms: 250, ease: 'ease-out' });
+    if (this.crownSeat !== undefined && this.thornsSaidRound !== this.game.round) {
+      this.thornsSaidRound = this.game.round;
+      this.say(this.crownSeat, 'humanHitsCrown', true);
+    }
   }
 
   hitOn(groupId: number, el: Element, x: number | null): void {
@@ -1053,8 +1096,9 @@ export class Table {
     const card = this.cardById(cardId);
     const group = this.game.groups.find((g) => g.id === groupId);
     if (!card || !group) return;
+    if (this.isCrowned(group)) { this.thornBlock(el); return; }
     const action: Action = { type: 'hit', cardId, groupId };
-    if (group.type === 'run' && card.kind === 'wild' && x !== null) {
+    if ((group.type === 'run' || group.type === 'colorRun') && card.kind === 'wild' && x !== null) {
       // A Wild goes on the end nearest the tap, when that end has room.
       const check = checkHit(group, card);
       if (check.ok) {
@@ -1101,7 +1145,8 @@ export class Table {
       const off = p.pendingSkip;
       const row = h('button.target', { class: off ? 'off' : '', 'data-testid': `target-${seat}`, 'aria-disabled': off ? 'true' : undefined },
         portraitEl(bot, 'small'),
-        h('span.t-main', null, h('b', null, BOTS[bot].name), h('small', null, `Phase ${p.phase} · ${p.hand.length} cards${off ? ' · already skipped' : ''}`)),
+        // In the fog the picker shows only who and which phase.
+        h('span.t-main', null, h('b', null, BOTS[bot].name), h('small', null, `Phase ${p.phase === null ? '' : phaseNumber(p.phase)}${this.fogged ? '' : ` · ${p.hand.length} cards`}${off ? ' · already skipped' : ''}`)),
       );
       row.addEventListener('click', () => {
         if (off) { invalid(row, 'That player is already being skipped.'); return; }
@@ -1242,6 +1287,7 @@ export class Table {
       case 'draw': await this.presentDraw(e); break;
       case 'reshuffle': await reshuffleMoment(this); break;
       case 'noDraw': noteToast('Nothing to draw.'); break;
+      case 'stalemate': fx('round.stalemate'); noteToast('No one can go out, so the round ends here.'); break;
       case 'layDown': {
         if (e.seat === 0) {
           await this.celebrate(() => layDownMoment(this, e.phase, e.groupIds));
@@ -1331,7 +1377,7 @@ export class Table {
       this.renderPiles();
       const to = rectOf(this.chips[e.seat]);
       const target = { left: to.left + to.width / 2 - from.width * 0.25, top: to.top + to.height / 2 - from.height * 0.25, width: from.width * 0.5, height: from.height * 0.5 };
-      if (e.source === 'discard') sfx('takeDiscard', { quiet: 0.6 });
+      if (e.source === 'discard') { sfx('takeDiscard', { quiet: 0.6 }); this.say(e.seat, 'takesDiscard'); }
       else sfx('draw', { quiet: 0.5 });
       fx(e.source === 'pile' ? 'card.draw' : 'card.takeDiscard');
       await flyCard(this, e.source === 'discard' ? e.card : null, from, target, false, 240);
@@ -1405,7 +1451,7 @@ export class Table {
     const list = h('div.phase-choices', { 'data-testid': 'phase-choices' });
     const sheet = openSheet(list, { title: 'Choose your phase', dismissable: false });
     for (const p of open) {
-      const row = h('button.phase-choice', { 'data-testid': `choose-${p}` }, h('span.medallion.small', null, h('span', null, p)), h('span', null, phaseText(p)));
+      const row = h('button.phase-choice', { 'data-testid': `choose-${p}` }, h('span.medallion.small', null, h('span', null, phaseNumber(p))), h('span', null, phaseText(p)));
       row.addEventListener('click', () => {
         void sheet.close();
         this.enqueue(async () => {
@@ -1472,6 +1518,7 @@ export class Table {
     if (!this.alive) return;
     const summary: MatchSummary = finishMatch(app.save, this.match);
     if (this.game.winners.includes(0) && this.match.boss) await bossDefeatMoment(this);
+    if (summary.liftedFog) await lunariaDefeatMoment(this);
     const finished = this.match;
     app.save.match = null;
     persist();
@@ -1480,10 +1527,10 @@ export class Table {
       const seat = i + 1;
       const won = this.game.winners.includes(seat);
       this.setFace(seat, won ? 'happy' : 'sad');
-      if (bot === 'nightshade') this.say(seat, won ? 'wins' : 'loses', true);
+      if (bot === 'nightshade' || (bot === 'lunaria' && isLunariaBoss(finished))) this.say(seat, won ? 'wins' : 'loses', true);
       else this.say(seat, won ? 'wins' : 'loses', won);
     });
-    await pause(finished.boss ? 1600 : 700);
+    await pause(finished.boss || isLunariaBoss(finished) ? 1600 : 700);
     if (!this.alive) return;
     showMatchEnd(this, finished, summary);
     this.autoHook?.();
@@ -1501,8 +1548,9 @@ export class Table {
   }
 
   syncTension(): void {
-    if (!this.match.boss) return;
-    const on = this.game.players.some((p) => p.phase !== null && p.phase >= 9);
+    if (!this.match.boss && !isLunariaBoss(this.match)) return;
+    // Map 1's rule, also at Lunaria's table: the tension layer joins once anyone reaches the last two phases.
+    const on = this.game.players.some((p) => p.phase !== null && phaseNumber(p.phase) >= 9);
     this.root.classList.toggle('tense', on);
     if (on) fx('boss.tension');
     setTension(on);
@@ -1585,7 +1633,7 @@ export class Table {
       app.save.match = null;
       persist();
       closeAllSheets();
-      show(journey(), 'map');
+      show(journey(), mapMusic());
     }, 'Keep playing');
   }
 

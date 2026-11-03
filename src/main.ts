@@ -7,7 +7,7 @@ import { resumePending, setHidden, sfx, unlockAudio } from './ui/audio/audio.ts'
 import { h, wait } from './ui/dom.ts';
 import { SPRING, animate, fx, setFxLayer } from './ui/fx/motion.ts';
 import { noteToast } from './ui/overlays.ts';
-import { journey, resumeMatch } from './ui/screens/journey.ts';
+import { journey, mapMusic, resumeMatch } from './ui/screens/journey.ts';
 import { installDevHooks } from './dev/hooks.ts';
 
 const WEEK = 7 * 24 * 60 * 60 * 1000;
@@ -146,7 +146,7 @@ async function boot(): Promise<void> {
   setFxLayer(host);
   const saved = app.save.match;
   // Paint the home screen behind the splash so nothing flashes.
-  if (!saved) show(journey(), 'map', 'none');
+  if (!saved) show(journey(), mapMusic(), 'none');
   startup.tenCharmsStarted = true;
   await installHelper();
   await splash();

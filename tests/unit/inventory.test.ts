@@ -10,6 +10,13 @@ test('a removed or renamed test fails the list check, and a new test does not', 
   assert.equal(compareList([row('one')], [ran('renamed')]).length, 1);
 });
 
+test('every Map 2 test carries a timing class', () => {
+  const glade: Row = { file: '11-glade.spec.ts', title: 'glade: x', project: 'max', skipped: false };
+  const listed = [{ ...ran('x'), file: '11-glade.spec.ts', title: 'glade: x' }];
+  assert.match(compareList([glade], listed)[0], /no timing class/);
+  assert.deepEqual(compareList([{ ...glade, timing: 'real' }], listed), []);
+});
+
 test('a test on a different project counts as removed', () => {
   assert.equal(compareList([row('one')], [{ ...ran('one'), project: 'se' }]).length, 1);
 });

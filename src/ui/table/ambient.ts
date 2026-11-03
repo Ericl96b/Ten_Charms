@@ -1,5 +1,7 @@
-// The table's always-running life: drifting petals, moths at the boss table. Paused when the app is hidden.
+// The table's always-running life: drifting petals, moths at the boss table, fog clouds. Paused when the app is hidden.
 import { mothSvg, petalSvg } from '../art.ts';
+import { sfx } from '../audio/audio.ts';
+import { fogLayer } from '../fx/fog.ts';
 import { h } from '../dom.ts';
 import { fx, motion } from '../fx/motion.ts';
 import type { Table } from './table.ts';
@@ -89,5 +91,34 @@ export function startBossAmbient(t: Table): () => void {
     stopped = true;
     clearTimeout(timer);
     layer.remove();
+  };
+}
+
+/**
+ * Moonlit Fog at the table: one cloud layer laid just above the tablecloth, so clouds cross the wallpaper and
+ * the cloth alike and pass under everything on it. The count wisps on the chips puff now and then.
+ */
+export function startFogAmbient(t: Table): () => void {
+  const fog = fogLayer(t.root.clientWidth, t.root.clientHeight);
+  t.clothEl.after(fog.el);
+  let stopped = false;
+  let turn = 0;
+  const puff = () => {
+    if (stopped) return;
+    timer = window.setTimeout(puff, 3200);
+    if (motion.reduced || document.hidden) return;
+    const wisps = [...t.root.querySelectorAll<HTMLElement>('.fog-wisp')];
+    if (wisps.length === 0) return;
+    const w = wisps[turn++ % wisps.length];
+    fx('fog.wispPuff');
+    // Only one chip puffs at a time, and the sound is very soft.
+    sfx('wispPuff', { quiet: 0.25 });
+    w.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.25)', offset: 0.35 }, { transform: 'scale(1)' }], { duration: 700, easing: 'ease-out', id: 'ambient' });
+  };
+  let timer = window.setTimeout(puff, __DEV__ ? 80 : 2400);
+  return () => {
+    stopped = true;
+    clearTimeout(timer);
+    fog.stop();
   };
 }

@@ -1,6 +1,6 @@
-// Nightshade's theatrics: the entrance, and the garden's return to daylight.
-import { BOTS, LINES } from '../../content.ts';
-import { mothSvg, portraitEl } from '../art.ts';
+// The bosses' theatrics: Nightshade's entrance and the garden's return to daylight, and Lunaria's entrance and exit.
+import { BOTS, LINES, LUNARIA_TITLE } from '../../content.ts';
+import { icon, mothSvg, portraitEl } from '../art.ts';
 import { playMusic, sfx } from '../audio/audio.ts';
 import { h, rectOf, wait } from '../dom.ts';
 import { SOFT, animate, burst, center, finishAll, fx, motion, pause } from '../fx/motion.ts';
@@ -99,4 +99,93 @@ export async function bossDefeatMoment(t: Table): Promise<void> {
     { transform: 'translateX(-50%) scale(1)', opacity: 1 },
   ], { ms: 420 });
   await pause(1400);
+}
+
+/* ---------- Lady Lunaria ---------- */
+
+/**
+ * About 4 s, tap to skip. Mist gathers from the edges, silver threads weave into a crown, Lunaria rises,
+ * Puff and Haze bob into their seats, then her line, the rule chips, and her music.
+ */
+export function lunariaIntro(t: Table, line: string, fogged: boolean): Promise<void> {
+  return new Promise((resolve) => {
+    fx('lunaria.intro');
+    sfx('bossIntro');
+    const host = t.root;
+    const overlay = h('div.boss-intro.lunaria-intro', { 'data-testid': 'boss-intro' });
+    host.append(overlay);
+    let done = false;
+    const finish = () => {
+      if (done) return;
+      done = true;
+      finishAll();
+      playMusic('lunaria');
+      void animate(overlay, [{ opacity: 1 }, { opacity: 0 }], { ms: 260 }).then(() => {
+        overlay.remove();
+        resolve();
+      });
+    };
+    overlay.addEventListener('pointerdown', finish);
+    overlay.addEventListener('click', finish);
+    const s = motion.factor * motion.testScale;
+
+    const mist = h('div.li-mist');
+    overlay.append(mist);
+    fx('lunaria.mist');
+    void animate(mist, [{ opacity: 0, transform: 'scale(1.25)' }, { opacity: 1, transform: 'scale(1)' }], { ms: 900, ease: SOFT });
+
+    // Silver threads weave across the screen into a crown.
+    const threads = h('div.li-threads', { html: '<svg viewBox="0 0 200 120" aria-hidden="true"><path d="M10 100C60 60 140 140 190 60" /><path d="M10 60C70 120 130 20 190 100" /><path d="M30 92L44 40L70 74L100 22L130 74L156 40L170 92Z" class="crown-line"/></svg>' });
+    overlay.append(threads);
+    fx('lunaria.threads');
+    threads.querySelectorAll('path').forEach((p, i) => {
+      void animate(p, [{ strokeDashoffset: 400 }, { strokeDashoffset: 0 }], { ms: 1100, delay: 300 + i * 220, ease: SOFT });
+    });
+
+    const portrait = portraitEl('lunaria', 'large', 'intense');
+    const glow = h('div.bi-glow.li-glow');
+    const title = h('h1.bi-title.li-title', { 'data-testid': 'boss-title' }, LUNARIA_TITLE);
+    const said = h('p.bi-line.li-line', { 'data-testid': 'boss-line' }, line);
+    const chips = h('div.rule-chips.li-chips', null,
+      fogged ? h('span.rule-chip', { html: `${icon('wisp')}<span>Moonlit Fog — card counts are hidden.</span>` }) : null,
+      h('span.rule-chip', { html: `${icon('thorncrown')}<span>Thorned Crown — no one can add to Lunaria's groups.</span>` }),
+    );
+    overlay.append(h('div.bi-center', null, glow, portrait, title, said, chips));
+    fx('lunaria.portrait');
+    void animate(portrait, [{ transform: 'translateY(60px) scale(.8)', opacity: 0 }, { transform: 'none', opacity: 1 }], { ms: 800, delay: 1300, ease: SOFT });
+    void animate(glow, [{ opacity: 0, transform: 'scale(.5)' }, { opacity: 1, transform: 'scale(1)' }], { ms: 900, delay: 1300, ease: SOFT });
+    void animate(title, [{ opacity: 0, transform: 'scale(.85)' }, { opacity: 1, transform: 'scale(1)' }], { ms: 500, delay: 1900, ease: SOFT });
+
+    // Puff and Haze bob into their seats.
+    t.match.lineup.forEach((bot, i) => {
+      if (bot !== 'puff' && bot !== 'haze') return;
+      fx('lunaria.wispsIn');
+      void animate(t.chips[i + 1], [{ transform: 'translateY(-2.4rem)', opacity: 0 }, { transform: 'translateY(.4rem)', opacity: 1, offset: 0.7 }, { transform: 'none', opacity: 1 }], { ms: 700, delay: 2200 + i * 120, ease: SOFT });
+    });
+    void animate(said, [{ opacity: 0 }, { opacity: 1 }], { ms: 500, delay: 2600 });
+    void animate(chips, [{ opacity: 0, transform: 'translateY(.6rem)' }, { opacity: 1, transform: 'none' }], { ms: 400, delay: 3000 });
+    void wait(2600 * s).then(() => {
+      if (!done) { fx('lunaria.line'); playMusic('lunaria'); }
+    });
+    void wait(4200 * s).then(finish);
+  });
+}
+
+/** On the first win only: her portrait dissolves into pink mist before the usual victory. */
+export async function lunariaDefeatMoment(t: Table): Promise<void> {
+  fx('lunaria.dissolve');
+  const seat = t.match.lineup.indexOf('lunaria') + 1;
+  const portrait = t.portraits[seat];
+  if (!portrait) return;
+  const r = rectOf(portrait);
+  const c = center(r);
+  const mist = h('div.li-dissolve');
+  const host = rectOf(t.fxEl);
+  mist.style.cssText = `left:${c.x - host.left}px;top:${c.y - host.top}px`;
+  t.fxEl.append(mist);
+  void animate(portrait, [{ opacity: 1, filter: 'blur(0)' }, { opacity: 0, filter: 'blur(6px)' }], { ms: 900, ease: SOFT, fill: 'forwards' });
+  await animate(mist, [{ opacity: 0, transform: 'translate(-50%,-50%) scale(.4)' }, { opacity: 0.9, transform: 'translate(-50%,-50%) scale(1.4)', offset: 0.5 }, { opacity: 0, transform: 'translate(-50%,-50%) scale(2.4)' }], { ms: 1200, ease: SOFT });
+  mist.remove();
+  burst(c.x, c.y, 14, ['petal'], 80);
+  await pause(400);
 }

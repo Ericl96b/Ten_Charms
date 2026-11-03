@@ -1,5 +1,6 @@
 // Compares qa-screenshots/cr01/current with the saved baseline. Any changed pixel outside what a change may touch fails.
 // Usage: node scripts/compare-shots.mjs [allowed tags, comma separated] [other folder]
+// The tag map-switcher sets aside the map switcher that took the title's place in Map 2; everything else must match.
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import sharp from 'sharp';
 
@@ -27,6 +28,12 @@ for (const name of baseNames) {
     l: meta.icon.x * meta.scale, t: meta.icon.y * meta.scale,
     r: (meta.icon.x + meta.icon.width) * meta.scale, b: (meta.icon.y + meta.icon.height) * meta.scale,
   } : null;
+  const now = existsSync(b.replace(/\.png$/, '.json')) ? JSON.parse(readFileSync(b.replace(/\.png$/, '.json'), 'utf8')) : {};
+  const sw = allowed.has('map-switcher') && now.switcher ? {
+    // Its shadow reaches a few points past its box.
+    l: (now.switcher.x - 8) * meta.scale, t: (now.switcher.y - 8) * meta.scale,
+    r: (now.switcher.x + now.switcher.width + 8) * meta.scale, b: (now.switcher.y + now.switcher.height + 8) * meta.scale,
+  } : null;
   const [x, y] = await Promise.all([raw(a), raw(b)]);
   compared++;
   if (x.width !== y.width || x.height !== y.height) { console.log(`SIZE     ${name}`); failed++; continue; }
@@ -34,6 +41,7 @@ for (const name of baseNames) {
   for (let py = 0; py < x.height; py++) {
     for (let px = 0; px < x.width; px++) {
       if (box && px >= box.l && px < box.r && py >= box.t && py < box.b) continue;
+      if (sw && px >= sw.l && px < sw.r && py >= sw.t && py < sw.b) continue;
       const i = (py * x.width + px) * 4;
       if (Math.abs(x.data[i] - y.data[i]) > TOLERANCE || Math.abs(x.data[i + 1] - y.data[i + 1]) > TOLERANCE || Math.abs(x.data[i + 2] - y.data[i + 2]) > TOLERANCE) {
         changed++;

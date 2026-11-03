@@ -5,8 +5,10 @@
 import { spawnSync } from 'node:child_process';
 import { readFileSync, writeFileSync } from 'node:fs';
 import { pathToFileURL } from 'node:url';
+import { MAP2_FILES, timingOf } from '../tests/e2e/stages.ts';
 
-export type Row = { file: string; title: string; project: string; skipped: boolean };
+/** `timing` says whether a Map 2 test runs on a fast clock or in real time; every Map 2 test must have one. */
+export type Row = { file: string; title: string; project: string; skipped: boolean; timing?: 'real' | 'fast' };
 export type Ran = { file: string; title: string; project: string; status: string; attempts: number };
 
 type Suite = {
@@ -36,10 +38,13 @@ export function flatten(report: Report): Ran[] {
 
 const key = (r: { file: string; title: string; project: string }): string => `${r.project} | ${r.file} | ${r.title}`;
 
-/** Finds tests that went missing. New tests are fine. */
+/** Finds tests that went missing, and Map 2 tests with no timing class. New tests are fine. */
 export function compareList(inventory: Row[], listed: Ran[]): string[] {
   const seen = new Set(listed.map(key));
-  return inventory.filter((r) => !seen.has(key(r))).map((r) => `removed: ${key(r)}`);
+  return [
+    ...inventory.filter((r) => !seen.has(key(r))).map((r) => `removed: ${key(r)}`),
+    ...inventory.filter((r) => MAP2_FILES.test(r.file) && !r.timing).map((r) => `no timing class: ${key(r)}`),
+  ];
 }
 
 /** Finds any inventory test that didn't run as it should, across the reports of all the stages of one run. */
@@ -77,7 +82,7 @@ function main(): void {
   const [command, ...files] = process.argv.slice(2);
   if (command === 'write') {
     const rows: Row[] = files.flatMap((f) => flatten(readReport(f)))
-      .map((r) => ({ file: r.file, title: r.title, project: r.project, skipped: r.status === 'skipped' }))
+      .map((r): Row => ({ file: r.file, title: r.title, project: r.project, skipped: r.status === 'skipped', ...(MAP2_FILES.test(r.file) ? { timing: timingOf(r.title) } : {}) }))
       .sort((a, b) => key(a).localeCompare(key(b)));
     writeFileSync(INVENTORY, JSON.stringify(rows, null, 1) + '\n');
     console.log(`Wrote ${rows.length} tests, ${rows.filter((r) => r.skipped).length} skipped`);

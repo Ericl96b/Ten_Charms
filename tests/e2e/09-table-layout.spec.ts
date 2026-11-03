@@ -53,6 +53,12 @@ for (const name of FIXTURES) {
     for (const where of ['top', 'middle', 'bottom'] as const) {
       await scrollLaid(page, where);
       await page.waitForTimeout(80);
+      // The fades follow the scroll event, which a busy machine can deliver late. Give it a moment, then check.
+      await page.waitForFunction(() => {
+        const l = document.querySelector<HTMLElement>('.laid')!;
+        return l.classList.contains('fade-top') === l.scrollTop > 1
+          && l.classList.contains('fade-bottom') === l.scrollTop + l.clientHeight < l.scrollHeight - 1;
+      }, null, { timeout: 2000 }).catch(() => {});
       const state = await page.evaluate(() => {
         const laid = document.querySelector<HTMLElement>('.laid')!;
         const area = laid.getBoundingClientRect();

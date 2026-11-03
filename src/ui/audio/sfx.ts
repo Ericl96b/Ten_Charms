@@ -3,6 +3,7 @@ export const SOUND_IDS = [
   'tap', 'select', 'dragStart', 'drop', 'draw', 'takeDiscard', 'discard', 'deal', 'slotValid', 'layReady', 'layDown',
   'oppLayDown', 'hit', 'skipOnHer', 'skipPlayed', 'goOutHer', 'goOutBot', 'tally', 'phaseAdvance', 'invalid', 'reshuffle',
   'star', 'unlock', 'charm', 'victory', 'defeat', 'bossIntro',
+  'fogLift', 'thornBlock', 'wispPuff', 'pageTurn',
 ] as const;
 
 export type SoundId = (typeof SOUND_IDS)[number];
@@ -140,4 +141,21 @@ export const SYNTH: Record<SoundId, Synth> = {
     for (let i = 0; i < 16; i++) swish(c, o, t + 0.4 + i * 0.16, 700 + (i % 3) * 200, 0.07, 0.05, 1.2);
     return 3.2;
   },
+  /** A rising airy swell, then a cascade of chimes. */
+  fogLift(c, o, t, p) {
+    swish(c, o, t, 400 * p, 1.6, 0.12, 0.6, 8);
+    slide(c, o, t, 220 * p, 440 * p, 1.6, 0.08);
+    [NOTE.C6, NOTE.G5, NOTE.E6, NOTE.C6, NOTE.G6, NOTE.E6, 2093].forEach((f, i) => bell(c, o, t + 1.2 + i * 0.11, f * p, 0.9, 0.1));
+    return 2.8;
+  },
+  /** A soft, prickly rustle. */
+  thornBlock(c, o, t, p) {
+    for (let i = 0; i < 5; i++) swish(c, o, t + i * 0.035, (3200 + i * 300) * p, 0.03, 0.07, 3);
+    tone(c, o, t, 260 * p, 0.08, 0.08, 'triangle');
+    return 0.25;
+  },
+  /** A tiny soft poof. */
+  wispPuff(c, o, t, p) { swish(c, o, t, 900 * p, 0.12, 0.05, 0.6, 0.5); return 0.14; },
+  /** A light page-turn. */
+  pageTurn(c, o, t, p) { swish(c, o, t, 2600 * p, 0.16, 0.1, 0.8, 1.8); swish(c, o, t + 0.08, 4200 * p, 0.08, 0.05, 1.2); return 0.25; },
 };

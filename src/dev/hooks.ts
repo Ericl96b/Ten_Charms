@@ -5,8 +5,10 @@ import type { GameState, Variant } from '../engine/types.ts';
 import { loadSave, type SaveData, type MatchMode } from '../meta/save.ts';
 import { app, persist, show } from '../ui/app.ts';
 import { SOUND_IDS } from '../ui/audio/audio.ts';
+import { freezeFogForTests } from '../ui/fx/fog.ts';
+import { phaseSequence } from '../engine/phases.ts';
 import { applyMotionVars, eventLog, motion } from '../ui/fx/motion.ts';
-import { journey, resumeMatch, startFromMode } from '../ui/screens/journey.ts';
+import { journey, mapMusic, resumeMatch, startFromMode } from '../ui/screens/journey.ts';
 import { activeTable } from '../ui/table/table.ts';
 
 type Dice = () => number;
@@ -95,7 +97,7 @@ export function installDevHooks(): void {
     loadSave(data: SaveData) {
       app.save = data;
       persist();
-      show(journey(), 'map', 'none');
+      show(journey(), mapMusic(), 'none');
     },
     reloadSave() { app.save = loadSave(); },
     resume() { if (app.save.match) resumeMatch(app.save.match); },
@@ -123,11 +125,14 @@ export function installDevHooks(): void {
       if (on) autoStep();
     },
     autoTrace: () => autoTrace.slice(),
+    /** Holds every drifting cloud at its starting place, so screenshots of fogged screens repeat exactly. */
+    freezeFog: () => freezeFogForTests(),
     autoRunning: () => autoOn,
     endMatchNow(winnerSeat: number) {
       const t = activeTable!;
       const g = t.game;
-      g.players.forEach((p, i) => { if (i === winnerSeat) { p.completed = [1, 2, 3, 4, 5, 6, 7, 8, 9]; p.phase = 10; p.laidDown = true; p.hand = [p.hand[0]]; } });
+      const seq = phaseSequence(g.variant);
+      g.players.forEach((p, i) => { if (i === winnerSeat) { p.completed = seq.slice(0, -1); p.phase = seq[seq.length - 1]; p.laidDown = true; p.hand = [p.hand[0]]; } });
       g.current = winnerSeat;
       g.stage = 'play';
     },

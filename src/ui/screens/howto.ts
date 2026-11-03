@@ -1,5 +1,6 @@
 // How to Play: the rules in plain, friendly language.
-import { phaseSequence, phaseText } from '../../engine/phases.ts';
+import { phaseNumber, phaseSequence, phaseText } from '../../engine/phases.ts';
+import { gladeOpen } from '../../meta/progress.ts';
 import { app, persist } from '../app.ts';
 import { cardEl, icon } from '../art.ts';
 import { h } from '../dom.ts';
@@ -13,6 +14,20 @@ const SKIP: Card = { id: 104, kind: 'skip' };
 
 function sample(cards: Card[]): HTMLElement {
   return h('div.sample', { 'aria-hidden': 'true' }, cards.map((x) => cardEl(x, true)));
+}
+
+/** The Moonlit Glade's list, with an example of each new kind of group. Shown once the Glade is open. */
+function moonlitSection(sec: (title: string, ...body: (HTMLElement | string)[]) => HTMLElement): HTMLElement {
+  const el = sec('Moonlit Phases',
+    'Every match in the Moonlit Glade uses its own list of ten phases, with two new kinds of group. A Pair is a Set of exactly 2.',
+    h('ol.phase-list', null, phaseSequence('moonlit').map((p) => h('li', null, h('b', null, `Phase ${phaseNumber(p)}`), h('span', null, phaseText(p))))),
+    h('p', null, h('b', null, 'A Color run'), ' is cards in a row, all of one suit. It stays within 1 to 12, and a Wild takes the number and suit of its place.'),
+    sample([c(20, 4, 'moss'), c(21, 5, 'moss'), WILD, c(22, 7, 'moss')]),
+    h('p', null, h('b', null, 'Evens'), ' or ', h('b', null, 'Odds'), ' are cards whose numbers are all even, or all odd, in any suit. Numbers can repeat.'),
+    sample([c(23, 2, 'rose'), c(24, 8, 'honey'), c(25, 8, 'moonstone'), c(26, 12, 'moss')]),
+  );
+  el.dataset.testid = 'moonlit-phases';
+  return el;
 }
 
 export function howToPlay(onClose: () => void): void {
@@ -44,6 +59,7 @@ export function howToPlay(onClose: () => void): void {
         'A Wild can stand in for any card in a group, but every group needs at least one regular card. You can even pick a Wild up from the discard pile.',
         'A Skip makes someone miss their next turn. Discard it and choose who. Skips can\'t go in groups, and they can\'t be picked up.',
       ),
+      gladeOpen(app.save) ? moonlitSection(sec) : null,
       sec('Your turn',
         h('ol.steps', null,
           h('li', null, 'Draw one card, from the draw pile or the discard pile.'),

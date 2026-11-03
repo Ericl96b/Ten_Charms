@@ -1,6 +1,7 @@
 // Round end, review, discard history, and the match-end sequences.
 import { BOTS, CHARMS, STOPS, TYPE_LABEL, type Unlockable } from '../../content.ts';
 import { cardLabel, cardPoints } from '../../engine/cards.ts';
+import { phaseNumber, phaseSequence } from '../../engine/phases.ts';
 import type { Card, HistoryEntry, RoundResult } from '../../engine/types.ts';
 import type { MatchSummary } from '../../meta/progress.ts';
 import { standings } from '../../meta/progress.ts';
@@ -12,7 +13,7 @@ import { clear, h, wait } from '../dom.ts';
 import { SOFT, SPRING, animate, burst, center, finishAll, fx, motion, pause, rollNumber } from '../fx/motion.ts';
 import { closeAllSheets, confirmSheet, openSheet } from '../overlays.ts';
 import type { Table } from '../table/table.ts';
-import { journey, startFromMode } from './journey.ts';
+import { journey, mapMusic, startFromMode } from './journey.ts';
 import { itemPreview } from './collection.ts';
 
 function seatName(t: Table, seat: number): string {
@@ -31,15 +32,16 @@ function miniCards(cards: Card[]): HTMLElement {
 
 function phaseChange(t: Table, r: RoundResult, seat: number): HTMLElement {
   const before = r.phasesBefore[seat];
-  if (!r.advanced[seat]) return h('span.ph-change.stay', null, `Stays on ${before}`);
+  if (!r.advanced[seat]) return h('span.ph-change.stay', null, `Stays on ${before === null ? '' : phaseNumber(before)}`);
   const after = t.game.players[seat].phase ?? (before !== null ? before + 1 : 0);
   const isChoose = t.game.variant === 'choose';
   const finished = t.game.stage === 'matchOver' || isChoose;
-  return h('span.ph-change', { html: finished ? `Phase ${before} ${icon('check')}` : `Phase ${before} <i class="gold-arrow">→</i> ${nextFor(t, before!, after)}` });
+  const shown = phaseNumber(before!);
+  return h('span.ph-change', { html: finished ? `Phase ${shown} ${icon('check')}` : `Phase ${shown} <i class="gold-arrow">→</i> ${phaseNumber(nextFor(t, before!, after))}` });
 }
 
 function nextFor(t: Table, before: number, _after: number): number {
-  const seq = t.game.variant === 'sprint' ? [1, 3, 5, 7, 9] : [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+  const seq = phaseSequence(t.game.variant);
   return seq[seq.indexOf(before) + 1] ?? before;
 }
 
@@ -140,7 +142,7 @@ function rematch(match: SavedMatch): void {
 
 function toMap(): void {
   closeAllSheets();
-  show(journey(), 'map');
+  show(journey(), mapMusic());
   maybeBackupPrompt();
 }
 
@@ -184,7 +186,7 @@ async function victory(t: Table, match: SavedMatch, s: MatchSummary): Promise<vo
   screen.addEventListener('pointerdown', onTap);
   await pause(skipped ? 0 : 900);
 
-  if (match.mode.kind === 'campaign') {
+  if (match.mode.kind === 'campaign' || match.mode.kind === 'glade') {
     const stars = h('div.vic-stars', { 'data-testid': 'stars', 'aria-label': `${s.stars} of 3 stars` });
     stage.append(stars);
     for (let i = 0; i < 3; i++) {
@@ -290,7 +292,7 @@ function loss(t: Table, match: SavedMatch, s: MatchSummary): void {
     ], { ms: 3200 + Math.random() * 1600, delay: Math.random() * 1400, ease: 'linear' }).then(() => p.remove());
   }
   const me = match.game.players[0];
-  const reached = me.phase ?? me.completed.length;
+  const reached = me.phase !== null ? phaseNumber(me.phase) : me.completed.length;
   const card = h('div.loss-card', null,
     portraitEl(bot, 'medium', 'happy'),
     h('h1.title', null, 'So close!'),

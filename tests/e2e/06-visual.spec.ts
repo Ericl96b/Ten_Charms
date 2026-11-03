@@ -18,7 +18,10 @@ async function shot(page: Page, project: string, name: string, tags: string[] = 
   const file = `${DIR}/${name}-${project}`;
   await page.screenshot({ path: `${file}.png`, animations: 'disabled' });
   const icon = tags.includes('settings-icon') ? await page.locator('[data-testid="settings"]').boundingBox() : null;
-  writeFileSync(`${file}.json`, JSON.stringify({ tags, icon, scale: 2 }));
+  // Where the map switcher sits, so a comparison can set aside the one part of a map screen Map 2 changed.
+  const sw = page.locator('[data-testid="map-switch"]');
+  const switcher = (await sw.count()) > 0 ? await sw.boundingBox() : null;
+  writeFileSync(`${file}.json`, JSON.stringify({ tags, icon, switcher, scale: 2 }));
 }
 
 /** Fixes the random choices, and hides the layers that drift or come and go by the clock. */
@@ -59,6 +62,8 @@ const setProgress = (page: Page, won: boolean[], stars: number[]) => page.evalua
   save.campaign.won = w;
   save.campaign.stars = s;
   save.tutorial.done = true;
+  // The Glade's one-time reveal has its own test. These shots stay on the Rose Garden.
+  save.glade.revealSeen = true;
   t.loadSave(save);
 }, [won, stars] as const);
 

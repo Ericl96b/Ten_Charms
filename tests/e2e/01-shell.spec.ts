@@ -71,6 +71,8 @@ test('production manifest and service worker validate', async ({ request }) => {
 test('production build has no developer hooks and no outside network calls', async ({ request }) => {
   const js = await (await request.get('http://localhost:4175/app.js')).text();
   expect(js).not.toContain('__TC__');
+  // The fog's screenshot freeze is a test hook too.
+  expect(js).not.toContain('freezeFog');
   const css = await (await request.get('http://localhost:4175/app.css')).text();
   expect(js + css).not.toMatch(/fonts\.googleapis|https?:\/\/(?!www\.w3\.org)/);
 });

@@ -14,12 +14,15 @@ const FX = [
   'victory.bloom', 'victory.star', 'victory.unlock', 'victory.charm', 'loss.petals',
   'ui.buttonPress', 'ui.odometer', 'ui.sheet', 'ui.charmToast', 'ui.turnGlow', 'ui.botThinking', 'ui.reshuffle', 'ui.deal', 'ui.bubble', 'ui.expression',
   'boss.intro', 'boss.darken', 'boss.clothFade', 'boss.mothsIn', 'boss.portrait', 'boss.line', 'boss.moths', 'boss.tension', 'boss.victory',
+  'fog.clouds', 'fog.wispPuff', 'fog.lift', 'fog.bloom', 'glade.fireflies', 'glade.reveal', 'map.switch', 'crown.thornBlock',
+  'lunaria.intro', 'lunaria.mist', 'lunaria.threads', 'lunaria.portrait', 'lunaria.wispsIn', 'lunaria.dissolve',
 ];
 
 const SOUNDS = [
   'tap', 'select', 'dragStart', 'drop', 'draw', 'takeDiscard', 'discard', 'deal', 'slotValid', 'layReady', 'layDown', 'oppLayDown', 'hit',
   'skipOnHer', 'skipPlayed', 'goOutHer', 'goOutBot', 'tally', 'phaseAdvance', 'invalid', 'reshuffle', 'star', 'unlock', 'charm', 'victory', 'defeat', 'bossIntro',
   'music.map', 'music.waltz', 'music.boss',
+  'fogLift', 'thornBlock', 'wispPuff', 'pageTurn', 'music.gladeFog', 'music.gladeLift', 'music.lunaria', 'music.moonwaltz',
 ];
 
 test('11. juice coverage: every animation and sound event fired during the suite', ({}, info) => {

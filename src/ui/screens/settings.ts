@@ -8,7 +8,7 @@ import { h } from '../dom.ts';
 import { SOFT, animate } from '../fx/motion.ts';
 import { confirmSheet, invalid, noteToast, openSheet } from '../overlays.ts';
 import { CREDITS } from '../../credits.ts';
-import { journey } from './journey.ts';
+import { journey, mapMusic } from './journey.ts';
 
 function row(label: string, control: HTMLElement): HTMLElement {
   return h('div.set-row', null, h('span.set-label', null, label), control);
@@ -114,7 +114,7 @@ function confirmImport(data: SaveData, closeOuter: () => Promise<void>): void {
     applySettings();
     void closeOuter();
     document.querySelector('[data-testid="settings-screen"]')?.remove();
-    show(journey(), 'map');
+    show(journey(), mapMusic());
     noteToast('Your garden is restored.');
   });
 }
@@ -132,7 +132,7 @@ function resetFlow(closeSettings: () => void): void {
       applySettings();
       void s.close();
       closeSettings();
-      show(journey(), 'map');
+      show(journey(), mapMusic());
     });
   });
 }

@@ -42,6 +42,7 @@ export function freePlayScreen(): HTMLElement {
       ['standard', 'Standard', true],
       ['sprint', 'Sprint', isUnlocked(save, 'sprint')],
       ['choose', 'Choose Your Phase', isUnlocked(save, 'choose')],
+      ['moonlit', 'Moonlit Phases', isUnlocked(save, 'moonlit')],
     ];
     for (const [id, label, open] of options) {
       if (!open) continue;

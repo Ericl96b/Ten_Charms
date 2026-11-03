@@ -5,7 +5,7 @@ import { MUSIC, nextNotes, type Track } from './music.ts';
 import { SYNTH, type SoundId } from './sfx.ts';
 
 export { SOUND_IDS, type SoundId } from './sfx.ts';
-export type MusicId = 'map' | 'waltz' | 'musicbox' | 'boss';
+export type MusicId = 'map' | 'waltz' | 'musicbox' | 'boss' | 'gladeFog' | 'gladeLift' | 'moonwaltz' | 'lunaria';
 
 let ctx: AudioContext | null = null;
 let sfxBus: GainNode | null = null;

@@ -34,6 +34,12 @@ const ICONS: Record<string, string> = {
   back: path('M15 5 8 12l7 7', STROKE),
   sparkle: SPARKLE,
   rose: FLOWER,
+  /** The fog's stand-in for a card count: a small soft cloud. */
+  wisp: path('M6.5 18C3.9 18 2 16.2 2 14c0-2 1.6-3.700 3.600-3.900C6 7.300 8.300 5.500 11 5.500c2.400 0 4.400 1.400 5.200 3.400.4-.1.8-.1 1.200-.1 2.600 0 4.600 2 4.600 4.600S20 18 17.400 18Z'),
+  /** A small gold crown, for Lunaria's chip and her row label. */
+  crown: path('M3 18 4.500 7l4.500 5 3-7 3 7 4.500-5L21 18Z') + path('M3 19.500h18v1.500H3Z'),
+  /** The Thorned Crown: thorn points with rosebuds between them. */
+  thorncrown: path('M3 19h18v2H3ZM3 18 4 9l3 4 2-7 3 6 3-6 2 7 3-4 1 9Z') + '<circle cx="9.500" cy="14" r="1.300" fill="#E8789A"/><circle cx="14.500" cy="14" r="1.300" fill="#E8789A"/>',
 };
 
 export function icon(name: string, cls = ''): string {
@@ -87,10 +93,18 @@ export function cardEl(card: Card, mini = false): HTMLElement {
   return el;
 }
 
+/** Center medallions for the Moonlit Glade's card backs. */
+const BACK_MEDALS: Record<string, string> = {
+  'bunny-hop': '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 10C8 6 8.2 2.5 9.6 2.5S11.5 6 11 10ZM13 10c.2-4 1.3-7.2 2.6-7S16 6.6 14.5 10Z" fill="#E77A9C"/><ellipse cx="12" cy="15" rx="5.6" ry="5" fill="#E77A9C"/><circle cx="6.5" cy="17" r="1.8" fill="#E77A9C"/><circle cx="13.4" cy="13" r=".7" fill="#5B2340"/></svg>',
+  'lantern-glow': '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2v3" stroke="#C9973F" stroke-width="1.4"/><rect x="7" y="5" width="10" height="13" rx="3" fill="#FFE9A8" stroke="#C9973F" stroke-width="1.4"/><circle cx="12" cy="11.5" r="2.6" fill="#F2A23C"/><path d="M8 20h8" stroke="#C9973F" stroke-width="1.4" stroke-linecap="round"/></svg>',
+  'lily-pad': '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19C6 17 5 11 9 8c1 3 2 4 3 4s2-1 3-4c4 3 3 9-3 11Z" fill="#E8789A"/><path d="M12 13C9 12 8 8 12 4c4 4 3 8 0 9Z" fill="#F2A7BC"/></svg>',
+  'dawn-bloom': '<svg viewBox="0 0 24 24" aria-hidden="true"><g stroke="#D9A441" stroke-width="1.3" stroke-linecap="round"><path d="M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3M4.5 4.5l2 2M17.5 17.5l2 2M4.5 19.5l2-2M17.5 6.5l2-2"/></g><circle cx="12" cy="12" r="5.6" fill="#E8789A"/><circle cx="12" cy="12" r="3.4" fill="#F2A7BC"/><path d="M10.3 12a1.9 1.9 0 1 1 2.8 1.5" fill="none" stroke="#FFF8F4" stroke-width=".9" stroke-linecap="round"/></svg>',
+};
+
 export function backEl(backId: string, mini = false): HTMLElement {
   const el = document.createElement('div');
   el.className = `card card-back b-${backId}${mini ? ' mini' : ''}`;
-  el.innerHTML = `<i class="medal">${backId === 'rose-lattice' ? `<svg class="suit" viewBox="0 0 24 24" fill="currentColor">${FLOWER}</svg>` : ''}</i>`;
+  el.innerHTML = `<i class="medal">${backId === 'rose-lattice' ? `<svg class="suit" viewBox="0 0 24 24" fill="currentColor">${FLOWER}</svg>` : BACK_MEDALS[backId] ?? ''}</i>`;
   return el;
 }
 
@@ -105,7 +119,28 @@ export function portraitEl(bot: BotId, size: 'small' | 'medium' | 'large' = 'sma
   return wrap;
 }
 
+/** Lunaria's wisps are drawn in code: a cloud puff with dot eyes and rosy cheeks. */
+function wispSvg(bot: BotId, expression: Expression): string {
+  const puff = bot === 'puff';
+  const body = puff
+    ? '<path d="M14 44c-6 0-10-4-10-9 0-4 3-7 7-8 0-8 6-14 14-14 2-5 9-6 12-2 6-1 12 4 12 11 5 1 8 5 8 10s-4 12-11 12Z" fill="url(#wg)"/><path d="M30 13c-2-5 4-8 6-4" fill="none" stroke="#D9C8EA" stroke-width="2.4" stroke-linecap="round"/>'
+    : '<path d="M8 40c-5 0-6-6-2-8 0-7 5-12 12-12 3-6 11-8 17-4 4-2 10 0 12 5 6 0 10 5 9 10-1 6-6 9-12 9H22c-5 6-13 9-20 6 4-1 6-3 6-6Z" fill="url(#wg)"/>';
+  const eyes: Record<Expression, string> = {
+    neutral: '<circle cx="25" cy="32" r="2.2"/><circle cx="39" cy="32" r="2.2"/>',
+    happy: '<path d="M22 33q3-4 6 0M36 33q3-4 6 0" fill="none" stroke="#5B2340" stroke-width="2" stroke-linecap="round"/>',
+    sad: '<path d="M22 31q3 3 6 1M36 32q3 2 6-1" fill="none" stroke="#5B2340" stroke-width="2" stroke-linecap="round"/>',
+    smug: '<circle cx="25" cy="32" r="2.2"/><path d="M36 32h6" stroke="#5B2340" stroke-width="2" stroke-linecap="round"/>',
+    intense: '<circle cx="25" cy="32" r="2.4"/><circle cx="39" cy="32" r="2.4"/>',
+  };
+  return `<svg class="wisp-art" viewBox="0 0 64 56" aria-hidden="true"><defs><linearGradient id="wg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#E2CFEA"/></linearGradient></defs>${body}<g fill="#5B2340">${eyes[expression]}</g><circle cx="20" cy="38" r="3" fill="#F2A7BC" fill-opacity=".7"/><circle cx="44" cy="38" r="3" fill="#F2A7BC" fill-opacity=".7"/></svg>`;
+}
+
 function paintPortrait(wrap: HTMLElement, bot: BotId, size: string, expression: Expression): void {
+  if (bot === 'puff' || bot === 'haze') {
+    wrap.classList.add('wisp');
+    wrap.innerHTML = wispSvg(bot, expression);
+    return;
+  }
   const name = `${bot}-${expression}`;
   if (__PORTRAITS__.includes(name)) {
     wrap.classList.add('painted');
