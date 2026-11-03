@@ -26,7 +26,15 @@ npm ci
 npx playwright install webkit chromium
 ```
 
-Run `npm run build` and `npm run build:dev` before `npm run test:e2e`. A full browser run takes about 40 minutes.
+`npm run gate` rebuilds and runs everything in about 20 minutes. On a new machine, capture the image baseline first with `npm run visual:baseline`. `TESTING.md` lists every command.
+
+## Testing workflow
+
+1. While fixing a failure, use targeted runs: `npm run test:failed`, `test:file`, `test:project`, `test:unit` or `sim:smoke`.
+2. Once the targeted runs pass, run `npm run gate`.
+3. Commit only after the gate passes. A targeted run never replaces it, and don't report work as done without it.
+
+Never loosen an assertion, a timeout or an image tolerance, add retries, or skip or remove a test to make a run faster or greener without asking the user. `tests/inventory.json` guards against removed and newly skipped tests.
 
 ## Rules
 
@@ -46,7 +54,7 @@ Windows WebKit still isn't iOS Safari. For risky changes, tell the user what to 
 
 ## Known issues
 
-- The "invalid actions" test in `tests/e2e/02-table.spec.ts` can occasionally tap the wrong card in the fanned hand. It passed 10 of 10 repeats after one failure.
+- A Skip target picker failed to appear in 2 browser tests once, and it hasn't been reproduced. `TESTING.md` lists this and the other failures that were fixed.
 - Nightshade beats Professor Hoot about 52% of the time, against a 60% target. A real fix would have her play out sample futures, which needs bot thinking moved off the main thread.
 - With real safe-area insets, tall phones show about 2 full laid-down rows in a 3-opponent match, not the 3–4 the tests see with zero insets. Showing more would need smaller piles or a smaller hand.
 - Nobody has confirmed how the sound and music come across, and the full iPhone checklist hasn't been run.

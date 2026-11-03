@@ -1,10 +1,75 @@
 # Testing
 
-How the tests are organized, what they cost, and how reliable they are. The commands are in `README.md`.
+How the tests are organized, what they cost, and how reliable they are.
+
+## The workflow rule
+
+1. While fixing a failure, use targeted runs.
+2. Once the targeted runs pass, run the full gate.
+3. Commit only after the gate passes. A targeted run never replaces it.
+
+## Commands
+
+| Command | What it does | About |
+|---|---|---|
+| `npm run gate` | The full gate. Required before committing a finished change, and before reporting work as done | 20 min |
+| `npm run gate:no-cache` | The gate, with the simulation run fresh | 21 min |
+| `npm run test:failed` | Only the tests that failed in the last run | Seconds |
+| `npm run test:file -- 09-table` | One test file or area | Seconds to minutes |
+| `npm run test:project -- max` | One viewport (`se`, `ref`, `max`, `android`) | 2–4 min |
+| `npm run test:unit` | Unit tests only | 30 s |
+| `npm run sim:smoke` | Small simulation, written to `test-results/sim-smoke.md`. Its numbers are never final | 2 s |
+| `npm run visual:baseline` | Captures the image baseline, which stays on each machine. The gate refuses to run without one | 7 min |
+
+Targeted runs rebuild first, and they leave out the coverage check, which only means something in a whole run. If that check is the only failure, `test:failed` finds no tests, so run the gate.
+
+## What the gate does
+
+`scripts/gate.mjs` rebuilds, typechecks, then runs the unit tests and the full simulation, and then the browser tests in stages. `tests/e2e/stages.ts` lists which tests go where.
+
+| Stage | Tests | How it runs | Why |
+|---|---|---|---|
+| Parallel | 225 | 4 workers | Everything else |
+| Serial | 32 | 1 worker | They assert a duration, sit close to a time limit (the full match, choose and sprint) or record video |
+| Alone | 4 | 1 worker, nothing else running | The performance tests |
+| Last | 4 | 1 worker | The coverage check reads every other test's event log |
+
+Finally, it compares images with `scripts/compare-shots.mjs` and checks the inventory. Retries are off. Results are in `test-results/gate/`, with `summary.txt` for the times.
+
+**Workers.** Set `TC_WORKERS` to change the parallel stage. On the laptop below, the stage took 29.8 min with 1 worker, 14.8 with 2, 10.2 with 3 and 8.0 with 4. Six took 5.7 but caused a tap timeout and an image difference. Measure again on a different machine.
+
+**Real speed.** All other full matches scale down their waits with the `setTestScale` hook, which could hide a timing bug. `10-real-speed.spec.ts` plays one full match at real speed at 440×956, in every gate, and takes about 5 minutes.
+
+**Simulation.** Lineups and seeds are drawn in one fixed order and only sums come back from the workers, so results don't depend on the worker count. The cache key hashes every file the simulation imports, plus its sample sizes and the Node version. Results are in `test-results/sim-cache/`.
 
 ## Coverage guarantee
 
-`tests/inventory.json` lists every browser test: its file, title, project, and whether it's skipped. `npm run test:inventory` fails if any listed test is gone. Given run reports, `scripts/test-inventory.ts check` also fails if a listed test didn't run exactly once, was newly skipped, failed, or needed a retry. New tests are allowed.
+`tests/inventory.json` lists every browser test: its file, title, project, and whether it's skipped. `npm run test:inventory` fails if any listed test is gone. Given run reports, `scripts/test-inventory.ts check` also fails if a listed test didn't run exactly once, was newly skipped, failed, or needed a retry. New tests are allowed. The gate runs this with its reports, so a test dropped by a stage filter fails the gate.
+
+No assertion limit or timeout was loosened to gain speed. The performance probe's limit stayed at 50 ms; its timer was removed because that timer alone read 46–49 ms on an idle page on Windows WebKit.
+
+## Results after the speedup
+
+Three gates in a row with no failures and no retries: 20.5, 19.5 and 19.7 minutes. The first ran with no simulation cache.
+
+| Area | Before | After |
+|---|---|---|
+| Whole run, including the simulation | 46 min | **19.7 min** (20.5 with no cache) |
+| Browser tests | 40.4 min | 18.9 min (10.6 parallel, 7.1 serial, 1.2 alone) |
+| Simulation | 5.5 min | 66 s, or under 1 s on a cache hit |
+| Unit tests | 5 s | 29 s, because of the new simulation runner tests |
+| Rerun one failed test | 40 min | 19 s |
+
+The per-viewport figures below add up test time, so they don't shrink when tests run side by side, and they grow a little under load. `max` also includes the 5-minute real-speed match.
+
+| Project | Test minutes before | Test minutes after |
+|---|---|---|
+| max | 11.0 | 15.0 |
+| ref | 10.1 | 10.5 |
+| se | 9.2 | 9.4 |
+| android | 8.4 | 7.9 |
+
+**Couldn't be sped up without losing coverage:** the serial stage takes 7 minutes because of its time limits and timing checks, and the real-speed match has to take as long as a real match. Waits for bots to "think" aren't worth removing, since the slowest tests already scale them down: a separate fast clock would save about 25 seconds per gate.
 
 ## Baseline measurements
 
@@ -66,13 +131,18 @@ Full browser suite, serial with one worker, 3 runs: 40.9, 40.4 and 38.1 minutes.
 
 ## Baseline reliability
 
-The baseline suite is not yet reliable on this machine. With no code changed and no retries, 1 of 3 full runs was clean.
+Before this work, with no code changed and no retries, 1 of 3 full runs was clean.
 
-| Failure | Seen |
-|---|---|
-| Performance test over 50 ms | `max` in a full run (67 and 108 ms), `max` in a repeat (51 ms), `se` in a partial run (52 ms) |
-| Auto-player timeout at 90 s in the choose and sprint test | `max` in a full run, `max` in a repeat |
-| Skip target picker never appears | 2 tests at `max` in a full run, not in 6 repeats |
-| "AudioContext encountered an error" console error | `android`, 1 test in a full run |
-| Boss intro "element is not visible" on click | `se`, 1 baseline capture |
-| 2 pixels differ between two captures | `fixture-two-top`, `-middle` and `-bottom` at `android` |
+| Failure | Seen | Outcome |
+|---|---|---|
+| Performance test over 50 ms | `max` in a full run (67 and 108 ms), `max` in a repeat (51 ms), `se` in a partial run (52 ms) | The probe's own timer read 46–49 ms when idle, so it was removed. Now 14–37 ms, and the test runs alone. |
+| Auto-player timeout at 90 s in the choose and sprint test | `max` in a full run, `max` in a repeat | Took 77–90 s under load, so it moved to the serial stage |
+| Skip target picker never appears | 2 tests at `max` in a full run, not in 16 repeats under load | Not reproduced, and the cause isn't confirmed. Possibly a slow patch on the machine or the wrong-card tap below. Watch for it. |
+| "AudioContext encountered an error" console error | `android`, 1 test in a full run | Android tests no longer use a real audio device. Not reproduced before or after. |
+| Boss intro "element is not visible" on click | `se`, 1 baseline capture | The capture tried to tap an intro that lasts under 100 ms at test speed. It now checks that the intro ran. |
+| 2 pixels differ between two captures | 3 `fixture-two` and 3 `fixture-worst` shots at `android` | Chromium could keep a layer rendered from mid-loop. Captures now stop looping animations first, and 8 captures in a row were identical. |
+| Tutorial test sees the Skip tip first | `se`, while calibrating | A random deal can show that tip first. The test now allows for it. |
+| Wrong card tapped in the fan | `se`, 1 test in a gate | Tapping a fanned card now waits for its movement to finish. 40 of 40 repeats and 3 gates since. |
+| Tap timeout | `ref`, with 6 workers | Too many workers for this laptop, so the default is 4 |
+
+**Image baseline.** It was recaptured when captures began stopping loops. Compared with the old baseline, 169 of 176 shots were within tolerance. The other 7 are at `android`: the 6 shots above (2 pixels, a difference of 9) and `table-bot-thinking` (20 pixels, a difference of up to 15, from its looping dots). The production build was byte-identical throughout.

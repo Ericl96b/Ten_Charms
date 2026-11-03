@@ -21,8 +21,9 @@ npm run preview
 | `npm run build:dev` | Build with developer test hooks into `dist-dev/` |
 | `npm run typecheck` | TypeScript check |
 | `npm run test:unit` | Rules, bots, fairness, saves, assets |
-| `npm run sim` | Headless simulation; rewrites `SIMULATION.md` (about 4 minutes) |
-| `npm run test:e2e` | Browser suite (WebKit at 375×667, 390×844, 440×956; Chromium with an Android user agent at 412×892). Run both builds first |
+| `npm run sim` | Headless simulation on all cores; rewrites `SIMULATION.md` (about a minute, or instant if nothing that affects it changed) |
+| `npm run gate` | **Everything, required before committing** (about 20 minutes). `TESTING.md` has the targeted commands for iterating |
+| `npm run test:e2e` | Browser suite one test at a time, about 40 minutes (WebKit at 375×667, 390×844, 440×956; Chromium with an Android user agent at 412×892). Run both builds first |
 | `node scripts/compare-shots.mjs [tags]` | Compares the screenshots from the last browser run with a saved baseline in `qa-screenshots/cr01/baseline/`. Tags name what may differ: `settings-icon`, `map-current`, `table` |
 
 ## Layout
