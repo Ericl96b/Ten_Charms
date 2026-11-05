@@ -1,6 +1,6 @@
 // Campaign progress, unlocks, Charms and stats. Pure logic over the save data.
 import { BOTS, GLADE_STOPS, STOPS, UNLOCKABLES, type CharmId, type GladeStop, type GladeStopId, type Requirement, type Unlockable } from '../content.ts';
-import { phaseSequence } from '../engine/phases.ts';
+import { isMoonlitFamily, phaseSequence } from '../engine/phases.ts';
 import type { GameEvent, GameState } from '../engine/types.ts';
 import type { BotId } from '../bots/profiles.ts';
 import type { MatchTracker, SaveData, SavedMatch } from './save.ts';
@@ -172,7 +172,8 @@ export function applyEvents(save: SaveData, match: SavedMatch, events: readonly 
           t.failStreak = 0;
           if (r.points[0] === 0) award(save, 'perfect-teatime', earned);
           if (phase === 8 && t.attempts[8] === 1) award(save, 'rainbow', earned);
-          const moonlit = phaseSequence('moonlit');
+          // The Moonlit Phases' last phase, or a Moonlit Trial's: the trials count the same way.
+          const moonlit = phaseSequence(isMoonlitFamily(match.game.variant) ? match.game.variant : 'moonlit');
           if (phase === moonlit[moonlit.length - 1]) award(save, 'moonlit-mastery', earned);
         } else {
           t.failStreak++;

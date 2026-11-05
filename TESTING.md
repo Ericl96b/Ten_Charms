@@ -150,5 +150,6 @@ Before this work, with no code changed and no retries, 1 of 3 full runs was clea
 | Tutorial test sees the Skip tip first | `se`, while calibrating | A random deal can show that tip first. The test now allows for it. |
 | Wrong card tapped in the fan | `se`, 1 test in a gate | Tapping a fanned card now waits for its movement to finish. 40 of 40 repeats and 3 gates since. |
 | Tap timeout | `ref`, with 6 workers | Too many workers for this laptop, so the default is 4 |
+| "No tappable point" on a card in the fog test (`glade: in the fog, every count is hidden`) | `android`, 1 run in a gate | Passed 5 of 5 alone and in the gates before and after. Not reproduced, and the cause isn't confirmed; likely load. Watch for it. |
 
 **Image baseline.** It was recaptured when captures began stopping loops. Compared with the old baseline, 169 of 176 shots were within tolerance. The other 7 are at `android`: the 6 shots above (2 pixels, a difference of 9) and `table-bot-thinking` (20 pixels, a difference of up to 15, from its looping dots). The production build was byte-identical throughout.

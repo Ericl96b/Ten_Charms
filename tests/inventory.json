@@ -529,6 +529,18 @@
   "timing": "real"
  },
  {
+  "file": "14-trials.spec.ts",
+  "title": "trials: a trial match in progress survives a reload exactly",
+  "project": "android",
+  "skipped": false
+ },
+ {
+  "file": "14-trials.spec.ts",
+  "title": "trials: the picker shows every variant, with no scrolling, clipping or overlap",
+  "project": "android",
+  "skipped": false
+ },
+ {
   "file": "zz-coverage.spec.ts",
   "title": "11. juice coverage: every animation and sound event fired during the suite",
   "project": "android",
@@ -1070,6 +1082,18 @@
   "timing": "real"
  },
  {
+  "file": "14-trials.spec.ts",
+  "title": "trials: a trial match in progress survives a reload exactly",
+  "project": "max",
+  "skipped": false
+ },
+ {
+  "file": "14-trials.spec.ts",
+  "title": "trials: the picker shows every variant, with no scrolling, clipping or overlap",
+  "project": "max",
+  "skipped": false
+ },
+ {
   "file": "zz-coverage.spec.ts",
   "title": "11. juice coverage: every animation and sound event fired during the suite",
   "project": "max",
@@ -1605,6 +1629,36 @@
   "timing": "real"
  },
  {
+  "file": "14-trials.spec.ts",
+  "title": "trials: a trial match in progress survives a reload exactly",
+  "project": "ref",
+  "skipped": false
+ },
+ {
+  "file": "14-trials.spec.ts",
+  "title": "trials: the picker shows every variant, with no scrolling, clipping or overlap",
+  "project": "ref",
+  "skipped": false
+ },
+ {
+  "file": "15-trials-match.spec.ts",
+  "title": "trials: Moonlit Trial A plays a full match through the real UI",
+  "project": "ref",
+  "skipped": false
+ },
+ {
+  "file": "15-trials-match.spec.ts",
+  "title": "trials: Moonlit Trial B plays a full match through the real UI",
+  "project": "ref",
+  "skipped": false
+ },
+ {
+  "file": "15-trials-match.spec.ts",
+  "title": "trials: Moonlit Trial C plays a full match through the real UI",
+  "project": "ref",
+  "skipped": false
+ },
+ {
   "file": "zz-coverage.spec.ts",
   "title": "11. juice coverage: every animation and sound event fired during the suite",
   "project": "ref",
@@ -2138,6 +2192,18 @@
   "project": "se",
   "skipped": true,
   "timing": "real"
+ },
+ {
+  "file": "14-trials.spec.ts",
+  "title": "trials: a trial match in progress survives a reload exactly",
+  "project": "se",
+  "skipped": false
+ },
+ {
+  "file": "14-trials.spec.ts",
+  "title": "trials: the picker shows every variant, with no scrolling, clipping or overlap",
+  "project": "se",
+  "skipped": false
  },
  {
   "file": "zz-coverage.spec.ts",

@@ -31,25 +31,71 @@ export const PHASES: Record<number, GroupReq[]> = {
   18: [colorRun(5), pair()],
   19: [set(3), set(3), set(3)],
   20: [colorRun(6)],
+  // Free Play trials of a refined Moonlit list, from SIMULATION_MOONLIT_REFINEMENT.md: Trial A is 21 to 30,
+  // Trial B 31 to 40, Trial C 41 to 50, each easiest first. They play exactly like the Moonlit Phases.
+  21: [set(3), set(3), pair()],
+  22: [odds(8)],
+  23: [evens(8)],
+  24: [set(4), pair(), pair()],
+  25: [colorRun(4), pair(), pair()],
+  26: [set(4), color(4)],
+  27: [colorRun(3), colorRun(3)],
+  28: [colorRun(4), set(3)],
+  29: [colorRun(3), set(4)],
+  30: [colorRun(5), pair()],
+  31: [evens(7)],
+  32: [colorRun(3), set(3)],
+  33: [color(6)],
+  34: [set(3), color(5)],
+  35: [colorRun(3), set(3), pair()],
+  36: [odds(8)],
+  37: [set(4), color(4)],
+  38: [colorRun(4), set(3)],
+  39: [colorRun(3), set(4)],
+  40: [colorRun(5), pair()],
+  41: [evens(7)],
+  42: [colorRun(3), set(3)],
+  43: [color(6)],
+  44: [set(3), color(5)],
+  45: [colorRun(3), set(3), pair()],
+  46: [set(3), set(3), pair()],
+  47: [evens(8)],
+  48: [set(4), color(4)],
+  49: [colorRun(4), set(3)],
+  50: [colorRun(5), pair()],
 };
 
 const ALL_PHASES = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 const SPRINT_PHASES = [1, 3, 5, 7, 9];
 const MOONLIT_PHASES = [11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
 export const CLASSIC_PHASE_COUNT = ALL_PHASES.length;
+/** Each Moonlit Trial's list, in order. */
+const TRIAL_PHASES: Partial<Record<Variant, number[]>> = {
+  trialA: [21, 22, 23, 24, 25, 26, 27, 28, 29, 30],
+  trialB: [31, 32, 33, 34, 35, 36, 37, 38, 39, 40],
+  trialC: [41, 42, 43, 44, 45, 46, 47, 48, 49, 50],
+};
+export const TRIAL_VARIANTS = ['trialA', 'trialB', 'trialC'] as const;
 
 export function phaseSequence(variant: Variant): number[] {
   if (variant === 'moonlit') return MOONLIT_PHASES;
+  const trial = TRIAL_PHASES[variant];
+  if (trial) return trial;
   return variant === 'sprint' ? SPRINT_PHASES : ALL_PHASES;
+}
+
+/** The Moonlit Phases and its Free Play trials: the same group types, rules and Charms, on different lists. */
+export function isMoonlitFamily(variant: Variant): boolean {
+  return variant === 'moonlit' || TRIAL_PHASES[variant] !== undefined;
 }
 
 export function isMoonlitPhase(phase: number): boolean {
   return phase > CLASSIC_PHASE_COUNT;
 }
 
-/** The number a player sees: a Moonlit phase shows its place in its own list. */
+/** The number a player sees: a Moonlit phase, or a trial's, shows its place in its own list of ten. */
 export function phaseNumber(phase: number): number {
-  return isMoonlitPhase(phase) ? phase - CLASSIC_PHASE_COUNT : phase;
+  return isMoonlitPhase(phase) ? ((phase - CLASSIC_PHASE_COUNT - 1) % 10) + 1 : phase;
 }
 
 export function groupLabel(req: GroupReq): string {

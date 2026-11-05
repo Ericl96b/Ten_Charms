@@ -10,7 +10,8 @@ export type GroupType = 'set' | 'run' | 'color' | 'colorRun' | 'evens' | 'odds';
 /** `pair` only changes the label: a Pair follows the Set rules. */
 export type GroupReq = { type: GroupType; size: number; pair?: boolean };
 
-export type Variant = 'standard' | 'sprint' | 'choose' | 'moonlit';
+/** `trialA` to `trialC` are the Moonlit Trials: Free Play only, played like `moonlit` on another list. */
+export type Variant = 'standard' | 'sprint' | 'choose' | 'moonlit' | 'trialA' | 'trialB' | 'trialC';
 
 /** A placed card: what it was, and the value its position fixes it to. */
 export type Placed = { card: Card; num?: number; suit?: Suit };
