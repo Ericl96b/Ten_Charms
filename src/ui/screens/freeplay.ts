@@ -43,10 +43,10 @@ export function freePlayScreen(): HTMLElement {
       ['sprint', 'Sprint', isUnlocked(save, 'sprint')],
       ['choose', 'Choose Your Phase', isUnlocked(save, 'choose')],
       ['moonlit', 'Moonlit Phases', isUnlocked(save, 'moonlit')],
-      // The trials open with the Moonlit Phases, in the order the simulation ranked them.
-      ['trialA', 'Moonlit Trial A', isUnlocked(save, 'moonlit')],
-      ['trialB', 'Moonlit Trial B', isUnlocked(save, 'moonlit')],
-      ['trialC', 'Moonlit Trial C', isUnlocked(save, 'moonlit')],
+      // The trials are always open, so they can be tried on any device, in the order the simulation ranked them.
+      ['trialA', 'Moonlit Trial A', true],
+      ['trialB', 'Moonlit Trial B', true],
+      ['trialC', 'Moonlit Trial C', true],
     ];
     for (const [id, label, open] of options) {
       if (!open) continue;

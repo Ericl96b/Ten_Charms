@@ -29,10 +29,10 @@ async function everyVariant(page: Page, gladeWon: string[] = ['g1']): Promise<vo
 
 test('trials: the picker shows every variant, with no scrolling, clipping or overlap', async ({ page }, info) => {
   await openApp(page);
-  // Before the Moonlit Phases open, there are no trials either.
+  // The trials are always open, even before the Moonlit Phases.
   await everyVariant(page, []);
-  await expect(page.locator('[data-testid^="fp-variant-"]')).toHaveCount(3);
-  await expect(page.locator('[data-testid^="fp-variant-trial"]')).toHaveCount(0);
+  const early = await page.locator('[data-testid^="fp-variant-"]').evaluateAll((els) => els.map((e) => e.getAttribute('data-testid')!.slice('fp-variant-'.length)));
+  expect(early).toEqual(['standard', 'sprint', 'choose', 'trialA', 'trialB', 'trialC']);
 
   await tap(page, '[data-testid="nav-journey"]');
   await everyVariant(page);
