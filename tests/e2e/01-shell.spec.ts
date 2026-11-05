@@ -73,6 +73,8 @@ test('production build has no developer hooks and no outside network calls', asy
   expect(js).not.toContain('__TC__');
   // The fog's screenshot freeze is a test hook too.
   expect(js).not.toContain('freezeFog');
+  // So is the simulation's random-discard Hoot (scripts/refine/random-discard-bot.ts).
+  expect(js).not.toContain('sim-only-hoot-random-discards');
   const css = await (await request.get('http://localhost:4175/app.css')).text();
   expect(js + css).not.toMatch(/fonts\.googleapis|https?:\/\/(?!www\.w3\.org)/);
 });

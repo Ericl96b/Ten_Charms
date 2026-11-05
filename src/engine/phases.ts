@@ -61,7 +61,7 @@ export function groupLabel(req: GroupReq): string {
   return req.type === 'color' ? `${req.size} of one Color` : `${name} of ${req.size}`;
 }
 
-/** Repeated groups are counted: "4 Pairs", "Run of 4 + 2 Pairs", "3 Sets of 3". */
+/** Repeated groups are counted: "4 Pairs", "Run of 4 + 2 Pairs", "3 Sets of 3", "2 Color runs of 3". */
 function moonlitText(reqs: readonly GroupReq[]): string {
   const parts: string[] = [];
   for (let i = 0; i < reqs.length; i++) {
@@ -69,7 +69,7 @@ function moonlitText(reqs: readonly GroupReq[]): string {
     while (i + 1 < reqs.length && groupLabel(reqs[i + 1]) === groupLabel(reqs[i])) { count++; i++; }
     const label = groupLabel(reqs[i]);
     if (count === 1) parts.push(label);
-    else parts.push(reqs[i].pair ? `${count} Pairs` : `${count} ${label.replace(/^(Set|Run)/, '$1s')}`);
+    else parts.push(reqs[i].pair ? `${count} Pairs` : `${count} ${label.replace(/^(Set|Run|Color run)/, '$1s')}`);
   }
   return parts.join(' + ');
 }
