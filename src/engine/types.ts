@@ -10,8 +10,11 @@ export type GroupType = 'set' | 'run' | 'color' | 'colorRun' | 'evens' | 'odds';
 /** `pair` only changes the label: a Pair follows the Set rules. */
 export type GroupReq = { type: GroupType; size: number; pair?: boolean };
 
-/** `trialA` to `trialC` are the Moonlit Trials: Free Play only, played like `moonlit` on another list. */
-export type Variant = 'standard' | 'sprint' | 'choose' | 'moonlit' | 'trialA' | 'trialB' | 'trialC';
+/**
+ * `trialB` and `trialC` are the Moonlit Trials: Free Play only, played like `moonlit` on another list. Trial A's list
+ * became the Moonlit Phases in Change Request 04; a saved Trial A match loads as `moonlit` (see migrate in save.ts).
+ */
+export type Variant = 'standard' | 'sprint' | 'choose' | 'moonlit' | 'trialB' | 'trialC';
 
 /** A placed card: what it was, and the value its position fixes it to. */
 export type Placed = { card: Card; num?: number; suit?: Suit };

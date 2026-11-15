@@ -30,6 +30,8 @@ const started = Date.now();
 rmSync(OUT, { recursive: true, force: true });
 // A leftover capture would hide a test that stopped capturing.
 rmSync('qa-screenshots/cr01/current', { recursive: true, force: true });
+// Likewise a leftover measurement would hide one that stopped running.
+rmSync('test-results/parity-groups', { recursive: true, force: true });
 mkdirSync(OUT, { recursive: true });
 clearLogs();
 
@@ -60,6 +62,8 @@ writeFileSync('test-results/artifacts/.last-run.json', JSON.stringify({ status: 
 const rows = readdirSync('test-results').filter((f) => /^rows-\d+\.log$/.test(f)).map((f) => readFileSync(`test-results/${f}`, 'utf8'));
 writeFileSync('test-results/rows.log', rows.join(''));
 
+// Report only (Change Request 04 §6): fails only if the measurement is missing for a test size.
+step('parity-groups', ['scripts/parity-report.mjs']);
 step('images', ['scripts/compare-shots.mjs']);
 step('inventory', ['scripts/test-inventory.ts', 'check', ...STAGES.map((stage) => `${OUT}/${stage}.json`)]);
 

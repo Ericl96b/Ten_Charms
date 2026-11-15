@@ -155,6 +155,9 @@ export function migrate(raw: unknown): SaveData {
     if (!Array.isArray(list) || list.length !== 5) throw new Error('Bad save');
   }
   if (merged.match && !merged.match.game?.players) merged.match = null;
+  // Moonlit Trial A's list became the Moonlit Phases (Change Request 04), on the same phase ids, so a Trial A match
+  // saved before then simply carries on as a Moonlit Phases match. Nothing else in the save changes.
+  if (merged.match && (merged.match.game.variant as string) === 'trialA') merged.match.game.variant = 'moonlit';
   return merged;
 }
 

@@ -7,6 +7,7 @@ import { observe } from '../../src/engine/observation.ts';
 import { createRng } from '../../src/engine/rng.ts';
 import type { GameState, HistoryEntry, MatchRules } from '../../src/engine/types.ts';
 import { playMatch } from '../../src/sim/driver.ts';
+import { phaseSequence } from '../../src/engine/phases.ts';
 import { n, ok, table } from './helpers.ts';
 
 const FOG: MatchRules = { fog: true, crownSeat: 2, crownName: 'Lunaria' };
@@ -38,6 +39,11 @@ describe('Moonlit Fog', () => {
   test('the test positions cover players who have laid down', () => {
     assert.ok(positions.length >= 40);
     assert.ok(positions.some((s) => s.players.some((p) => p.laidDown)));
+  });
+
+  test('the test positions are on the Moonlit list since Change Request 04', () => {
+    const list = phaseSequence('moonlit');
+    for (const s of positions) for (const p of s.players) assert.ok(list.includes(p.phase!), `phase ${p.phase}`);
   });
 
   test('a fogged observation holds no card count, not even the bot\'s own', () => {

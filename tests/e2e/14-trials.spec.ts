@@ -1,11 +1,11 @@
 // The Moonlit Trials in Free Play (Change Request 03, Part B): the picker and a trial match surviving a reload.
+// Trial A's list became the Moonlit Phases in Change Request 04, so only Trials B and C remain.
 // One full match per trial is in 15-trials-match.spec.ts.
 import type { Page } from '@playwright/test';
 import { expect, openApp, shotPath, tap, test, waitIdle } from './helpers.ts';
 
 const FAST = 0.02;
 const TRIALS = [
-  { id: 'trialA', label: 'Moonlit Trial A', first: 21, last: 30, slots: ['Set of 3', 'Set of 3', 'Pair'] },
   { id: 'trialB', label: 'Moonlit Trial B', first: 31, last: 40, slots: ['7 Evens'] },
   { id: 'trialC', label: 'Moonlit Trial C', first: 41, last: 50, slots: ['7 Evens'] },
 ] as const;
@@ -32,11 +32,11 @@ test('trials: the picker shows every variant, with no scrolling, clipping or ove
   // The trials are always open, even before the Moonlit Phases.
   await everyVariant(page, []);
   const early = await page.locator('[data-testid^="fp-variant-"]').evaluateAll((els) => els.map((e) => e.getAttribute('data-testid')!.slice('fp-variant-'.length)));
-  expect(early).toEqual(['standard', 'sprint', 'choose', 'trialA', 'trialB', 'trialC']);
+  expect(early).toEqual(['standard', 'sprint', 'choose', 'trialB', 'trialC']);
 
   await tap(page, '[data-testid="nav-journey"]');
   await everyVariant(page);
-  const ids = ['standard', 'sprint', 'choose', 'moonlit', 'trialA', 'trialB', 'trialC'];
+  const ids = ['standard', 'sprint', 'choose', 'moonlit', 'trialB', 'trialC'];
   await expect(page.locator('[data-testid^="fp-variant-"]')).toHaveCount(ids.length);
   for (const t of TRIALS) await expect(page.locator(`[data-testid="fp-variant-${t.id}"]`)).toHaveText(t.label);
   const order = await page.locator('[data-testid^="fp-variant-"]').evaluateAll((els) => els.map((e) => e.getAttribute('data-testid')!.slice('fp-variant-'.length)));

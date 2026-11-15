@@ -196,7 +196,20 @@ describe('Glade Charms', () => {
   test('Moonlit Mastery: completing the last Moonlit phase', () => {
     const s = saveWith();
     const m = gladeMatch('g1', 10, true);
-    const end = (phase: number): GameEvent => ({ type: 'roundEnd', result: { round: 1, seed: '', wentOut: 0, hands: [[], [], []], points: [0, 5, 5], phasesBefore: [phase, 11, 11], advanced: [true, false, false], totals: [0, 5, 5], history: [] } as RoundResult });
+    const end = (phase: number): GameEvent => ({ type: 'roundEnd', result: { round: 1, seed: '', wentOut: 0, hands: [[], [], []], points: [0, 5, 5], phasesBefore: [phase, 21, 21], advanced: [true, false, false], totals: [0, 5, 5], history: [] } as RoundResult });
+    applyEvents(s, m, [end(29)]);
+    assert.ok(!s.charms.includes('moonlit-mastery'));
+    applyEvents(s, m, [end(30)]);
+    assert.ok(s.charms.includes('moonlit-mastery'));
+  });
+
+  test('Moonlit Mastery: a match begun on the retired list earns it on the last phase of that list', () => {
+    const s = saveWith();
+    const m = gladeMatch('g1', 10, true);
+    m.game.players[0].completed = [11, 12, 13, 14, 15, 16, 17, 18, 19];
+    m.game.players[0].phase = 20;
+    for (const p of m.game.players.slice(1)) { p.completed = [11]; p.phase = 12; }
+    const end = (phase: number): GameEvent => ({ type: 'roundEnd', result: { round: 1, seed: '', wentOut: 0, hands: [[], [], []], points: [0, 5, 5], phasesBefore: [phase, 12, 12], advanced: [true, false, false], totals: [0, 5, 5], history: [] } as RoundResult });
     applyEvents(s, m, [end(19)]);
     assert.ok(!s.charms.includes('moonlit-mastery'));
     applyEvents(s, m, [end(20)]);

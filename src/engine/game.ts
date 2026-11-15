@@ -1,6 +1,6 @@
 // The rules engine. All game state changes go through step(); it has no knowledge of presentation.
 import { cardPoints, createDeck } from './cards.ts';
-import { PHASES, checkGroup, checkHit, phaseSequence, placeHit } from './phases.ts';
+import { PHASES, checkGroup, checkHit, matchPhases, placeHit, type PhaseProgress } from './phases.ts';
 import { createRng, deriveRoundSeed, newSeed, shuffle } from './rng.ts';
 import type { Action, Card, GameEvent, GameState, LaidGroup, MatchRules, PlayerState, RoundResult, StepResult, Variant } from './types.ts';
 
@@ -10,13 +10,14 @@ const HAND_SIZE = 10;
 /** After this many reshuffles in a row with no lay-down or hit, no one can go out, so the round ends. */
 const STALEMATE_RESHUFFLES = 3;
 
-export function nextUncompleted(variant: Variant, completed: readonly number[]): number | null {
-  for (const p of phaseSequence(variant)) if (!completed.includes(p)) return p;
+/** The first phase of this match's list that the player hasn't completed. */
+export function nextUncompleted(state: PhaseProgress, completed: readonly number[]): number | null {
+  for (const p of matchPhases(state)) if (!completed.includes(p)) return p;
   return null;
 }
 
-export function isFinished(state: Pick<GameState, 'variant'>, player: Pick<PlayerState, 'completed'>): boolean {
-  return nextUncompleted(state.variant, player.completed) === null;
+export function isFinished(state: PhaseProgress, player: Pick<PlayerState, 'completed'>): boolean {
+  return nextUncompleted(state, player.completed) === null;
 }
 
 export function createGame(options: NewGameOptions): { state: GameState; events: GameEvent[] } {
@@ -59,6 +60,8 @@ function startRound(state: GameState, events: GameEvent[]): void {
   state.groups = [];
   state.history = [];
   state.layCount = 0;
+  // Read the match's list once, before anyone's phase moves on: a match begun on the retired Moonlit list keeps it.
+  const list = { variant: state.variant, players: state.players.map((p) => ({ phase: p.phase, completed: p.completed.slice() })) };
   const deck = shuffle(createDeck(), createRng(state.roundSeed, 0));
   for (const p of state.players) {
     p.hand = deck.splice(0, HAND_SIZE);
@@ -68,7 +71,7 @@ function startRound(state: GameState, events: GameEvent[]): void {
     delete p.laidOrder;
     p.laidDown = false;
     p.pendingSkip = false;
-    p.phase = state.variant === 'choose' ? null : nextUncompleted(state.variant, p.completed);
+    p.phase = state.variant === 'choose' ? null : nextUncompleted(list, p.completed);
   }
   const top = deck.shift()!;
   state.drawPile = deck;
@@ -145,7 +148,7 @@ export function step(state: GameState, action: Action): StepResult {
       const chooser = state.players[action.seat];
       if (!chooser) return fail('No such player.');
       if (chooser.phase !== null) return fail('That player has already chosen.');
-      if (!phaseSequence(state.variant).includes(action.phase) || chooser.completed.includes(action.phase)) {
+      if (!matchPhases(state).includes(action.phase) || chooser.completed.includes(action.phase)) {
         return fail('That phase is already complete.');
       }
       chooser.phase = action.phase;

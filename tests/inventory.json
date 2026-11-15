@@ -541,6 +541,62 @@
   "skipped": false
  },
  {
+  "file": "16-glade-swap.spec.ts",
+  "title": "glade swap: a free-moonlit match saved before the update resumes exactly, and again after a reload",
+  "project": "android",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "16-glade-swap.spec.ts",
+  "title": "glade swap: a free-trialA match saved before the update resumes exactly, and again after a reload",
+  "project": "android",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "16-glade-swap.spec.ts",
+  "title": "glade swap: a free-trialB match saved before the update resumes exactly, and again after a reload",
+  "project": "android",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "16-glade-swap.spec.ts",
+  "title": "glade swap: a free-trialC match saved before the update resumes exactly, and again after a reload",
+  "project": "android",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "16-glade-swap.spec.ts",
+  "title": "glade swap: a glade-a2-fogged match saved before the update resumes exactly, and again after a reload",
+  "project": "android",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "16-glade-swap.spec.ts",
+  "title": "glade swap: a glade-g3-boss match saved before the update resumes exactly, and again after a reload",
+  "project": "android",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "16-glade-swap.spec.ts",
+  "title": "glade swap: the Free Play picker offers exactly the right variants, in order, with no Trial A",
+  "project": "android",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "17-glade-parity.spec.ts",
+  "title": "glade parity: how long a parity group can grow before a card is cut off",
+  "project": "android",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
   "file": "zz-coverage.spec.ts",
   "title": "11. juice coverage: every animation and sound event fired during the suite",
   "project": "android",
@@ -1094,6 +1150,62 @@
   "skipped": false
  },
  {
+  "file": "16-glade-swap.spec.ts",
+  "title": "glade swap: a free-moonlit match saved before the update resumes exactly, and again after a reload",
+  "project": "max",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "16-glade-swap.spec.ts",
+  "title": "glade swap: a free-trialA match saved before the update resumes exactly, and again after a reload",
+  "project": "max",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "16-glade-swap.spec.ts",
+  "title": "glade swap: a free-trialB match saved before the update resumes exactly, and again after a reload",
+  "project": "max",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "16-glade-swap.spec.ts",
+  "title": "glade swap: a free-trialC match saved before the update resumes exactly, and again after a reload",
+  "project": "max",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "16-glade-swap.spec.ts",
+  "title": "glade swap: a glade-a2-fogged match saved before the update resumes exactly, and again after a reload",
+  "project": "max",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "16-glade-swap.spec.ts",
+  "title": "glade swap: a glade-g3-boss match saved before the update resumes exactly, and again after a reload",
+  "project": "max",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "16-glade-swap.spec.ts",
+  "title": "glade swap: the Free Play picker offers exactly the right variants, in order, with no Trial A",
+  "project": "max",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "17-glade-parity.spec.ts",
+  "title": "glade parity: how long a parity group can grow before a card is cut off",
+  "project": "max",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
   "file": "zz-coverage.spec.ts",
   "title": "11. juice coverage: every animation and sound event fired during the suite",
   "project": "max",
@@ -1642,12 +1754,6 @@
  },
  {
   "file": "15-trials-match.spec.ts",
-  "title": "trials: Moonlit Trial A plays a full match through the real UI",
-  "project": "ref",
-  "skipped": false
- },
- {
-  "file": "15-trials-match.spec.ts",
   "title": "trials: Moonlit Trial B plays a full match through the real UI",
   "project": "ref",
   "skipped": false
@@ -1657,6 +1763,104 @@
   "title": "trials: Moonlit Trial C plays a full match through the real UI",
   "project": "ref",
   "skipped": false
+ },
+ {
+  "file": "16-glade-swap-match.spec.ts",
+  "title": "swap match: a Free Play Moonlit Phases match plays all ten phases of the new list",
+  "project": "ref",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "16-glade-swap-match.spec.ts",
+  "title": "swap match: a Free Play Moonlit Phases match saved before the update plays to the end on the retired list",
+  "project": "ref",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "16-glade-swap-match.spec.ts",
+  "title": "swap match: a glade-a2-fogged match saved before the update ends on the retired list, with the same star limits",
+  "project": "ref",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "16-glade-swap-match.spec.ts",
+  "title": "swap match: a glade-g3-boss match saved before the update ends on the retired list, with the same star limits",
+  "project": "ref",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "16-glade-swap-match.spec.ts",
+  "title": "swap match: a Map 2 stop plays all ten phases of the new list",
+  "project": "ref",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "16-glade-swap-match.spec.ts",
+  "title": "swap match: a Moonlit Trial A match saved before the update plays to the end on its list",
+  "project": "ref",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "16-glade-swap.spec.ts",
+  "title": "glade swap: a free-moonlit match saved before the update resumes exactly, and again after a reload",
+  "project": "ref",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "16-glade-swap.spec.ts",
+  "title": "glade swap: a free-trialA match saved before the update resumes exactly, and again after a reload",
+  "project": "ref",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "16-glade-swap.spec.ts",
+  "title": "glade swap: a free-trialB match saved before the update resumes exactly, and again after a reload",
+  "project": "ref",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "16-glade-swap.spec.ts",
+  "title": "glade swap: a free-trialC match saved before the update resumes exactly, and again after a reload",
+  "project": "ref",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "16-glade-swap.spec.ts",
+  "title": "glade swap: a glade-a2-fogged match saved before the update resumes exactly, and again after a reload",
+  "project": "ref",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "16-glade-swap.spec.ts",
+  "title": "glade swap: a glade-g3-boss match saved before the update resumes exactly, and again after a reload",
+  "project": "ref",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "16-glade-swap.spec.ts",
+  "title": "glade swap: the Free Play picker offers exactly the right variants, in order, with no Trial A",
+  "project": "ref",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "17-glade-parity.spec.ts",
+  "title": "glade parity: how long a parity group can grow before a card is cut off",
+  "project": "ref",
+  "skipped": false,
+  "timing": "real"
  },
  {
   "file": "zz-coverage.spec.ts",
@@ -2204,6 +2408,62 @@
   "title": "trials: the picker shows every variant, with no scrolling, clipping or overlap",
   "project": "se",
   "skipped": false
+ },
+ {
+  "file": "16-glade-swap.spec.ts",
+  "title": "glade swap: a free-moonlit match saved before the update resumes exactly, and again after a reload",
+  "project": "se",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "16-glade-swap.spec.ts",
+  "title": "glade swap: a free-trialA match saved before the update resumes exactly, and again after a reload",
+  "project": "se",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "16-glade-swap.spec.ts",
+  "title": "glade swap: a free-trialB match saved before the update resumes exactly, and again after a reload",
+  "project": "se",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "16-glade-swap.spec.ts",
+  "title": "glade swap: a free-trialC match saved before the update resumes exactly, and again after a reload",
+  "project": "se",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "16-glade-swap.spec.ts",
+  "title": "glade swap: a glade-a2-fogged match saved before the update resumes exactly, and again after a reload",
+  "project": "se",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "16-glade-swap.spec.ts",
+  "title": "glade swap: a glade-g3-boss match saved before the update resumes exactly, and again after a reload",
+  "project": "se",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "16-glade-swap.spec.ts",
+  "title": "glade swap: the Free Play picker offers exactly the right variants, in order, with no Trial A",
+  "project": "se",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "17-glade-parity.spec.ts",
+  "title": "glade parity: how long a parity group can grow before a card is cut off",
+  "project": "se",
+  "skipped": false,
+  "timing": "real"
  },
  {
   "file": "zz-coverage.spec.ts",

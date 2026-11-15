@@ -34,7 +34,7 @@ Targeted runs rebuild first, and they leave out the coverage check, which only m
 | Alone | 4 | 1 worker, nothing else running | The performance tests |
 | Last | 4 | 1 worker | The coverage check reads every other test's event log |
 
-Finally, it compares images with `scripts/compare-shots.mjs` and checks the inventory. Retries are off. Results are in `test-results/gate/`, with `summary.txt` for the times.
+Finally, it writes the long parity group report (below), compares images with `scripts/compare-shots.mjs` and checks the inventory. Retries are off. Results are in `test-results/gate/`, with `summary.txt` for the times.
 
 **Workers.** Set `TC_WORKERS` to change the parallel stage. On the laptop below, the stage took 29.8 min with 1 worker, 14.8 with 2, 10.2 with 3 and 8.0 with 4. Six took 5.7 but caused a tap timeout and an image difference. Measure again on a different machine.
 
@@ -45,6 +45,10 @@ Finally, it compares images with `scripts/compare-shots.mjs` and checks the inve
 ## Map 2 tests
 
 The Moonlit Glade's browser tests are in `11-glade.spec.ts`, `12-glade-polish.spec.ts` (performance) and `13-glade-recordings.spec.ts`, and its screenshots are in the `capture: the Moonlit Glade` test in `06-visual.spec.ts`. Fogged screens hold their clouds still for screenshots with the `freezeFog` test hook, which is compiled out of production builds like the others.
+
+Change Request 04 made Moonlit Trial A's list the Moonlit Phases. `16-glade-swap.spec.ts` loads saves recorded on the game from before then (`tests/fixtures/pre-cr04/`, made once and never regenerated), each holding a match in progress, and checks they resume exactly at every size. `16-glade-swap-match.spec.ts` plays whole matches through the real UI at 390×844 only, in the serial stage: a Map 2 stop and a Free Play match on the new list, and the saved matches on the list they began on. `tests/unit/moonlit-swap.test.ts` covers the same saves without a browser.
+
+**Long parity groups (report only).** `17-glade-parity.spec.ts` lays down Odds and Evens groups of 8 to 20 cards on a fogged Glade table at every size, including Lunaria's crowned group at the boss, and records the largest that shows every card inside the laid-down area. `scripts/parity-report.mjs` joins the sizes into `test-results/parity-groups.md`. The sizes it finds never fail the gate; only a missing measurement does.
 
 Each Map 2 test is classed `real` or `fast` in `tests/inventory.json`: `fast` if it speeds up waits with `setTestScale`, `real` otherwise. Performance checks, recordings and image captures are always `real`. `FAST_CLOCK` in `tests/e2e/stages.ts` lists the fast ones, and the inventory check fails if a Map 2 test has no class.
 

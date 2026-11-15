@@ -214,9 +214,10 @@ function runPhase(job: PhaseJob): PhaseResult {
   return out;
 }
 
-/** Writes a Moonlit-family list into the live ids inside this worker only. */
+/** Writes a Moonlit-family list into the ids a new Moonlit match plays, inside this worker only. */
 function useList(list: GroupReq[][] | null): void {
-  list?.forEach((reqs, i) => { PHASES[11 + i] = reqs; });
+  const ids = phaseSequence('moonlit');
+  list?.forEach((reqs, i) => { PHASES[ids[i]] = reqs; });
 }
 
 function runList(job: ListJob): ListResult {

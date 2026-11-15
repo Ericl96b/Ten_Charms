@@ -94,7 +94,7 @@ test('7. the whole campaign: stars, unlocks, Charms, Free Play, variants and the
   await expect(page.locator('[data-testid="fp-bot-hoot"]')).toHaveCount(1);
   await expect(page.locator('[data-testid="fp-variant-sprint"]')).toHaveCount(0);
   await expect(page.locator('[data-testid="fp-variant-moonlit"]')).toHaveCount(0);
-  await expect(page.locator('[data-testid^="fp-variant-trial"]')).toHaveCount(3);
+  await expect(page.locator('[data-testid^="fp-variant-trial"]')).toHaveCount(2);
   await tap(page, '[data-testid="nav-journey"]');
 
   const r5 = await playStop(page, 5, 12);

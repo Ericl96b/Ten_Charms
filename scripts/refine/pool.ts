@@ -1,6 +1,6 @@
 // The phases measured by the Moonlit refinement simulation (Change Request 03 §2).
 // Requirements only. Their text comes from the engine's own labels, so it reads exactly as the game would show it.
-import { PHASES, phaseSequence, phaseText } from '../../src/engine/phases.ts';
+import { PHASES, RETIRED_MOONLIT_PHASES, phaseSequence, phaseText } from '../../src/engine/phases.ts';
 import type { GroupReq } from '../../src/engine/types.ts';
 
 const set = (size: number): GroupReq => ({ type: 'set', size });
@@ -77,8 +77,11 @@ export const CLASSIC_PHASES: PoolPhase[] = phaseSequence('standard').map((id, i)
 /** Every phase measured: 25 eligible, 4 dropped, 10 classic. */
 export const MEASURED: PoolPhase[] = [...ELIGIBLE, ...DROPPED_PHASES, ...CLASSIC_PHASES];
 
-/** The live Moonlit list as the game plays it, in order. */
-export const LIVE_LIST: GroupReq[][] = phaseSequence('moonlit').map((id) => PHASES[id]);
+/**
+ * The Moonlit list the refinement measured against, in order: the live list until Change Request 04 retired it.
+ * Kept as the report's baseline, so a rerun measures what SIMULATION_MOONLIT_REFINEMENT.md records.
+ */
+export const LIVE_LIST: GroupReq[][] = RETIRED_MOONLIT_PHASES.map((id) => PHASES[id]);
 
 export const hasColorRun = (reqs: readonly GroupReq[]): boolean => reqs.some((r) => r.type === 'colorRun');
 export const hasParity = (reqs: readonly GroupReq[]): boolean => reqs.some((r) => r.type === 'evens' || r.type === 'odds');

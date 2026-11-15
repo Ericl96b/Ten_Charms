@@ -8,7 +8,10 @@ const evens = (size: number): GroupReq => ({ type: 'evens', size });
 const odds = (size: number): GroupReq => ({ type: 'odds', size });
 const pair = (): GroupReq => ({ type: 'set', size: 2, pair: true });
 
-/** Requirements by phase id. 1 through 10 are the classic list; 11 through 20 are the Moonlit list. */
+/**
+ * Requirements by phase id. 1 through 10 are the classic list; 21 through 30 are the Moonlit list. 11 through 20 are
+ * the Moonlit list from before Change Request 04, kept only so a match already in progress at the update can finish.
+ */
 export const PHASES: Record<number, GroupReq[]> = {
   1: [set(3), set(3)],
   2: [set(3), run(4)],
@@ -20,7 +23,7 @@ export const PHASES: Record<number, GroupReq[]> = {
   8: [color(7)],
   9: [set(5), set(2)],
   10: [set(5), set(3)],
-  // The Moonlit order comes from the simulation in SIMULATION_MAP2.md: easiest first, and fixed from here on.
+  // The retired Moonlit list, from the simulation in SIMULATION_MAP2.md. No new match uses it (see matchPhases).
   11: [run(4), pair(), pair()],
   12: [odds(4), evens(4)],
   13: [pair(), pair(), pair(), pair()],
@@ -31,8 +34,7 @@ export const PHASES: Record<number, GroupReq[]> = {
   18: [colorRun(5), pair()],
   19: [set(3), set(3), set(3)],
   20: [colorRun(6)],
-  // Free Play trials of a refined Moonlit list, from SIMULATION_MOONLIT_REFINEMENT.md: Trial A is 21 to 30,
-  // Trial B 31 to 40, Trial C 41 to 50, each easiest first. They play exactly like the Moonlit Phases.
+  // The Moonlit list: Finalist A of SIMULATION_MOONLIT_REFINEMENT.md (Change Request 04), easiest first.
   21: [set(3), set(3), pair()],
   22: [odds(8)],
   23: [evens(8)],
@@ -43,6 +45,8 @@ export const PHASES: Record<number, GroupReq[]> = {
   28: [colorRun(4), set(3)],
   29: [colorRun(3), set(4)],
   30: [colorRun(5), pair()],
+  // Free Play trials of other refined lists, from the same report: Trial B is 31 to 40, Trial C 41 to 50,
+  // each easiest first. They play exactly like the Moonlit Phases.
   31: [evens(7)],
   32: [colorRun(3), set(3)],
   33: [color(6)],
@@ -67,21 +71,38 @@ export const PHASES: Record<number, GroupReq[]> = {
 
 const ALL_PHASES = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 const SPRINT_PHASES = [1, 3, 5, 7, 9];
-const MOONLIT_PHASES = [11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
+const MOONLIT_PHASES = [21, 22, 23, 24, 25, 26, 27, 28, 29, 30];
+/** The Moonlit list before Change Request 04. Only a match already in progress at the update still plays it. */
+export const RETIRED_MOONLIT_PHASES = [11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
 export const CLASSIC_PHASE_COUNT = ALL_PHASES.length;
 /** Each Moonlit Trial's list, in order. */
 const TRIAL_PHASES: Partial<Record<Variant, number[]>> = {
-  trialA: [21, 22, 23, 24, 25, 26, 27, 28, 29, 30],
   trialB: [31, 32, 33, 34, 35, 36, 37, 38, 39, 40],
   trialC: [41, 42, 43, 44, 45, 46, 47, 48, 49, 50],
 };
-export const TRIAL_VARIANTS = ['trialA', 'trialB', 'trialC'] as const;
+export const TRIAL_VARIANTS = ['trialB', 'trialC'] as const;
 
+/** The list a new match on this variant plays. A match already under way reads its own list with matchPhases. */
 export function phaseSequence(variant: Variant): number[] {
   if (variant === 'moonlit') return MOONLIT_PHASES;
   const trial = TRIAL_PHASES[variant];
   if (trial) return trial;
   return variant === 'sprint' ? SPRINT_PHASES : ALL_PHASES;
+}
+
+/** Just what matchPhases reads: a game, or a bot's observation of one. Both hold only public phase progress. */
+export type PhaseProgress = { variant: Variant; players: readonly { phase: number | null; completed: readonly number[] }[] };
+
+const isRetired = (phase: number | null) => phase !== null && RETIRED_MOONLIT_PHASES.includes(phase);
+
+/**
+ * The list this match plays. A Moonlit match begun before Change Request 04 is the only one with retired phase ids,
+ * since every new Moonlit match starts on the current list, so it finishes on the retired list. Everything else
+ * plays its variant's list.
+ */
+export function matchPhases(game: PhaseProgress): number[] {
+  if (game.variant === 'moonlit' && game.players.some((p) => isRetired(p.phase) || p.completed.some(isRetired))) return RETIRED_MOONLIT_PHASES;
+  return phaseSequence(game.variant);
 }
 
 /** The Moonlit Phases and its Free Play trials: the same group types, rules and Charms, on different lists. */

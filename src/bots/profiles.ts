@@ -1,6 +1,6 @@
 // The bot personalities. A decision is a pure function of an Observation and a dice roll.
 import {
-  PHASES, cardPoints, checkHit, findArrangement, handPoints, phaseSequence,
+  PHASES, cardPoints, checkHit, findArrangement, handPoints, matchPhases,
   type Action, type Card, type GroupPlan, type LaidGroup, type Observation, type PublicPlayer, type Suit,
 } from './rules.ts';
 import { evaluate, plus, simpleUnseen, tally, trackedUnseen, usedCards, without, type Evaluation, type Tally, type Unseen } from './analysis.ts';
@@ -192,7 +192,7 @@ function choosePhase(obs: Observation): Action {
   const me = obs.players[obs.seat];
   const t = tally(obs.hand);
   const u = simpleUnseen(obs.hand);
-  const open = phaseSequence(obs.variant).filter((p) => !me.completed.includes(p));
+  const open = matchPhases(obs).filter((p) => !me.completed.includes(p));
   const best = pickMax(open, (p) => evaluate(t, p, u).score + p * 0.01);
   return { type: 'choosePhase', seat: obs.seat, phase: best };
 }

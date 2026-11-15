@@ -4,7 +4,7 @@ import { simpleUnseen, tally, evaluate, usedCards } from '../../bots/analysis.ts
 import { BOTS, LINES, type LineTrigger } from '../../content.ts';
 import { eligibleSkipTargets, nextRound, step } from '../../engine/game.ts';
 import { observe } from '../../engine/observation.ts';
-import { PHASES, checkGroup, checkHit, findArrangement, groupLabel, phaseNumber, phaseSequence, phaseText } from '../../engine/phases.ts';
+import { PHASES, checkGroup, checkHit, findArrangement, groupLabel, matchPhases, phaseNumber, phaseText } from '../../engine/phases.ts';
 import { createRng } from '../../engine/rng.ts';
 import type { Action, Card, GameEvent, GameState, LaidGroup } from '../../engine/types.ts';
 import { applyEvents, finishMatch, type MatchSummary } from '../../meta/progress.ts';
@@ -457,7 +457,7 @@ export class Table {
 
   renderPanel(): void {
     const me = this.me;
-    const seq = phaseSequence(this.game.variant);
+    const seq = matchPhases(this.game);
     const phase = me.phase;
     const panel = this.panelEl;
     // Once she's down the panel compacts, but never during her lay-down moment.
@@ -1447,7 +1447,7 @@ export class Table {
   }
 
   choosePhaseSheet(): void {
-    const open = phaseSequence(this.game.variant).filter((p) => !this.me.completed.includes(p));
+    const open = matchPhases(this.game).filter((p) => !this.me.completed.includes(p));
     const list = h('div.phase-choices', { 'data-testid': 'phase-choices' });
     const sheet = openSheet(list, { title: 'Choose your phase', dismissable: false });
     for (const p of open) {
@@ -1557,7 +1557,7 @@ export class Table {
   }
 
   nearWinLine(): void {
-    const seq = phaseSequence(this.game.variant);
+    const seq = matchPhases(this.game);
     const left = seq.filter((p) => !this.me.completed.includes(p));
     if (left.length === 1) this.match.lineup.forEach((_, i) => this.say(i + 1, 'humanNearWin'));
   }

@@ -1,10 +1,11 @@
 // The Moonlit Trials (Change Request 03, Part B): Free Play variants that play the approved finalist lists.
+// Trial A's list became the Moonlit Phases in Change Request 04; Trials B and C stay as they were.
 import assert from 'node:assert/strict';
 import { describe, test } from 'node:test';
 import { decide } from '../../src/bots/profiles.ts';
 import { createGame, nextRound, step } from '../../src/engine/game.ts';
 import { observe } from '../../src/engine/observation.ts';
-import { PHASES, TRIAL_VARIANTS, isMoonlitFamily, isMoonlitPhase, phaseNumber, phaseSequence, phaseText } from '../../src/engine/phases.ts';
+import { PHASES, RETIRED_MOONLIT_PHASES, TRIAL_VARIANTS, isMoonlitFamily, isMoonlitPhase, phaseNumber, phaseSequence, phaseText } from '../../src/engine/phases.ts';
 import { createRng } from '../../src/engine/rng.ts';
 import type { GameEvent, RoundResult, Variant } from '../../src/engine/types.ts';
 import { applyEvents, newTracker } from '../../src/meta/progress.ts';
@@ -13,38 +14,39 @@ import { playMatch } from '../../src/sim/driver.ts';
 
 /** The finalists approved from SIMULATION_MOONLIT_REFINEMENT.md, in finalist order and in their own order. */
 const APPROVED: Record<string, string[]> = {
-  trialA: ['2 Sets of 3 + Pair', '8 Odds', '8 Evens', 'Set of 4 + 2 Pairs', 'Color run of 4 + 2 Pairs', 'Set of 4 + 4 of one Color', '2 Color runs of 3', 'Color run of 4 + Set of 3', 'Color run of 3 + Set of 4', 'Color run of 5 + Pair'],
   trialB: ['7 Evens', 'Color run of 3 + Set of 3', '6 of one Color', 'Set of 3 + 5 of one Color', 'Color run of 3 + Set of 3 + Pair', '8 Odds', 'Set of 4 + 4 of one Color', 'Color run of 4 + Set of 3', 'Color run of 3 + Set of 4', 'Color run of 5 + Pair'],
   trialC: ['7 Evens', 'Color run of 3 + Set of 3', '6 of one Color', 'Set of 3 + 5 of one Color', 'Color run of 3 + Set of 3 + Pair', '2 Sets of 3 + Pair', '8 Evens', 'Set of 4 + 4 of one Color', 'Color run of 4 + Set of 3', 'Color run of 5 + Pair'],
 };
 
-const LIVE = ['Run of 4 + 2 Pairs', '4 Odds + 4 Evens', '4 Pairs', '7 Evens', 'Color run of 3 + Set of 3', 'Set of 4 + 4 of one Color', 'Color run of 4 + Run of 4', 'Color run of 5 + Pair', '3 Sets of 3', 'Color run of 6'];
+/** Finalist A, the Moonlit Phases since Change Request 04. */
+const MOONLIT = ['2 Sets of 3 + Pair', '8 Odds', '8 Evens', 'Set of 4 + 2 Pairs', 'Color run of 4 + 2 Pairs', 'Set of 4 + 4 of one Color', '2 Color runs of 3', 'Color run of 4 + Set of 3', 'Color run of 3 + Set of 4', 'Color run of 5 + Pair'];
 
 describe('the trial lists', () => {
   test('each trial plays its approved finalist exactly, in order', () => {
-    assert.deepEqual([...TRIAL_VARIANTS], ['trialA', 'trialB', 'trialC']);
+    assert.deepEqual([...TRIAL_VARIANTS], ['trialB', 'trialC']);
     for (const v of TRIAL_VARIANTS) assert.deepEqual(phaseSequence(v).map(phaseText), APPROVED[v], v);
   });
 
-  test('the Moonlit Phases keep the live list', () => {
-    assert.deepEqual(phaseSequence('moonlit'), [11, 12, 13, 14, 15, 16, 17, 18, 19, 20]);
-    assert.deepEqual(phaseSequence('moonlit').map(phaseText), LIVE);
+  test('the Moonlit Phases play Finalist A, on the ids Trial A had', () => {
+    assert.deepEqual(phaseSequence('moonlit'), [21, 22, 23, 24, 25, 26, 27, 28, 29, 30]);
+    assert.deepEqual(phaseSequence('moonlit').map(phaseText), MOONLIT);
   });
 
   test('trial phases are Moonlit phases, shown as 1 to 10, and never shared with another list', () => {
-    const seen = new Set<number>(phaseSequence('moonlit'));
+    const seen = new Set<number>([...phaseSequence('moonlit'), ...RETIRED_MOONLIT_PHASES]);
     for (const v of TRIAL_VARIANTS) {
       const seq = phaseSequence(v);
       assert.deepEqual(seq.map(phaseNumber), [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
       for (const p of seq) { assert.ok(isMoonlitPhase(p)); assert.ok(!seen.has(p), `${p} is shared`); seen.add(p); }
     }
     for (let p = 1; p <= 10; p++) assert.equal(phaseNumber(p), p, 'classic numbers are unchanged');
-    for (let p = 11; p <= 20; p++) assert.equal(phaseNumber(p), p - 10, 'Moonlit numbers are unchanged');
+    for (let p = 11; p <= 20; p++) assert.equal(phaseNumber(p), p - 10, 'retired Moonlit numbers are unchanged');
+    for (let p = 21; p <= 30; p++) assert.equal(phaseNumber(p), p - 20, 'Moonlit numbers');
   });
 
   test('only the Moonlit Phases and the trials are Moonlit-family variants', () => {
-    const all: Variant[] = ['standard', 'sprint', 'choose', 'moonlit', 'trialA', 'trialB', 'trialC'];
-    assert.deepEqual(all.filter(isMoonlitFamily), ['moonlit', 'trialA', 'trialB', 'trialC']);
+    const all: Variant[] = ['standard', 'sprint', 'choose', 'moonlit', 'trialB', 'trialC'];
+    assert.deepEqual(all.filter(isMoonlitFamily), ['moonlit', 'trialB', 'trialC']);
   });
 
   test('every trial phase has requirements', () => {
@@ -110,7 +112,7 @@ describe('trials and the Moonlit Mastery Charm', () => {
 
   test('a trial phase never earns it in a match that is not that trial', () => {
     const s = defaultSave();
-    applyEvents(s, trialMatch('trialA'), [roundEnd(phaseSequence('trialB')[9])]);
+    applyEvents(s, trialMatch('trialC'), [roundEnd(phaseSequence('trialB')[9])]);
     assert.ok(!s.charms.includes('moonlit-mastery'));
   });
 });

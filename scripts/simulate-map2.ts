@@ -11,7 +11,7 @@ import { Worker } from 'node:worker_threads';
 import { BOT_IDS, GLADE_BOT_IDS, type BotId } from '../src/bots/profiles.ts';
 import { createRng } from '../src/engine/rng.ts';
 import { BOTS, GLADE_STOPS } from '../src/content.ts';
-import { PHASES, groupLabel, phaseSequence } from '../src/engine/phases.ts';
+import { PHASES, RETIRED_MOONLIT_PHASES, groupLabel, phaseSequence } from '../src/engine/phases.ts';
 import type { GroupReq } from '../src/engine/types.ts';
 import type { Job, Result } from './sim-map2-worker.ts';
 
@@ -303,14 +303,16 @@ lines.push('Thresholds in `src/content.ts`: ' + GLADE_STOPS.map((s, i) => {
   return `${s.id.toUpperCase()} ${same ? 'match' : 'DO NOT match'}`;
 }).join(', ') + '.', '');
 
-/* ---------- Is the game's list the final list? ---------- */
+/* ---------- Is the list this run chose the one it chose before? ---------- */
 
+// Change Request 04 replaced the Moonlit list with a refined one, so this compares against the list this simulation
+// chose (now retired, and kept only for matches begun before then), not the list the game plays today.
 if (!stopsOnly) {
-const inGame = phaseSequence('moonlit').map((id) => reqsText(PHASES[id]));
+const inGame = RETIRED_MOONLIT_PHASES.map((id) => reqsText(PHASES[id]));
 const wanted = finalList.map(reqsText);
 const same = inGame.every((t, i) => t === wanted[i]);
-if (!same) console.log(`The game's list differs from this result.\n  In the game: ${inGame.join(' | ')}\n  Result:      ${wanted.join(' | ')}`);
-lines.push(`The list in \`src/engine/phases.ts\` ${same ? 'matches' : 'DOES NOT match'} this order.`, '');
+if (!same) console.log(`The retired list differs from this result.\n  Retired: ${inGame.join(' | ')}\n  Result:  ${wanted.join(' | ')}`);
+lines.push(`The retired Moonlit list in \`src/engine/phases.ts\` ${same ? 'matches' : 'DOES NOT match'} this order.`, '');
 }
 
 const report = lines.join('\n');

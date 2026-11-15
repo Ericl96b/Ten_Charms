@@ -7,7 +7,8 @@ import { ALL_BOT_IDS, decide } from '../../src/bots/profiles.ts';
 import { createGame, step } from '../../src/engine/game.ts';
 import { observe, type Observation } from '../../src/engine/observation.ts';
 import { createRng, shuffle } from '../../src/engine/rng.ts';
-import type { Card, GameState } from '../../src/engine/types.ts';
+import { RETIRED_MOONLIT_PHASES, matchPhases, phaseSequence } from '../../src/engine/phases.ts';
+import type { Card, GameState, Variant } from '../../src/engine/types.ts';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const botDir = join(root, 'src', 'bots');
@@ -21,8 +22,10 @@ function reachable(start: string, seen = new Set<string>()): Set<string> {
   return seen;
 }
 
-function midGame(seed: string): GameState {
-  const { state } = createGame({ playerCount: 3, seed });
+function midGame(seed: string, variant: Variant = 'standard', retired = false): GameState {
+  const { state } = createGame({ playerCount: 3, seed, variant });
+  // A Moonlit match saved before Change Request 04 is still on the retired list.
+  if (retired) for (const p of state.players) p.phase = RETIRED_MOONLIT_PHASES[0];
   for (let t = 0; t < 10 && state.stage !== 'roundOver'; t++) {
     if (state.stage === 'draw') assert.ok(step(state, { type: 'draw', source: 'pile' }).ok);
     const hand = state.players[state.current].hand;
@@ -91,9 +94,11 @@ describe('fairness', () => {
     assert.equal(JSON.stringify(state), before);
   });
 
-  test('rearranging every hidden card changes neither the observation nor any decision', () => {
+  for (const [label, variant, retired] of [['', 'standard', false], [' (the Moonlit list)', 'moonlit', false], [' (the retired Moonlit list)', 'moonlit', true]] as const) {
+  test(`rearranging every hidden card changes neither the observation nor any decision${label}`, () => {
     for (let trial = 0; trial < 40; trial++) {
-      const state = midGame(trial.toString(16).padStart(32, 'c'));
+      const state = midGame(trial.toString(16).padStart(32, 'c'), variant, retired);
+      if (variant === 'moonlit') assert.deepEqual(matchPhases(state), retired ? RETIRED_MOONLIT_PHASES : phaseSequence('moonlit'));
       const seat = state.current;
       if (state.stage === 'draw') assert.ok(step(state, { type: 'draw', source: 'pile' }).ok);
       const before = observe(state, seat);
@@ -116,6 +121,7 @@ describe('fairness', () => {
       }
     }
   });
+  }
 
   test('every seat gets its cards from the same shuffle, whatever the bot', () => {
     const a = createGame({ playerCount: 2, seed: '77'.repeat(16) }).state;

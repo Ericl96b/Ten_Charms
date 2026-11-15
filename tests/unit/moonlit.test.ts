@@ -5,7 +5,7 @@ import { decide, BOT_IDS, type BotId } from '../../src/bots/profiles.ts';
 import { evaluate, simpleUnseen, tally, usedCards } from '../../src/bots/analysis.ts';
 import { createGame, nextRound, step } from '../../src/engine/game.ts';
 import { observe } from '../../src/engine/observation.ts';
-import { PHASES, checkGroup, checkHit, findArrangement, groupLabel, matchSlots, phaseNumber, phaseSequence, phaseText, placeHit } from '../../src/engine/phases.ts';
+import { PHASES, RETIRED_MOONLIT_PHASES, checkGroup, checkHit, findArrangement, groupLabel, matchSlots, phaseNumber, phaseSequence, phaseText, placeHit } from '../../src/engine/phases.ts';
 import { createRng } from '../../src/engine/rng.ts';
 import type { Card, GroupReq, LaidGroup } from '../../src/engine/types.ts';
 import { playMatch } from '../../src/sim/driver.ts';
@@ -16,10 +16,13 @@ const evens = (size: number): GroupReq => ({ type: 'evens', size });
 const odds = (size: number): GroupReq => ({ type: 'odds', size });
 const pair: GroupReq = { type: 'set', size: 2, pair: true };
 
-/** The Moonlit phase id with this requirement, wherever the simulation put it. */
-const idOf = (text: string): number => {
-  const id = phaseSequence('moonlit').find((p) => phaseText(p) === text);
-  assert.ok(id, `no Moonlit phase reads ${text}`);
+/**
+ * The retired Moonlit list's phase id with this requirement. Matches begun before Change Request 04 still play that
+ * list to the end, so its phases stay covered here.
+ */
+const retiredId = (text: string): number => {
+  const id = RETIRED_MOONLIT_PHASES.find((p) => phaseText(p) === text);
+  assert.ok(id, `no retired Moonlit phase reads ${text}`);
   return id;
 };
 
@@ -160,11 +163,18 @@ describe('the Moonlit list', () => {
     assert.deepEqual(list.map(phaseNumber), [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
   });
 
-  test('labels follow the requirement wording', () => {
-    const texts = phaseSequence('moonlit').map(phaseText);
-    for (const expected of ['4 Pairs', 'Run of 4 + 2 Pairs', 'Color run of 3 + Set of 3', '7 Evens', '3 Sets of 3', 'Color run of 4 + Run of 4', '4 Odds + 4 Evens', 'Set of 4 + 4 of one Color', 'Color run of 5 + Pair']) {
-      assert.ok(texts.some((t) => t === expected || t.includes(expected)), expected);
-    }
+  test('labels follow the requirement wording, exactly and in order (Change Request 04)', () => {
+    assert.deepEqual(phaseSequence('moonlit').map(phaseText), [
+      '2 Sets of 3 + Pair', '8 Odds', '8 Evens', 'Set of 4 + 2 Pairs', 'Color run of 4 + 2 Pairs',
+      'Set of 4 + 4 of one Color', '2 Color runs of 3', 'Color run of 4 + Set of 3', 'Color run of 3 + Set of 4', 'Color run of 5 + Pair',
+    ]);
+  });
+
+  test('the retired list keeps its labels, for matches begun before the change', () => {
+    assert.deepEqual(RETIRED_MOONLIT_PHASES.map(phaseText), [
+      'Run of 4 + 2 Pairs', '4 Odds + 4 Evens', '4 Pairs', '7 Evens', 'Color run of 3 + Set of 3',
+      'Set of 4 + 4 of one Color', 'Color run of 4 + Run of 4', 'Color run of 5 + Pair', '3 Sets of 3', 'Color run of 6',
+    ]);
   });
 
   // A hand that completes each phase, and one that nearly does.
@@ -179,11 +189,22 @@ describe('the Moonlit list', () => {
     'Set of 4 + 4 of one Color': { good: () => [n(9, 'moss'), n(9, 'honey'), n(9, 'moonstone'), n(9, 'moss'), n(1), n(2), n(3), n(4)], bad: () => [n(9, 'moss'), n(9, 'honey'), n(9, 'moonstone'), n(8, 'moss'), n(1), n(2), n(3), n(4)] },
     'Color run of 5 + Pair': { good: () => [n(1), n(2), n(3), n(4), n(5), n(9), n(9, 'moss')], bad: () => [n(1), n(2), n(3), n(4), n(5, 'moss'), n(9), n(9, 'moss')] },
     'Color run of 6': { good: () => [n(1), n(2), n(3), n(4), n(5), n(6)], bad: () => [n(1), n(2), n(3), n(4), n(5), n(7)] },
+    // The list since Change Request 04.
+    '2 Sets of 3 + Pair': { good: () => [n(1), n(1, 'moss'), n(1, 'honey'), n(2), n(2, 'moss'), n(2, 'honey'), n(5), n(5, 'moss')], bad: () => [n(1), n(1, 'moss'), n(1, 'honey'), n(2), n(2, 'moss'), n(3), n(5), n(5, 'moss')] },
+    '8 Odds': { good: () => [n(1), n(3), n(5), n(7), n(9), n(11), n(1, 'moss'), n(3, 'moss')], bad: () => [n(1), n(3), n(5), n(7), n(9), n(11), n(1, 'moss'), n(2)] },
+    '8 Evens': { good: () => [n(2), n(4), n(6), n(8), n(10), n(12), n(2, 'moss'), n(4, 'moss')], bad: () => [n(2), n(4), n(6), n(8), n(10), n(12), n(2, 'moss'), n(3)] },
+    'Set of 4 + 2 Pairs': { good: () => [n(6), n(6, 'moss'), n(6, 'honey'), n(6, 'moonstone'), n(2), n(2, 'moss'), n(9), n(9, 'moss')], bad: () => [n(6), n(6, 'moss'), n(6, 'honey'), n(7), n(2), n(2, 'moss'), n(9), n(9, 'moss')] },
+    'Color run of 4 + 2 Pairs': { good: () => [n(1), n(2), n(3), n(4), n(7), n(7, 'moss'), n(9), n(9, 'moss')], bad: () => [n(1), n(2), n(3), n(4, 'moss'), n(7), n(7, 'moss'), n(9), n(9, 'moss')] },
+    '2 Color runs of 3': { good: () => [n(1), n(2), n(3), n(5, 'moss'), n(6, 'moss'), n(7, 'moss')], bad: () => [n(1), n(2), n(3), n(5, 'moss'), n(6, 'moss'), n(8, 'moss')] },
+    'Color run of 4 + Set of 3': { good: () => [n(1), n(2), n(3), n(4), n(8, 'moss'), n(8, 'honey'), n(8, 'moonstone')], bad: () => [n(1), n(2), n(3), n(5), n(8, 'moss'), n(8, 'honey'), n(8, 'moonstone')] },
+    'Color run of 3 + Set of 4': { good: () => [n(1), n(2), n(3), n(8, 'moss'), n(8, 'honey'), n(8, 'moonstone'), n(8, 'moss')], bad: () => [n(1), n(2), n(3), n(8, 'moss'), n(8, 'honey'), n(8, 'moonstone'), n(9, 'moss')] },
   };
 
-  for (const phase of phaseSequence('moonlit')) {
+  // The current list, then the retired one: a match begun before Change Request 04 still lays its phases down.
+  const covered = [...phaseSequence('moonlit').map((p) => [p, '']), ...RETIRED_MOONLIT_PHASES.map((p) => [p, 'retired list, '])] as [number, string][];
+  for (const [phase, prefix] of covered) {
     const text = phaseText(phase);
-    test(`${text}: a valid hand lays down, and a near miss doesn't`, () => {
+    test(`${prefix}${text}: a valid hand lays down, and a near miss doesn't`, () => {
       const example = EXAMPLES[text];
       assert.ok(example, `no example for ${text}`);
       const plan = findArrangement(example.good(), phase);
@@ -201,7 +222,7 @@ describe('the Moonlit list', () => {
       assert.deepEqual(state.groups.map((g) => g.type), PHASES[phase].map((r) => r.type));
     });
 
-    test(`${text}: the evaluation agrees with the arrangement`, () => {
+    test(`${prefix}${text}: the evaluation agrees with the arrangement`, () => {
       const example = EXAMPLES[text];
       const good = example.good();
       assert.equal(evaluate(tally(good), phase, simpleUnseen(good)).missing, 0);
@@ -214,17 +235,17 @@ describe('the Moonlit list', () => {
 describe('finding an arrangement', () => {
   test('a Set does not take the one card a color run needs', () => {
     const hand = [n(4), n(4, 'moss'), n(4, 'honey'), n(4, 'moonstone'), n(5), n(6)];
-    const plan = findArrangement(hand, idOf('Color run of 3 + Set of 3'))!;
+    const plan = findArrangement(hand, retiredId('Color run of 3 + Set of 3'))!;
     assert.ok(plan, 'the rose 4 goes to the color run');
     const state = table(2, [[...hand, n(12, 'honey')], [n(1), n(2)]]);
-    state.players[0].phase = idOf('Color run of 3 + Set of 3');
+    state.players[0].phase = retiredId('Color run of 3 + Set of 3');
     state.stage = 'play';
     ok(step(state, { type: 'layDown', groups: plan }));
   });
 
   test('a Set does not take the cards a color group needs', () => {
     const hand = [n(9), n(9, 'moss'), n(9, 'honey'), n(9, 'moonstone'), n(1), n(2), n(3), n(9)];
-    assert.ok(findArrangement(hand, idOf('Set of 4 + 4 of one Color')), 'one rose 9 is left for the color group');
+    assert.ok(findArrangement(hand, retiredId('Set of 4 + 4 of one Color')), 'one rose 9 is left for the color group');
   });
 
   test('a group left with no real card borrows one from a group with spare cards', () => {
@@ -237,21 +258,21 @@ describe('finding an arrangement', () => {
   });
 
   test('three groups need three real cards', () => {
-    assert.equal(findArrangement([n(5), n(6, 'moss'), w(), w(), w(), w(), w(), w(), w()], idOf('Run of 4 + 2 Pairs')), null);
-    assert.ok(findArrangement([n(5), n(6, 'moss'), n(9), w(), w(), w(), w(), w(), w()], idOf('Run of 4 + 2 Pairs')));
+    assert.equal(findArrangement([n(5), n(6, 'moss'), w(), w(), w(), w(), w(), w(), w()], retiredId('Run of 4 + 2 Pairs')), null);
+    assert.ok(findArrangement([n(5), n(6, 'moss'), n(9), w(), w(), w(), w(), w(), w()], retiredId('Run of 4 + 2 Pairs')));
   });
 
   test('uses as few Wilds as it can', () => {
     const wild = w();
     const hand = [n(1), n(2), n(3), wild, n(2, 'moss')];
-    const plan = findArrangement(hand, idOf('Color run of 6'));
+    const plan = findArrangement(hand, retiredId('Color run of 6'));
     assert.equal(plan, null, 'six positions, four cards');
-    const ok6 = findArrangement([n(1), n(2), n(3), n(4), n(5), n(6), wild], idOf('Color run of 6'))!;
+    const ok6 = findArrangement([n(1), n(2), n(3), n(4), n(5), n(6), wild], retiredId('Color run of 6'))!;
     assert.ok(!ok6[0].cardIds.includes(wild.id));
   });
 
   test('a color run can hold a Wild at any position', () => {
-    const plan = findArrangement([n(1), w(), n(3), n(4), w(), n(6)], idOf('Color run of 6'))!;
+    const plan = findArrangement([n(1), w(), n(3), n(4), w(), n(6)], retiredId('Color run of 6'))!;
     assert.equal(plan[0].runStart, 1);
     assert.equal(plan[0].cardIds.length, 6);
   });
@@ -260,11 +281,11 @@ describe('finding an arrangement', () => {
 describe('hints', () => {
   test('the shimmer covers each new group type', () => {
     const hand = [n(1), n(2), n(3), n(9, 'moss'), n(9, 'honey'), n(9, 'moonstone'), n(11, 'honey')];
-    const used = usedCards(hand, evaluate(tally(hand), idOf('Color run of 3 + Set of 3'), simpleUnseen(hand)).picks);
+    const used = usedCards(hand, evaluate(tally(hand), retiredId('Color run of 3 + Set of 3'), simpleUnseen(hand)).picks);
     assert.equal(used.size, 6);
     assert.ok(!used.has(hand[6].id));
     const parity = [n(2), n(4), n(6), n(3), n(5)];
-    const usedEvens = usedCards(parity, evaluate(tally(parity), idOf('7 Evens'), simpleUnseen(parity)).picks);
+    const usedEvens = usedCards(parity, evaluate(tally(parity), retiredId('7 Evens'), simpleUnseen(parity)).picks);
     assert.deepEqual([...usedEvens].sort(), [parity[0].id, parity[1].id, parity[2].id].sort());
   });
 });
@@ -284,7 +305,7 @@ describe('bots and the Moonlit Phases', () => {
 
   test('a match can be played move by move through to the end', () => {
     const { state } = createGame({ playerCount: 3, variant: 'moonlit', seed: 'cd'.repeat(16) });
-    assert.equal(state.players[0].phase, 11);
+    assert.equal(state.players[0].phase, 21, 'a new match starts on the current list');
     const rng = createRng('ef'.repeat(16), 1);
     const rand = () => rng.next() / 0x100000000;
     for (let moves = 0; moves < 50000 && state.stage !== 'matchOver'; moves++) {
@@ -292,6 +313,6 @@ describe('bots and the Moonlit Phases', () => {
       ok(step(state, decide('hoot', observe(state, state.current), rand)));
     }
     assert.equal(state.stage, 'matchOver');
-    assert.ok(state.players[state.winners[0]].completed.includes(20));
+    assert.ok(state.players[state.winners[0]].completed.includes(30));
   });
 });

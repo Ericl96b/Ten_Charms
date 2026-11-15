@@ -1,7 +1,7 @@
 // Round end, review, discard history, and the match-end sequences.
 import { BOTS, CHARMS, STOPS, TYPE_LABEL, type Unlockable } from '../../content.ts';
 import { cardLabel, cardPoints } from '../../engine/cards.ts';
-import { phaseNumber, phaseSequence } from '../../engine/phases.ts';
+import { matchPhases, phaseNumber } from '../../engine/phases.ts';
 import type { Card, HistoryEntry, RoundResult } from '../../engine/types.ts';
 import type { MatchSummary } from '../../meta/progress.ts';
 import { standings } from '../../meta/progress.ts';
@@ -41,7 +41,7 @@ function phaseChange(t: Table, r: RoundResult, seat: number): HTMLElement {
 }
 
 function nextFor(t: Table, before: number, _after: number): number {
-  const seq = phaseSequence(t.game.variant);
+  const seq = matchPhases(t.game);
   return seq[seq.indexOf(before) + 1] ?? before;
 }
 

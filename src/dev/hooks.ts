@@ -6,7 +6,7 @@ import { loadSave, type SaveData, type MatchMode } from '../meta/save.ts';
 import { app, persist, show } from '../ui/app.ts';
 import { SOUND_IDS } from '../ui/audio/audio.ts';
 import { freezeFogForTests } from '../ui/fx/fog.ts';
-import { phaseSequence } from '../engine/phases.ts';
+import { matchPhases } from '../engine/phases.ts';
 import { applyMotionVars, eventLog, motion } from '../ui/fx/motion.ts';
 import { journey, mapMusic, resumeMatch, startFromMode } from '../ui/screens/journey.ts';
 import { activeTable } from '../ui/table/table.ts';
@@ -131,7 +131,7 @@ export function installDevHooks(): void {
     endMatchNow(winnerSeat: number) {
       const t = activeTable!;
       const g = t.game;
-      const seq = phaseSequence(g.variant);
+      const seq = matchPhases(g);
       g.players.forEach((p, i) => { if (i === winnerSeat) { p.completed = seq.slice(0, -1); p.phase = seq[seq.length - 1]; p.laidDown = true; p.hand = [p.hand[0]]; } });
       g.current = winnerSeat;
       g.stage = 'play';

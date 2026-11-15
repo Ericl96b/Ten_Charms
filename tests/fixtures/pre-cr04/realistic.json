@@ -1,0 +1,147 @@
+{
+  "schema": 2,
+  "settings": {
+    "music": 0.3,
+    "sfx": 0.6,
+    "botSpeed": "brisk",
+    "animSpeed": "fast",
+    "reducedMotion": false,
+    "hints": true,
+    "confirmDiscard": false
+  },
+  "campaign": {
+    "won": [
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "stars": [
+      3,
+      2,
+      3,
+      1,
+      2
+    ],
+    "bestRounds": [
+      9,
+      11,
+      10,
+      14,
+      13
+    ]
+  },
+  "glade": {
+    "winOrder": [
+      "g1",
+      "a1",
+      "b1"
+    ],
+    "stars": {
+      "g1": 3,
+      "a1": 2,
+      "b1": 1
+    },
+    "bestRounds": {
+      "g1": 12,
+      "a1": 15,
+      "b1": 17
+    },
+    "fogLifted": false,
+    "revealSeen": true,
+    "liftScenePending": false,
+    "lastMap": "glade"
+  },
+  "equipped": {
+    "back": "starlight",
+    "cloth": "lavender-lace",
+    "music": "music-box"
+  },
+  "charms": [
+    "first-bloom",
+    "wild-at-heart",
+    "clean-sweep",
+    "perfect-teatime",
+    "rainbow",
+    "garden-champion",
+    "fog-walker"
+  ],
+  "stats": {
+    "played": 41,
+    "won": 23,
+    "streak": 2,
+    "bestStreak": 5,
+    "phases": 312,
+    "fewestRounds": 9,
+    "wentOut": 97,
+    "skipsPlayed": 64,
+    "timesSkipped": 58,
+    "wildsUsed": 120,
+    "perBot": {
+      "pip": {
+        "wins": 4,
+        "losses": 1
+      },
+      "marigold": {
+        "wins": 3,
+        "losses": 2
+      },
+      "briar": {
+        "wins": 5,
+        "losses": 3
+      },
+      "hoot": {
+        "wins": 3,
+        "losses": 4
+      },
+      "nightshade": {
+        "wins": 2,
+        "losses": 5
+      },
+      "lumi": {
+        "wins": 3,
+        "losses": 1
+      },
+      "mallow": {
+        "wins": 1,
+        "losses": 1
+      },
+      "velvet": {
+        "wins": 0,
+        "losses": 0
+      },
+      "fennel": {
+        "wins": 1,
+        "losses": 0
+      },
+      "sable": {
+        "wins": 0,
+        "losses": 0
+      },
+      "mossback": {
+        "wins": 0,
+        "losses": 0
+      },
+      "lunaria": {
+        "wins": 0,
+        "losses": 0
+      }
+    }
+  },
+  "tutorial": {
+    "done": true,
+    "seen": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ]
+  },
+  "install": {
+    "dismissedAt": 1762000000000
+  },
+  "backupPrompted": true,
+  "match": null
+}

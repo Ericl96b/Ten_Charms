@@ -339,7 +339,7 @@ const BOSS_ROWS = `
   const n = (id, num, suit) => ({ card: { id, kind: 'num', num, suit } });
   const w = (id) => ({ card: { id, kind: 'wild' } });
   game.round = 11;
-  for (const s of [0, 1, 2, 3]) { game.players[s].laidDown = true; game.players[s].phase = 12; game.players[s].completed = [11]; }
+  for (const s of [0, 1, 2, 3]) { game.players[s].laidDown = true; game.players[s].phase = 22; game.players[s].completed = [21]; }
   game.groups = [
     { id: 731, owner: 0, type: 'odds', cards: [n(841, 1, 'rose'), n(842, 3, 'moss'), n(843, 5, 'honey'), n(844, 7, 'rose')] },
     { id: 732, owner: 0, type: 'evens', cards: [n(845, 2, 'rose'), n(846, 4, 'moss'), n(847, 6, 'honey'), w(848)] },

@@ -5,7 +5,8 @@ import { expect, openApp, patch, prepare, saveEventLog, startMatch, tap, test, w
 type Rect = { left: number; top: number; right: number; bottom: number; name: string };
 const overlap = (a: Rect, b: Rect) => a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top;
 
-const MOONLIT = [11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
+/** The Moonlit list's phase ids since Change Request 04. */
+const MOONLIT = [21, 22, 23, 24, 25, 26, 27, 28, 29, 30];
 
 /** Map 1 complete, the reveal seen, and the Glade at a given point. */
 async function gladeSave(page: Page, winOrder: string[], extra: Record<string, unknown> = {}): Promise<void> {
@@ -47,7 +48,7 @@ async function winFromTable(page: Page, round: number): Promise<void> {
   }
   await patch(page, `
     const me = game.players[0];
-    me.completed = ${JSON.stringify(MOONLIT.slice(0, -1))}; me.phase = 20; me.laidDown = true;
+    me.completed = ${JSON.stringify(MOONLIT.slice(0, -1))}; me.phase = ${MOONLIT[9]}; me.laidDown = true;
     me.hand = [{ id: 900, kind: 'num', num: 2, suit: 'rose' }];
     game.round = ${round}; game.current = 0; game.stage = 'play';
   `);
@@ -355,9 +356,9 @@ test('glade: in the fog, every count is hidden, the picker shows no counts, and 
     expect(row).toMatch(/^Phase \d+( · already skipped)?$/);
     expect(row).not.toMatch(/card/);
   }
-  // Phase labels show 1 to 10, never the Moonlit ids.
+  // Phase labels show 1 to 10, never the Moonlit ids (the retired 11 to 20, the current 21 to 30, or a trial's).
   const text = await page.evaluate(() => document.body.innerText);
-  expect(text).not.toMatch(/(Phase|Ph) (1[1-9]|20)\b/);
+  expect(text).not.toMatch(/(Phase|Ph) (1[1-9]|[2-5]\d)\b/);
 });
 
 test('glade: the Thorned Crown blocks hits on her groups and shows at every table she plays', async ({ page }) => {
@@ -414,7 +415,7 @@ test('glade: the worst-case boss row fits on one row at 412 points', async ({ pa
   await patch(page, `
     const n = (id, num, suit) => ({ card: { id, kind: 'num', num, suit } });
     const w = (id) => ({ card: { id, kind: 'wild' } });
-    for (const s of [0, 1, 2, 3]) { game.players[s].laidDown = true; game.players[s].phase = 12; }
+    for (const s of [0, 1, 2, 3]) { game.players[s].laidDown = true; game.players[s].phase = 22; }
     game.round = 11;
     game.groups = [
       { id: 721, owner: 2, type: 'odds', cards: [n(821, 1, 'honey'), n(822, 3, 'rose'), n(823, 5, 'moss'), w(824), n(825, 9, 'moonstone'), n(826, 11, 'moss')] },
@@ -520,6 +521,12 @@ test('glade: Sunrise Garden, the Glade Charms heading, How to Play and Stats', a
   await page.getByText('How to Play').click();
   await expect(page.locator('[data-testid="moonlit-phases"]')).toBeVisible();
   await expect(page.locator('[data-testid="moonlit-phases"] li')).toHaveCount(10);
+  // The list since Change Request 04, exactly and in order.
+  await expect(page.locator('[data-testid="moonlit-phases"] li span')).toHaveText([
+    '2 Sets of 3 + Pair', '8 Odds', '8 Evens', 'Set of 4 + 2 Pairs', 'Color run of 4 + 2 Pairs',
+    'Set of 4 + 4 of one Color', '2 Color runs of 3', 'Color run of 4 + Set of 3', 'Color run of 3 + Set of 4', 'Color run of 5 + Pair',
+  ]);
+  await expect(page.locator('[data-testid="moonlit-phases"] li b')).toHaveText(Array.from({ length: 10 }, (_, i) => `Phase ${i + 1}`));
 });
 
 test('glade: new rewards on the table, and the Moonlight Waltz', async ({ page }) => {

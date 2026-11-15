@@ -1,14 +1,14 @@
 // The Moonlit refinement pool (Change Request 03 §2): the new phase requirements, two color runs in one phase,
-// the independent judge the bot sanity checks rely on, and a pin on the live list, which this work must not change.
+// the independent judge the bot sanity checks rely on, and pins on the live list and on the retired list the work measured.
 import assert from 'node:assert/strict';
 import { describe, test } from 'node:test';
 import { evaluate, simpleUnseen, tally } from '../../src/bots/analysis.ts';
 import { createDeck } from '../../src/engine/cards.ts';
 import { step } from '../../src/engine/game.ts';
-import { PHASES, checkGroup, checkHit, findArrangement, phaseSequence, phaseText } from '../../src/engine/phases.ts';
+import { PHASES, RETIRED_MOONLIT_PHASES, checkGroup, checkHit, findArrangement, phaseSequence, phaseText } from '../../src/engine/phases.ts';
 import { createRng, shuffle } from '../../src/engine/rng.ts';
 import type { Card, GroupReq, LaidGroup, Suit } from '../../src/engine/types.ts';
-import { ELIGIBLE, MEASURED, NEW_PHASES } from '../../scripts/refine/pool.ts';
+import { ELIGIBLE, LIVE_LIST, MEASURED, NEW_PHASES } from '../../scripts/refine/pool.ts';
 import { canGoOut, canLayDown, canShed } from '../../scripts/refine/judge.ts';
 import { n, ok, table, w } from './helpers.ts';
 
@@ -64,9 +64,18 @@ describe('the pool', () => {
     for (const p of ELIGIBLE) assert.ok(p.reqs.reduce((k, r) => k + r.size, 0) < 10, p.text);
   });
 
-  test('the live Moonlit list is unchanged', () => {
-    assert.deepEqual(phaseSequence('moonlit'), [11, 12, 13, 14, 15, 16, 17, 18, 19, 20]);
+  test('the live Moonlit list is Finalist A (Change Request 04)', () => {
+    assert.deepEqual(phaseSequence('moonlit'), [21, 22, 23, 24, 25, 26, 27, 28, 29, 30]);
     assert.deepEqual(phaseSequence('moonlit').map(phaseText), [
+      '2 Sets of 3 + Pair', '8 Odds', '8 Evens', 'Set of 4 + 2 Pairs', 'Color run of 4 + 2 Pairs',
+      'Set of 4 + 4 of one Color', '2 Color runs of 3', 'Color run of 4 + Set of 3', 'Color run of 3 + Set of 4', 'Color run of 5 + Pair',
+    ]);
+  });
+
+  test('the list this work measured against is the retired one, and is unchanged', () => {
+    assert.deepEqual(RETIRED_MOONLIT_PHASES, [11, 12, 13, 14, 15, 16, 17, 18, 19, 20]);
+    assert.deepEqual(LIVE_LIST, RETIRED_MOONLIT_PHASES.map((id) => PHASES[id]));
+    assert.deepEqual(RETIRED_MOONLIT_PHASES.map(phaseText), [
       'Run of 4 + 2 Pairs', '4 Odds + 4 Evens', '4 Pairs', '7 Evens', 'Color run of 3 + Set of 3',
       'Set of 4 + 4 of one Color', 'Color run of 4 + Run of 4', 'Color run of 5 + Pair', '3 Sets of 3', 'Color run of 6',
     ]);

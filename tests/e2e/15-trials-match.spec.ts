@@ -1,11 +1,11 @@
 // One full match per trial of the Moonlit Trials, through the real UI with the auto-player (Change Request 03, Part B).
+// Trial A became the Moonlit Phases in Change Request 04; its full match is in 16-glade-swap.spec.ts.
 // It runs at one size only (playwright.config.ts): the picker and reload tests in 14-trials.spec.ts cover every size.
 import type { Page } from '@playwright/test';
 import { expect, openApp, tap, test, waitIdle } from './helpers.ts';
 
 const FAST = 0.02;
 const TRIALS = [
-  { id: 'trialA', label: 'Moonlit Trial A', first: 21, last: 30, slots: ['Set of 3', 'Set of 3', 'Pair'] },
   { id: 'trialB', label: 'Moonlit Trial B', first: 31, last: 40, slots: ['7 Evens'] },
   { id: 'trialC', label: 'Moonlit Trial C', first: 41, last: 50, slots: ['7 Evens'] },
 ] as const;

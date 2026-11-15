@@ -3,7 +3,7 @@ import { parentPort } from 'node:worker_threads';
 import { decide } from '../src/bots/profiles.ts';
 import { createGame, nextRound, step } from '../src/engine/game.ts';
 import { observe } from '../src/engine/observation.ts';
-import { PHASES } from '../src/engine/phases.ts';
+import { PHASES, phaseSequence } from '../src/engine/phases.ts';
 import { createRng } from '../src/engine/rng.ts';
 import type { BotId } from '../src/bots/profiles.ts';
 import type { GroupReq, MatchRules } from '../src/engine/types.ts';
@@ -87,7 +87,9 @@ function runPhase(job: Extract<Job, { kind: 'phase' }>): Result {
 }
 
 function runMatches(job: Extract<Job, { kind: 'matches' }>): Result {
-  job.list?.forEach((reqs, i) => { PHASES[11 + i] = reqs; });
+  // Into the ids a new Moonlit match plays, inside this worker only.
+  const ids = phaseSequence('moonlit');
+  job.list?.forEach((reqs, i) => { PHASES[ids[i]] = reqs; });
   let rounds = 0, matches = 0, stalled = 0;
   for (let i = job.from; i < job.to; i++) {
     const seed = seedOf(job.seedBase, i);
