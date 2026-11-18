@@ -1,0 +1,163 @@
+{
+  "schema": 2,
+  "settings": {
+    "music": 0.3,
+    "sfx": 0.6,
+    "botSpeed": "brisk",
+    "animSpeed": "fast",
+    "reducedMotion": false,
+    "hints": true,
+    "confirmDiscard": false
+  },
+  "campaign": {
+    "won": [
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "stars": [
+      3,
+      2,
+      3,
+      1,
+      2
+    ],
+    "bestRounds": [
+      9,
+      11,
+      10,
+      14,
+      13
+    ]
+  },
+  "glade": {
+    "winOrder": [
+      "g1",
+      "a1",
+      "b1",
+      "a2",
+      "b2",
+      "g2",
+      "g3"
+    ],
+    "stars": {
+      "g1": 3,
+      "a1": 2,
+      "b1": 1,
+      "a2": 3,
+      "b2": 2,
+      "g2": 2,
+      "g3": 3
+    },
+    "bestRounds": {
+      "g1": 12,
+      "a1": 15,
+      "b1": 17,
+      "a2": 13,
+      "b2": 16,
+      "g2": 17,
+      "g3": 13
+    },
+    "fogLifted": true,
+    "revealSeen": true,
+    "liftScenePending": false,
+    "lastMap": "glade"
+  },
+  "equipped": {
+    "back": "starlight",
+    "cloth": "lavender-lace",
+    "music": "moonlight-waltz"
+  },
+  "charms": [
+    "first-bloom",
+    "wild-at-heart",
+    "clean-sweep",
+    "perfect-teatime",
+    "rainbow",
+    "garden-champion",
+    "fog-walker",
+    "both-paths",
+    "thornproof",
+    "dawnbringer",
+    "steady-hands"
+  ],
+  "stats": {
+    "played": 63,
+    "won": 34,
+    "streak": 1,
+    "bestStreak": 5,
+    "phases": 468,
+    "fewestRounds": 9,
+    "wentOut": 142,
+    "skipsPlayed": 93,
+    "timesSkipped": 85,
+    "wildsUsed": 177,
+    "perBot": {
+      "pip": {
+        "wins": 4,
+        "losses": 1
+      },
+      "marigold": {
+        "wins": 3,
+        "losses": 2
+      },
+      "briar": {
+        "wins": 5,
+        "losses": 3
+      },
+      "hoot": {
+        "wins": 3,
+        "losses": 4
+      },
+      "nightshade": {
+        "wins": 2,
+        "losses": 5
+      },
+      "lumi": {
+        "wins": 3,
+        "losses": 1
+      },
+      "mallow": {
+        "wins": 3,
+        "losses": 1
+      },
+      "velvet": {
+        "wins": 3,
+        "losses": 2
+      },
+      "fennel": {
+        "wins": 2,
+        "losses": 1
+      },
+      "sable": {
+        "wins": 2,
+        "losses": 2
+      },
+      "mossback": {
+        "wins": 2,
+        "losses": 1
+      },
+      "lunaria": {
+        "wins": 1,
+        "losses": 2
+      }
+    }
+  },
+  "tutorial": {
+    "done": true,
+    "seen": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ]
+  },
+  "install": {
+    "dismissedAt": 1795032005344
+  },
+  "backupPrompted": true,
+  "match": null
+}

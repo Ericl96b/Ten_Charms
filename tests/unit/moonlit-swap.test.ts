@@ -10,11 +10,22 @@ import { observe } from '../../src/engine/observation.ts';
 import { RETIRED_MOONLIT_PHASES, matchPhases, phaseNumber, phaseSequence, phaseText } from '../../src/engine/phases.ts';
 import { createRng } from '../../src/engine/rng.ts';
 import type { GameState, Variant } from '../../src/engine/types.ts';
-import { exportCode, importCode, migrate, type SaveData } from '../../src/meta/save.ts';
+import { SCHEMA, defaultTower, exportCode, importCode, migrate, type SaveData } from '../../src/meta/save.ts';
 
 const FIXTURES = 'tests/fixtures/pre-cr04';
 const fixture = (name: string): Record<string, any> => JSON.parse(readFileSync(join(FIXTURES, `${name}.json`), 'utf8'));
 const copy = <T>(v: T): T => JSON.parse(JSON.stringify(v));
+/**
+ * A save from before the Tower update, as the update loads it, minus only what the update adds: the schema number
+ * and an empty Tower. Everything else must be exactly as it was.
+ */
+function withoutTower(after: SaveData, schema: number): Record<string, any> {
+  assert.equal(after.schema, SCHEMA);
+  assert.deepEqual(after.tower, defaultTower());
+  const { tower, ...rest } = copy(after) as Record<string, any>;
+  void tower;
+  return { ...rest, schema };
+}
 
 /** Change Request 04 §1, exactly and in order. */
 const NEW_LIST = [
@@ -133,14 +144,14 @@ describe('saves made before the change', () => {
   test('the realistic save migrates with every field preserved', () => {
     const before = fixture('realistic');
     assert.equal(before.schema, 2);
-    assert.deepEqual(migrate(copy(before)), before);
+    assert.deepEqual(withoutTower(migrate(copy(before)), 2), before);
   });
 
   for (const name of ['glade-a2-fogged', 'glade-g3-boss', 'free-moonlit', 'free-trialB', 'free-trialC']) {
     test(`${name}: migrates byte for byte, and keeps its list`, () => {
       const before = fixture(name);
       const after = migrate(copy(before));
-      assert.equal(JSON.stringify(after), JSON.stringify(before));
+      assert.equal(JSON.stringify(withoutTower(after, 2)), JSON.stringify(before));
       const want = name.startsWith('free-trial') ? phaseSequence(before.match.game.variant) : RETIRED_MOONLIT_PHASES;
       assert.deepEqual(matchPhases(after.match!.game), want);
     });
@@ -154,7 +165,7 @@ describe('saves made before the change', () => {
     assert.deepEqual(matchPhases(after.match!.game), phaseSequence('moonlit'));
     const expected = copy(before);
     expected.match.game.variant = 'moonlit';
-    assert.deepEqual(after, expected);
+    assert.deepEqual(withoutTower(after, 2), expected);
     // Migrating again changes nothing.
     assert.deepEqual(migrate(copy(after)), after);
   });
@@ -163,7 +174,7 @@ describe('saves made before the change', () => {
     const code = readFileSync(join(FIXTURES, 'realistic-code.txt'), 'utf8').trim();
     const imported = importCode(code);
     assert.ok(imported);
-    assert.deepEqual(imported, { ...fixture('realistic'), match: null });
+    assert.deepEqual(withoutTower(imported, 2), { ...fixture('realistic'), match: null });
   });
 
   test('Backup and Restore round-trip a save made after the update', () => {

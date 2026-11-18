@@ -2,11 +2,13 @@
 import type { BotId } from '../bots/profiles.ts';
 import type { GameState } from '../engine/types.ts';
 
-export const SCHEMA = 2;
+export const SCHEMA = 3;
 const KEY = 'ten-charms.save';
 const BACKUP_KEY = 'ten-charms.save.backup';
 /** One untouched copy of the save as it was before the Moonlit Glade update. Written once, never changed. */
 const SNAPSHOT_KEY = 'ten-charms.save.pre-map2';
+/** Likewise, one untouched copy of the save as it was before the Tower update. */
+const TOWER_SNAPSHOT_KEY = 'ten-charms.save.pre-tower';
 
 export type GladeStopId = 'g1' | 'a1' | 'a2' | 'b1' | 'b2' | 'g2' | 'g3';
 
@@ -21,7 +23,35 @@ export type GladeProgress = {
   revealSeen: boolean;
   /** The fog-lift scene is owed and hasn't started yet. */
   liftScenePending: boolean;
-  lastMap: 'garden' | 'glade';
+  /** The Journey place she last viewed. Named for the maps, from before the Crossroads existed. */
+  lastMap: 'garden' | 'glade' | 'crossroads';
+};
+
+/** The phases and opponents of one attempt at a floor: fixed when drawn, kept until the attempt ends. */
+export type TowerAttempt = { seed: string; phases: number[]; lineup: BotId[]; guardian: BotId | null };
+
+/** The running totals of one climb, for the run-over screen. */
+export type TowerRun = { floorsCleared: number; phasesCompleted: number; guardiansBeaten: number };
+
+export type TowerClimb = {
+  floor: number;
+  hearts: number;
+  run: TowerRun;
+  /** The current attempt's draw, or null until one is drawn. Never carried by a backup code. */
+  attempt: TowerAttempt | null;
+};
+
+/** One finished climb, for the history. `endedAt` is a timestamp in ms. */
+export type TowerClimbRecord = { floor: number; endedAt: number; newBest: boolean };
+
+/** Everything the Tower keeps. Her best floor is 0 until she has climbed. */
+export type TowerProgress = {
+  best: number;
+  history: TowerClimbRecord[];
+  totals: { climbs: number; floorsCleared: number; guardiansBeaten: number };
+  climb: TowerClimb | null;
+  /** The one-time Crossroads reveal has started, so it can never play again. */
+  revealSeen: boolean;
 };
 
 export type Settings = {
@@ -51,7 +81,7 @@ export type Stats = {
   perBot: Record<StatBotId, { wins: number; losses: number }>;
 };
 
-export type MatchMode = { kind: 'campaign'; stop: number } | { kind: 'glade'; stop: GladeStopId } | { kind: 'free' };
+export type MatchMode = { kind: 'campaign'; stop: number } | { kind: 'glade'; stop: GladeStopId } | { kind: 'free' } | { kind: 'tower'; floor: number };
 
 /** What the Charms need to remember across a match. */
 export type MatchTracker = {
@@ -91,7 +121,12 @@ export type SaveData = {
   install: { dismissedAt: number };
   backupPrompted: boolean;
   match: SavedMatch | null;
+  tower: TowerProgress;
 };
+
+export function defaultTower(): TowerProgress {
+  return { best: 0, history: [], totals: { climbs: 0, floorsCleared: 0, guardiansBeaten: 0 }, climb: null, revealSeen: false };
+}
 
 function defaultGlade(): GladeProgress {
   return { winOrder: [], stars: {}, bestRounds: {}, fogLifted: false, revealSeen: false, liftScenePending: false, lastMap: 'garden' };
@@ -119,6 +154,7 @@ export function defaultSave(): SaveData {
     install: { dismissedAt: 0 },
     backupPrompted: false,
     match: null,
+    tower: defaultTower(),
   };
 }
 
@@ -126,6 +162,8 @@ export function defaultSave(): SaveData {
 const MIGRATIONS: Record<number, (old: Record<string, unknown>) => Record<string, unknown>> = {
   // The Moonlit Glade. Everything already saved stays exactly as it was.
   1: (old) => ({ ...old, glade: defaultGlade() }),
+  // The Tower and the Crossroads. Everything already saved stays exactly as it was.
+  2: (old) => ({ ...old, tower: defaultTower() }),
 };
 
 /** Brings any readable save up to the current shape, filling in anything missing from defaults. */
@@ -151,6 +189,9 @@ export function migrate(raw: unknown): SaveData {
   merged.stats = { ...base.stats, ...(data.stats as object) };
   merged.stats.perBot = { ...base.stats.perBot, ...(merged.stats.perBot ?? {}) };
   if (!Array.isArray(merged.charms)) throw new Error('Bad save');
+  const tower = (data.tower ?? {}) as Partial<TowerProgress>;
+  merged.tower = { ...base.tower, ...tower, totals: { ...base.tower.totals, ...(tower.totals ?? {}) } };
+  if (!Array.isArray(merged.tower.history)) throw new Error('Bad save');
   for (const list of [merged.campaign.won, merged.campaign.stars, merged.campaign.bestRounds]) {
     if (!Array.isArray(list) || list.length !== 5) throw new Error('Bad save');
   }
@@ -170,14 +211,16 @@ function read(key: string): SaveData | null {
   }
 }
 
-/** Keeps the save as it stood before its first upgrade to the Moonlit Glade schema. */
+/** Keeps the save as it stood before its first upgrade to the Moonlit Glade schema, and to the Tower schema. */
 function snapshotOldSave(): void {
-  try {
-    const text = localStorage.getItem(KEY);
-    if (!text || localStorage.getItem(SNAPSHOT_KEY)) return;
-    const version = (JSON.parse(text) as { schema?: unknown }).schema;
-    if (typeof version === 'number' && version < 2) localStorage.setItem(SNAPSHOT_KEY, text);
-  } catch { /* the upgrade still goes ahead; the rolling backup remains */ }
+  for (const [key, before] of [[SNAPSHOT_KEY, 2], [TOWER_SNAPSHOT_KEY, 3]] as const) {
+    try {
+      const text = localStorage.getItem(KEY);
+      if (!text || localStorage.getItem(key)) continue;
+      const version = (JSON.parse(text) as { schema?: unknown }).schema;
+      if (typeof version === 'number' && version < before) localStorage.setItem(key, text);
+    } catch { /* the upgrade still goes ahead; the rolling backup remains */ }
+  }
 }
 
 export function loadSave(): SaveData {
@@ -238,9 +281,13 @@ function decode(code: string): string {
   return new TextDecoder().decode(Uint8Array.from(bin, (c) => c.charCodeAt(0)));
 }
 
-/** A copyable code holding progress. The match in progress stays out of it. */
+/**
+ * A copyable code holding progress. The match in progress stays out of it, and so does a climb's current draw, so a
+ * restored climb draws its floor afresh.
+ */
 export function exportCode(data: SaveData): string {
-  const text = JSON.stringify({ ...data, match: null });
+  const tower = data.tower ? { ...data.tower, climb: data.tower.climb ? { ...data.tower.climb, attempt: null } : null } : data.tower;
+  const text = JSON.stringify({ ...data, match: null, tower });
   return `${PREFIX}${checksum(text)}.${encode(text)}`;
 }
 
