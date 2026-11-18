@@ -37,6 +37,8 @@ export type Observation = {
   fog?: true;
   /** Present only under the Thorned Crown: the seat whose groups only it may add to. */
   crownSeat?: number;
+  /** This match's own phase list, when it has one (a Tower floor). Public: everyone plays it. */
+  phases?: number[];
 };
 
 /** Builds a fresh copy, so nothing in it aliases the game. */
@@ -77,5 +79,6 @@ export function observe(state: GameState, seat: number): Observation {
     dealt: copy(state.players[seat].dealt ?? state.players[seat].hand),
     ...(fog ? { fog: true as const } : {}),
     ...(crown !== undefined ? { crownSeat: crown } : {}),
+    ...(state.phases ? { phases: state.phases.slice() } : {}),
   };
 }

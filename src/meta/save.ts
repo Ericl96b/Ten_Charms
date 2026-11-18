@@ -163,7 +163,7 @@ const MIGRATIONS: Record<number, (old: Record<string, unknown>) => Record<string
   // The Moonlit Glade. Everything already saved stays exactly as it was.
   1: (old) => ({ ...old, glade: defaultGlade() }),
   // The Tower and the Crossroads. Everything already saved stays exactly as it was.
-  2: (old) => ({ ...old, tower: defaultTower() }),
+  2: (old) => ({ ...old, tower: old.tower ?? defaultTower() }),
 };
 
 /** Brings any readable save up to the current shape, filling in anything missing from defaults. */

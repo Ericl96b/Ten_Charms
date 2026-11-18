@@ -216,3 +216,41 @@ export const CHARMS: { id: CharmId; name: string; text: string }[] = [
 
 /** The Charms that belong to the Moonlit Glade, shown under their own heading. */
 export const GLADE_CHARMS: readonly CharmId[] = ['fog-walker', 'dawnbringer', 'both-paths', 'thornproof', 'moonlit-mastery'];
+
+/* ---------- The Tower ---------- */
+
+/** One tier's tables. Every Guardian floor's lineup is the Guardian plus `guardian.companions` of the chosen pool. */
+export type TowerTier = {
+  opponents: number;
+  pool: BotId[];
+  fog: boolean;
+  guardian: {
+    /** Whose pool the Guardian's companions come from: this tier's, or the tier before's. */
+    from: 'tier' | 'previous';
+    companions: number;
+    /** Draw this tier's Guardian floor only from the easier half of the pool. */
+    easyPhases: boolean;
+  };
+};
+
+/**
+ * The tier ladder, Tier 1 first. The last entry covers every tier above it. TOWER_SPEC.md §8.2 was the starting point;
+ * this is the ladder after tuning within §8.5, and SIMULATION_TOWER.md records how it was measured, every step, and
+ * which targets it misses.
+ */
+export const TOWER_LADDER: readonly TowerTier[] = [
+  { opponents: 1, pool: ['pip'], fog: false, guardian: { from: 'tier', companions: 0, easyPhases: false } },
+  { opponents: 1, pool: ['pip'], fog: false, guardian: { from: 'tier', companions: 1, easyPhases: true } },
+  { opponents: 1, pool: ['lumi', 'mallow'], fog: false, guardian: { from: 'tier', companions: 1, easyPhases: false } },
+  { opponents: 1, pool: ['briar', 'lumi', 'mallow', 'fennel', 'hoot'], fog: true, guardian: { from: 'previous', companions: 1, easyPhases: false } },
+  { opponents: 1, pool: ['mallow', 'fennel', 'velvet', 'sable'], fog: true, guardian: { from: 'tier', companions: 0, easyPhases: false } },
+  { opponents: 1, pool: ['velvet', 'mossback', 'mallow'], fog: true, guardian: { from: 'tier', companions: 1, easyPhases: false } },
+];
+
+export const TOWER_HEARTS = 3;
+
+/** The sky bands, which cycle every five tiers (§9.1). */
+export const TOWER_SKIES = ['Rose Dawn', 'Peach Noon', 'Lavender Dusk', 'Starlit Pink Night', 'Aurora'] as const;
+
+/** The Charms a Tower floor can earn (§11.3). No other Charm can be earned in the Tower. */
+export const TOWER_CHARMS: readonly CharmId[] = ['first-bloom', 'wild-at-heart', 'not-today', 'clean-sweep', 'perfect-teatime'];

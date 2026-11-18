@@ -3,7 +3,7 @@ import { decide, type BotId } from '../bots/profiles.ts';
 import { createGame, nextRound, step } from '../engine/game.ts';
 import { observe } from '../engine/observation.ts';
 import { createRng } from '../engine/rng.ts';
-import type { GameState, MatchRules, Variant } from '../engine/types.ts';
+import type { GameEvent, GameState, MatchRules, Variant } from '../engine/types.ts';
 
 export type MatchOutcome = {
   winners: number[];
@@ -17,8 +17,16 @@ export type MatchOutcome = {
 
 const MAX_ACTIONS_PER_ROUND = 6000;
 
-export function playMatch(lineup: readonly BotId[], seed: string, variant: Variant = 'standard', rules?: MatchRules): MatchOutcome {
-  const { state } = createGame({ playerCount: lineup.length, variant, seed, rules });
+/**
+ * `phases` gives the match its own list (a Tower floor). `onEvents` sees every batch of engine events, for tests that
+ * check what happened during the match.
+ */
+export function playMatch(
+  lineup: readonly BotId[], seed: string, variant: Variant = 'standard', rules?: MatchRules,
+  phases?: number[], onEvents?: (events: readonly GameEvent[], state: GameState) => void,
+): MatchOutcome {
+  const { state, events: dealt } = createGame({ playerCount: lineup.length, variant, seed, rules, phases });
+  onEvents?.(dealt, state);
   const botRng = createRng(seed, 0x626f74);
   const rand = () => botRng.next() / 0x100000000;
   const illegal: string[] = [];
@@ -28,7 +36,7 @@ export function playMatch(lineup: readonly BotId[], seed: string, variant: Varia
   let stalled = false;
   for (;;) {
     if (state.stage === 'matchOver') break;
-    if (state.stage === 'roundOver') { actions = 0; nextRound(state); continue; }
+    if (state.stage === 'roundOver') { actions = 0; const next = nextRound(state); onEvents?.(next, state); continue; }
     if (++actions > MAX_ACTIONS_PER_ROUND || state.round > 400) { stalled = true; break; }
     let seat = state.current;
     if (state.stage === 'choose') seat = state.players.findIndex((p) => p.phase === null);
@@ -38,6 +46,7 @@ export function playMatch(lineup: readonly BotId[], seed: string, variant: Varia
       illegal.push(`${lineup[seat]}: ${JSON.stringify(action)}: ${result.reason}`);
       break;
     }
+    onEvents?.(result.events, state);
     for (const e of result.events) {
       if (e.type === 'turnStart') turns++;
       if (e.type === 'reshuffle') reshuffles++;

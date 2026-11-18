@@ -1,9 +1,10 @@
 // Campaign progress, unlocks, Charms and stats. Pure logic over the save data.
-import { BOTS, GLADE_STOPS, STOPS, UNLOCKABLES, type CharmId, type GladeStop, type GladeStopId, type Requirement, type Unlockable } from '../content.ts';
+import { BOTS, GLADE_STOPS, STOPS, TOWER_CHARMS, UNLOCKABLES, type CharmId, type GladeStop, type GladeStopId, type Requirement, type Unlockable } from '../content.ts';
 import { isMoonlitFamily, matchPhases } from '../engine/phases.ts';
 import type { GameEvent, GameState } from '../engine/types.ts';
 import type { BotId } from '../bots/profiles.ts';
 import type { MatchTracker, SaveData, SavedMatch } from './save.ts';
+import { floorResult, type FloorOutcome } from './tower.ts';
 
 export function totalStars(save: SaveData): number {
   return save.campaign.stars.reduce((a, b) => a + b, 0);
@@ -114,20 +115,33 @@ export function newTracker(): MatchTracker {
 }
 
 /** Awards a Charm once. Returns true if it is new. */
-function award(save: SaveData, id: CharmId, out: CharmId[]): void {
+function awardOnce(save: SaveData, id: CharmId, out: CharmId[]): void {
   if (!save.charms.includes(id)) {
     save.charms.push(id);
     out.push(id);
   }
 }
 
+/** The Crossroads, and with it the Tower, opens once Lady Lunaria has been beaten. */
+export function crossroadsOpen(save: SaveData): boolean {
+  return gladeWon(save, 'g3');
+}
+
+/** Stats a Tower floor never touches: these stand in for the real ones while a floor's events are applied. */
+function scratchStats(): SaveData['stats'] {
+  return { played: 0, won: 0, streak: 0, bestStreak: 0, phases: 0, fewestRounds: null, wentOut: 0, skipsPlayed: 0, timesSkipped: 0, wildsUsed: 0, perBot: {} as SaveData['stats']['perBot'] };
+}
+
 /**
  * Updates stats, trackers and Charms for a batch of engine events.
- * Returns the Charms earned, for the toast.
+ * Returns the Charms earned, for the toast. A Tower floor counts toward no existing stat, earns only the Charms in
+ * TOWER_CHARMS, and adds her completed phases to the climb's run.
  */
 export function applyEvents(save: SaveData, match: SavedMatch, events: readonly GameEvent[]): CharmId[] {
+  const tower = match.mode.kind === 'tower';
   const earned: CharmId[] = [];
-  const { stats } = save;
+  const stats = tower ? scratchStats() : save.stats;
+  const award = (s: SaveData, id: CharmId, out: CharmId[]) => { if (!tower || TOWER_CHARMS.includes(id)) awardOnce(s, id, out); };
   const t = match.tracker;
   for (const e of events) {
     switch (e.type) {
@@ -169,6 +183,7 @@ export function applyEvents(save: SaveData, match: SavedMatch, events: readonly 
         if (phase !== null) t.attempts[phase] = (t.attempts[phase] ?? 0) + 1;
         if (r.advanced[0]) {
           stats.phases++;
+          if (tower && save.tower.climb) save.tower.climb.run.phasesCompleted++;
           t.failStreak = 0;
           if (r.points[0] === 0) award(save, 'perfect-teatime', earned);
           if (phase === 8 && t.attempts[8] === 1) award(save, 'rainbow', earned);
@@ -202,6 +217,8 @@ export type MatchSummary = {
   firstBossWin: boolean;
   /** This win lifted the Moonlit Fog. */
   liftedFog: boolean;
+  /** A Tower floor's result for the climb. Missing for every other match. */
+  tower?: FloorOutcome;
 };
 
 /** Players in finishing order: winners, then most phases, then lowest score. */
@@ -220,6 +237,11 @@ export function finishMatch(save: SaveData, match: SavedMatch, forfeit = false):
   const before = unlockedSet(save);
   const humanWon = !forfeit && game.winners.includes(0);
   const rounds = game.round;
+  if (match.mode.kind === 'tower') {
+    // No stars, no stats, no per-match Charm: only the climb moves. A shared win she is part of wins the floor.
+    const tower = floorResult(save, humanWon);
+    return { humanWon, stars: 0, rounds, standings: standings(game), newUnlocks: [], newCharms: [], firstBossWin: false, liftedFog: false, tower };
+  }
   const { stats } = save;
   const newCharms: CharmId[] = [];
   stats.played++;
@@ -239,8 +261,8 @@ export function finishMatch(save: SaveData, match: SavedMatch, forfeit = false):
     stats.streak++;
     stats.bestStreak = Math.max(stats.bestStreak, stats.streak);
     if (game.variant === 'standard') stats.fewestRounds = stats.fewestRounds === null ? rounds : Math.min(stats.fewestRounds, rounds);
-    if (match.tracker.neverFailedTwice) award(save, 'steady-hands', newCharms);
-    if (match.tracker.wasFarBehind) award(save, 'comeback', newCharms);
+    if (match.tracker.neverFailedTwice) awardOnce(save, 'steady-hands', newCharms);
+    if (match.tracker.wasFarBehind) awardOnce(save, 'comeback', newCharms);
     if (match.mode.kind === 'campaign') {
       const s = match.mode.stop;
       stars = starsFor(rounds);
@@ -249,8 +271,8 @@ export function finishMatch(save: SaveData, match: SavedMatch, forfeit = false):
       save.campaign.stars[s] = Math.max(save.campaign.stars[s], stars);
       const best = save.campaign.bestRounds[s];
       save.campaign.bestRounds[s] = best === null ? rounds : Math.min(best, rounds);
-      if (s === 4) award(save, 'garden-champion', newCharms);
-      if (totalStars(save) === 15) award(save, 'bouquet', newCharms);
+      if (s === 4) awardOnce(save, 'garden-champion', newCharms);
+      if (totalStars(save) === 15) awardOnce(save, 'bouquet', newCharms);
     }
     if (match.mode.kind === 'glade') {
       const g = save.glade;
@@ -261,15 +283,15 @@ export function finishMatch(save: SaveData, match: SavedMatch, forfeit = false):
       g.stars[id] = Math.max(g.stars[id] ?? 0, stars);
       g.bestRounds[id] = Math.min(g.bestRounds[id] ?? Infinity, rounds);
       const fogged = game.rules?.fog === true;
-      if (fogged && stars === 3) award(save, 'fog-walker', newCharms);
-      if (['a1', 'a2', 'b1', 'b2'].every((x) => g.winOrder.includes(x as GladeStopId))) award(save, 'both-paths', newCharms);
+      if (fogged && stars === 3) awardOnce(save, 'fog-walker', newCharms);
+      if (['a1', 'a2', 'b1', 'b2'].every((x) => g.winOrder.includes(x as GladeStopId))) awardOnce(save, 'both-paths', newCharms);
       if (id === 'g3') {
-        if (!match.tracker.wasSkipped) award(save, 'thornproof', newCharms);
+        if (!match.tracker.wasSkipped) awardOnce(save, 'thornproof', newCharms);
         if (!g.fogLifted) {
           g.fogLifted = true;
           g.liftScenePending = true;
           liftedFog = true;
-          award(save, 'dawnbringer', newCharms);
+          awardOnce(save, 'dawnbringer', newCharms);
         }
       }
     }

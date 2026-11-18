@@ -4,7 +4,7 @@ import { PHASES, checkGroup, checkHit, matchPhases, placeHit, type PhaseProgress
 import { createRng, deriveRoundSeed, newSeed, shuffle } from './rng.ts';
 import type { Action, Card, GameEvent, GameState, LaidGroup, MatchRules, PlayerState, RoundResult, StepResult, Variant } from './types.ts';
 
-export type NewGameOptions = { playerCount: number; variant?: Variant; seed?: string; rules?: MatchRules };
+export type NewGameOptions = { playerCount: number; variant?: Variant; seed?: string; rules?: MatchRules; phases?: number[] };
 
 const HAND_SIZE = 10;
 /** After this many reshuffles in a row with no lay-down or hit, no one can go out, so the round ends. */
@@ -46,6 +46,13 @@ export function createGame(options: NewGameOptions): { state: GameState; events:
     sharedWin: false,
   };
   if (options.rules) state.rules = { ...options.rules };
+  if (options.phases) {
+    if (options.phases.length === 0 || new Set(options.phases).size !== options.phases.length || options.phases.some((p) => !PHASES[p])) {
+      throw new Error('A match list needs distinct, known phases.');
+    }
+    state.phases = options.phases.slice();
+  }
+  if (state.variant === 'tower' && !state.phases) throw new Error('A Tower floor needs its list.');
   const events: GameEvent[] = [];
   startRound(state, events);
   return { state, events };
@@ -61,7 +68,7 @@ function startRound(state: GameState, events: GameEvent[]): void {
   state.history = [];
   state.layCount = 0;
   // Read the match's list once, before anyone's phase moves on: a match begun on the retired Moonlit list keeps it.
-  const list = { variant: state.variant, players: state.players.map((p) => ({ phase: p.phase, completed: p.completed.slice() })) };
+  const list = { variant: state.variant, phases: state.phases, players: state.players.map((p) => ({ phase: p.phase, completed: p.completed.slice() })) };
   const deck = shuffle(createDeck(), createRng(state.roundSeed, 0));
   for (const p of state.players) {
     p.hand = deck.splice(0, HAND_SIZE);

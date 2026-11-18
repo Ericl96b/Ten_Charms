@@ -82,8 +82,22 @@ const TRIAL_PHASES: Partial<Record<Variant, number[]>> = {
 };
 export const TRIAL_VARIANTS = ['trialB', 'trialC'] as const;
 
+/**
+ * The Tower's pool: every distinct phase in the game, once each, in TOWER_SPEC.md §4.1's order. Classic 1 to 10, the
+ * Moonlit Phases 21 to 30, and the five phases only Moonlit Trial B adds, 31 to 35. The retired list isn't in it.
+ */
+export const TOWER_POOL: readonly number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35];
+
+/**
+ * The pool easiest first, by mean own turns to complete in SIMULATION_MOONLIT_REFINEMENT.md §3, with phases within 5%
+ * of each other kept in pool order. tests/unit/tower-rules.test.ts recomputes it from that report.
+ */
+export const TOWER_ORDER: readonly number[] = [2, 31, 32, 1, 33, 34, 35, 4, 21, 22, 23, 24, 25, 26, 5, 3, 27, 28, 6, 8, 29, 30, 9, 7, 10];
+
 /** The list a new match on this variant plays. A match already under way reads its own list with matchPhases. */
 export function phaseSequence(variant: Variant): number[] {
+  // A Tower floor always carries its own list (GameState.phases), so this is only a placeholder that no match plays.
+  if (variant === 'tower') return [];
   if (variant === 'moonlit') return MOONLIT_PHASES;
   const trial = TRIAL_PHASES[variant];
   if (trial) return trial;
@@ -91,7 +105,7 @@ export function phaseSequence(variant: Variant): number[] {
 }
 
 /** Just what matchPhases reads: a game, or a bot's observation of one. Both hold only public phase progress. */
-export type PhaseProgress = { variant: Variant; players: readonly { phase: number | null; completed: readonly number[] }[] };
+export type PhaseProgress = { variant: Variant; phases?: readonly number[]; players: readonly { phase: number | null; completed: readonly number[] }[] };
 
 const isRetired = (phase: number | null) => phase !== null && RETIRED_MOONLIT_PHASES.includes(phase);
 
@@ -101,6 +115,7 @@ const isRetired = (phase: number | null) => phase !== null && RETIRED_MOONLIT_PH
  * plays its variant's list.
  */
 export function matchPhases(game: PhaseProgress): number[] {
+  if (game.phases) return game.phases.slice();
   if (game.variant === 'moonlit' && game.players.some((p) => isRetired(p.phase) || p.completed.some(isRetired))) return RETIRED_MOONLIT_PHASES;
   return phaseSequence(game.variant);
 }
@@ -117,6 +132,25 @@ export function isMoonlitPhase(phase: number): boolean {
 /** The number a player sees: a Moonlit phase, or a trial's, shows its place in its own list of ten. */
 export function phaseNumber(phase: number): number {
   return isMoonlitPhase(phase) ? ((phase - CLASSIC_PHASE_COUNT - 1) % 10) + 1 : phase;
+}
+
+/**
+ * The number a player sees in this match. A match with its own list (a Tower floor) numbers its phases 1, 2 and 3 by
+ * their place in it; every other match shows exactly phaseNumber.
+ */
+export function displayPhase(game: PhaseProgress, phase: number): number {
+  if (game.phases) {
+    const at = game.phases.indexOf(phase);
+    if (at >= 0) return at + 1;
+  }
+  return phaseNumber(phase);
+}
+
+/** The phase after this one in this match's list, or null after the last. */
+export function nextPhaseInList(game: PhaseProgress, phase: number): number | null {
+  const list = matchPhases(game);
+  const at = list.indexOf(phase);
+  return at >= 0 && at + 1 < list.length ? list[at + 1] : null;
 }
 
 export function groupLabel(req: GroupReq): string {

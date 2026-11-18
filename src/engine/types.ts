@@ -14,7 +14,7 @@ export type GroupReq = { type: GroupType; size: number; pair?: boolean };
  * `trialB` and `trialC` are the Moonlit Trials: Free Play only, played like `moonlit` on another list. Trial A's list
  * became the Moonlit Phases in Change Request 04; a saved Trial A match loads as `moonlit` (see migrate in save.ts).
  */
-export type Variant = 'standard' | 'sprint' | 'choose' | 'moonlit' | 'trialB' | 'trialC';
+export type Variant = 'standard' | 'sprint' | 'choose' | 'moonlit' | 'trialB' | 'trialC' | 'tower';
 
 /** A placed card: what it was, and the value its position fixes it to. */
 export type Placed = { card: Card; num?: number; suit?: Suit };
@@ -85,6 +85,11 @@ export type MatchRules = {
 export type GameState = {
   version: 1;
   rules?: MatchRules;
+  /**
+   * This match's own list of phases, for a match whose list isn't its variant's: a Tower floor's three phases.
+   * Public, like every phase list. Missing in every other match.
+   */
+  phases?: number[];
   /** How many players have laid down this round. */
   layCount?: number;
   variant: Variant;
