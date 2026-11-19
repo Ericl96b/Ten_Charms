@@ -597,6 +597,265 @@
   "timing": "real"
  },
  {
+  "file": "18-tower-nav.spec.ts",
+  "title": "tower: a tap skips the Crossroads reveal, and a force-quit midway never replays it",
+  "project": "android",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "18-tower-nav.spec.ts",
+  "title": "tower: once Lunaria is beaten the signpost opens the Crossroads, and the app reopens there",
+  "project": "android",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "18-tower-nav.spec.ts",
+  "title": "tower: the Crossroads card shows her best floor",
+  "project": "android",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "18-tower-nav.spec.ts",
+  "title": "tower: the Crossroads fits without scrolling, and nothing covers the gate, sign, signpost or tower",
+  "project": "android",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "18-tower-nav.spec.ts",
+  "title": "tower: the Crossroads reveal plays once, lands on the Crossroads with Enter pulsing, and never replays",
+  "project": "android",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "18-tower-nav.spec.ts",
+  "title": "tower: the Map 3 gate and sign show the toast; the Tower card and the tower both open Tower home",
+  "project": "android",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "18-tower-nav.spec.ts",
+  "title": "tower: the reveal waits while the fog-lift scene is owed, and plays the time after",
+  "project": "android",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "18-tower-nav.spec.ts",
+  "title": "tower: the switcher shows all three options, with the padlock and its text before the Crossroads opens",
+  "project": "android",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "19-tower-home.spec.ts",
+  "title": "tower flow: \"End this climb\" asks first; cancelling changes nothing, confirming ends it on the floor",
+  "project": "android",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "19-tower-home.spec.ts",
+  "title": "tower flow: a forfeit loses the floor, through the existing confirmation",
+  "project": "android",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "19-tower-home.spec.ts",
+  "title": "tower flow: a Guardian floor's intro sheet, and the Guardian's intro at the table",
+  "project": "android",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "19-tower-home.spec.ts",
+  "title": "tower flow: every floor result, with its exact text",
+  "project": "android",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "19-tower-home.spec.ts",
+  "title": "tower flow: every Tower home panel state, with its exact text",
+  "project": "android",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "19-tower-home.spec.ts",
+  "title": "tower flow: run over: the lights reach the flag on a new best, and stop at the right height otherwise",
+  "project": "android",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "19-tower-home.spec.ts",
+  "title": "tower flow: the best-floor marker, above the view, in the view, and with no best",
+  "project": "android",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "19-tower-home.spec.ts",
+  "title": "tower flow: the current floor glows, and the lift hangs beside its window",
+  "project": "android",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "19-tower-home.spec.ts",
+  "title": "tower flow: the floor intro shows the tier, the three phases, the opponents and the rule chips",
+  "project": "android",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "19-tower-home.spec.ts",
+  "title": "tower: the Stats section and the How to Play section, in their exact words",
+  "project": "android",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "20-tower-climb.spec.ts",
+  "title": "tower flow: a full climb, from floor 1 to running out of hearts and starting again",
+  "project": "android",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "20-tower-climb.spec.ts",
+  "title": "tower flow: the draw survives a reload, and a floor in progress reloads exactly",
+  "project": "android",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "21-tower-motion.spec.ts",
+  "title": "tower flow: \"Climb\" plays the ascent, then Tower home opens with the next floor's intro",
+  "project": "android",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "21-tower-motion.spec.ts",
+  "title": "tower flow: sky bands follow the tier and cycle every five tiers; the music adds a layer per tier up to four",
+  "project": "android",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "21-tower-motion.spec.ts",
+  "title": "tower flow: the ascent moves exactly one floor, and a tap lands on the same end state",
+  "project": "android",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "21-tower-motion.spec.ts",
+  "title": "tower flow: the tier change rises past the Guardian, through the cloud, to the new sky and its banner",
+  "project": "android",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "21-tower-motion.spec.ts",
+  "title": "tower flow: under Reduced Motion the deal shows the cards face up, and the lift crossfades with its banner still",
+  "project": "android",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "22-tower-perf.spec.ts",
+  "title": "12. performance: tower: no main-thread task over 50 ms in the ascent, the tier change, the deal or the run-over",
+  "project": "android",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "22-tower-perf.spec.ts",
+  "title": "12. performance: tower: no main-thread task over 50 ms with Tower home and the Crossroads at rest for 10 s each",
+  "project": "android",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "22-tower-perf.spec.ts",
+  "title": "12. performance: tower: Tower home opens from the Crossroads in under 500 ms, and the lift slides smoothly",
+  "project": "android",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "23-tower-recordings.spec.ts",
+  "title": "recording: tower: a heart cracks, and a heart refills",
+  "project": "android",
+  "skipped": true,
+  "timing": "real"
+ },
+ {
+  "file": "23-tower-recordings.spec.ts",
+  "title": "recording: tower: the ascent",
+  "project": "android",
+  "skipped": true,
+  "timing": "real"
+ },
+ {
+  "file": "23-tower-recordings.spec.ts",
+  "title": "recording: tower: the Crossroads reveal",
+  "project": "android",
+  "skipped": true,
+  "timing": "real"
+ },
+ {
+  "file": "23-tower-recordings.spec.ts",
+  "title": "recording: tower: the deal",
+  "project": "android",
+  "skipped": true,
+  "timing": "real"
+ },
+ {
+  "file": "23-tower-recordings.spec.ts",
+  "title": "recording: tower: the run-over sequence",
+  "project": "android",
+  "skipped": true,
+  "timing": "real"
+ },
+ {
+  "file": "23-tower-recordings.spec.ts",
+  "title": "recording: tower: the tier change",
+  "project": "android",
+  "skipped": true,
+  "timing": "real"
+ },
+ {
+  "file": "24-tower-art-parity.spec.ts",
+  "title": "tower: the tower art matches the approved references",
+  "project": "android",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "25-tower-captures.spec.ts",
+  "title": "tower: capture: the Crossroads, Tower home in every state and sky, and the floor intro",
+  "project": "android",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "25-tower-captures.spec.ts",
+  "title": "tower: capture: the Guardians, every floor result, and the run-over screen",
+  "project": "android",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
   "file": "zz-coverage.spec.ts",
   "title": "11. juice coverage: every animation and sound event fired during the suite",
   "project": "android",
@@ -1201,6 +1460,265 @@
  {
   "file": "17-glade-parity.spec.ts",
   "title": "glade parity: how long a parity group can grow before a card is cut off",
+  "project": "max",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "18-tower-nav.spec.ts",
+  "title": "tower: a tap skips the Crossroads reveal, and a force-quit midway never replays it",
+  "project": "max",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "18-tower-nav.spec.ts",
+  "title": "tower: once Lunaria is beaten the signpost opens the Crossroads, and the app reopens there",
+  "project": "max",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "18-tower-nav.spec.ts",
+  "title": "tower: the Crossroads card shows her best floor",
+  "project": "max",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "18-tower-nav.spec.ts",
+  "title": "tower: the Crossroads fits without scrolling, and nothing covers the gate, sign, signpost or tower",
+  "project": "max",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "18-tower-nav.spec.ts",
+  "title": "tower: the Crossroads reveal plays once, lands on the Crossroads with Enter pulsing, and never replays",
+  "project": "max",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "18-tower-nav.spec.ts",
+  "title": "tower: the Map 3 gate and sign show the toast; the Tower card and the tower both open Tower home",
+  "project": "max",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "18-tower-nav.spec.ts",
+  "title": "tower: the reveal waits while the fog-lift scene is owed, and plays the time after",
+  "project": "max",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "18-tower-nav.spec.ts",
+  "title": "tower: the switcher shows all three options, with the padlock and its text before the Crossroads opens",
+  "project": "max",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "19-tower-home.spec.ts",
+  "title": "tower flow: \"End this climb\" asks first; cancelling changes nothing, confirming ends it on the floor",
+  "project": "max",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "19-tower-home.spec.ts",
+  "title": "tower flow: a forfeit loses the floor, through the existing confirmation",
+  "project": "max",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "19-tower-home.spec.ts",
+  "title": "tower flow: a Guardian floor's intro sheet, and the Guardian's intro at the table",
+  "project": "max",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "19-tower-home.spec.ts",
+  "title": "tower flow: every floor result, with its exact text",
+  "project": "max",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "19-tower-home.spec.ts",
+  "title": "tower flow: every Tower home panel state, with its exact text",
+  "project": "max",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "19-tower-home.spec.ts",
+  "title": "tower flow: run over: the lights reach the flag on a new best, and stop at the right height otherwise",
+  "project": "max",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "19-tower-home.spec.ts",
+  "title": "tower flow: the best-floor marker, above the view, in the view, and with no best",
+  "project": "max",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "19-tower-home.spec.ts",
+  "title": "tower flow: the current floor glows, and the lift hangs beside its window",
+  "project": "max",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "19-tower-home.spec.ts",
+  "title": "tower flow: the floor intro shows the tier, the three phases, the opponents and the rule chips",
+  "project": "max",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "19-tower-home.spec.ts",
+  "title": "tower: the Stats section and the How to Play section, in their exact words",
+  "project": "max",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "20-tower-climb.spec.ts",
+  "title": "tower flow: a full climb, from floor 1 to running out of hearts and starting again",
+  "project": "max",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "20-tower-climb.spec.ts",
+  "title": "tower flow: the draw survives a reload, and a floor in progress reloads exactly",
+  "project": "max",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "21-tower-motion.spec.ts",
+  "title": "tower flow: \"Climb\" plays the ascent, then Tower home opens with the next floor's intro",
+  "project": "max",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "21-tower-motion.spec.ts",
+  "title": "tower flow: sky bands follow the tier and cycle every five tiers; the music adds a layer per tier up to four",
+  "project": "max",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "21-tower-motion.spec.ts",
+  "title": "tower flow: the ascent moves exactly one floor, and a tap lands on the same end state",
+  "project": "max",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "21-tower-motion.spec.ts",
+  "title": "tower flow: the tier change rises past the Guardian, through the cloud, to the new sky and its banner",
+  "project": "max",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "21-tower-motion.spec.ts",
+  "title": "tower flow: under Reduced Motion the deal shows the cards face up, and the lift crossfades with its banner still",
+  "project": "max",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "22-tower-perf.spec.ts",
+  "title": "12. performance: tower: no main-thread task over 50 ms in the ascent, the tier change, the deal or the run-over",
+  "project": "max",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "22-tower-perf.spec.ts",
+  "title": "12. performance: tower: no main-thread task over 50 ms with Tower home and the Crossroads at rest for 10 s each",
+  "project": "max",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "22-tower-perf.spec.ts",
+  "title": "12. performance: tower: Tower home opens from the Crossroads in under 500 ms, and the lift slides smoothly",
+  "project": "max",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "23-tower-recordings.spec.ts",
+  "title": "recording: tower: a heart cracks, and a heart refills",
+  "project": "max",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "23-tower-recordings.spec.ts",
+  "title": "recording: tower: the ascent",
+  "project": "max",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "23-tower-recordings.spec.ts",
+  "title": "recording: tower: the Crossroads reveal",
+  "project": "max",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "23-tower-recordings.spec.ts",
+  "title": "recording: tower: the deal",
+  "project": "max",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "23-tower-recordings.spec.ts",
+  "title": "recording: tower: the run-over sequence",
+  "project": "max",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "23-tower-recordings.spec.ts",
+  "title": "recording: tower: the tier change",
+  "project": "max",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "24-tower-art-parity.spec.ts",
+  "title": "tower: the tower art matches the approved references",
+  "project": "max",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "25-tower-captures.spec.ts",
+  "title": "tower: capture: the Crossroads, Tower home in every state and sky, and the floor intro",
+  "project": "max",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "25-tower-captures.spec.ts",
+  "title": "tower: capture: the Guardians, every floor result, and the run-over screen",
   "project": "max",
   "skipped": false,
   "timing": "real"
@@ -1863,6 +2381,265 @@
   "timing": "real"
  },
  {
+  "file": "18-tower-nav.spec.ts",
+  "title": "tower: a tap skips the Crossroads reveal, and a force-quit midway never replays it",
+  "project": "ref",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "18-tower-nav.spec.ts",
+  "title": "tower: once Lunaria is beaten the signpost opens the Crossroads, and the app reopens there",
+  "project": "ref",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "18-tower-nav.spec.ts",
+  "title": "tower: the Crossroads card shows her best floor",
+  "project": "ref",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "18-tower-nav.spec.ts",
+  "title": "tower: the Crossroads fits without scrolling, and nothing covers the gate, sign, signpost or tower",
+  "project": "ref",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "18-tower-nav.spec.ts",
+  "title": "tower: the Crossroads reveal plays once, lands on the Crossroads with Enter pulsing, and never replays",
+  "project": "ref",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "18-tower-nav.spec.ts",
+  "title": "tower: the Map 3 gate and sign show the toast; the Tower card and the tower both open Tower home",
+  "project": "ref",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "18-tower-nav.spec.ts",
+  "title": "tower: the reveal waits while the fog-lift scene is owed, and plays the time after",
+  "project": "ref",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "18-tower-nav.spec.ts",
+  "title": "tower: the switcher shows all three options, with the padlock and its text before the Crossroads opens",
+  "project": "ref",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "19-tower-home.spec.ts",
+  "title": "tower flow: \"End this climb\" asks first; cancelling changes nothing, confirming ends it on the floor",
+  "project": "ref",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "19-tower-home.spec.ts",
+  "title": "tower flow: a forfeit loses the floor, through the existing confirmation",
+  "project": "ref",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "19-tower-home.spec.ts",
+  "title": "tower flow: a Guardian floor's intro sheet, and the Guardian's intro at the table",
+  "project": "ref",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "19-tower-home.spec.ts",
+  "title": "tower flow: every floor result, with its exact text",
+  "project": "ref",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "19-tower-home.spec.ts",
+  "title": "tower flow: every Tower home panel state, with its exact text",
+  "project": "ref",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "19-tower-home.spec.ts",
+  "title": "tower flow: run over: the lights reach the flag on a new best, and stop at the right height otherwise",
+  "project": "ref",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "19-tower-home.spec.ts",
+  "title": "tower flow: the best-floor marker, above the view, in the view, and with no best",
+  "project": "ref",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "19-tower-home.spec.ts",
+  "title": "tower flow: the current floor glows, and the lift hangs beside its window",
+  "project": "ref",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "19-tower-home.spec.ts",
+  "title": "tower flow: the floor intro shows the tier, the three phases, the opponents and the rule chips",
+  "project": "ref",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "19-tower-home.spec.ts",
+  "title": "tower: the Stats section and the How to Play section, in their exact words",
+  "project": "ref",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "20-tower-climb.spec.ts",
+  "title": "tower flow: a full climb, from floor 1 to running out of hearts and starting again",
+  "project": "ref",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "20-tower-climb.spec.ts",
+  "title": "tower flow: the draw survives a reload, and a floor in progress reloads exactly",
+  "project": "ref",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "21-tower-motion.spec.ts",
+  "title": "tower flow: \"Climb\" plays the ascent, then Tower home opens with the next floor's intro",
+  "project": "ref",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "21-tower-motion.spec.ts",
+  "title": "tower flow: sky bands follow the tier and cycle every five tiers; the music adds a layer per tier up to four",
+  "project": "ref",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "21-tower-motion.spec.ts",
+  "title": "tower flow: the ascent moves exactly one floor, and a tap lands on the same end state",
+  "project": "ref",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "21-tower-motion.spec.ts",
+  "title": "tower flow: the tier change rises past the Guardian, through the cloud, to the new sky and its banner",
+  "project": "ref",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "21-tower-motion.spec.ts",
+  "title": "tower flow: under Reduced Motion the deal shows the cards face up, and the lift crossfades with its banner still",
+  "project": "ref",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "22-tower-perf.spec.ts",
+  "title": "12. performance: tower: no main-thread task over 50 ms in the ascent, the tier change, the deal or the run-over",
+  "project": "ref",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "22-tower-perf.spec.ts",
+  "title": "12. performance: tower: no main-thread task over 50 ms with Tower home and the Crossroads at rest for 10 s each",
+  "project": "ref",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "22-tower-perf.spec.ts",
+  "title": "12. performance: tower: Tower home opens from the Crossroads in under 500 ms, and the lift slides smoothly",
+  "project": "ref",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "23-tower-recordings.spec.ts",
+  "title": "recording: tower: a heart cracks, and a heart refills",
+  "project": "ref",
+  "skipped": true,
+  "timing": "real"
+ },
+ {
+  "file": "23-tower-recordings.spec.ts",
+  "title": "recording: tower: the ascent",
+  "project": "ref",
+  "skipped": true,
+  "timing": "real"
+ },
+ {
+  "file": "23-tower-recordings.spec.ts",
+  "title": "recording: tower: the Crossroads reveal",
+  "project": "ref",
+  "skipped": true,
+  "timing": "real"
+ },
+ {
+  "file": "23-tower-recordings.spec.ts",
+  "title": "recording: tower: the deal",
+  "project": "ref",
+  "skipped": true,
+  "timing": "real"
+ },
+ {
+  "file": "23-tower-recordings.spec.ts",
+  "title": "recording: tower: the run-over sequence",
+  "project": "ref",
+  "skipped": true,
+  "timing": "real"
+ },
+ {
+  "file": "23-tower-recordings.spec.ts",
+  "title": "recording: tower: the tier change",
+  "project": "ref",
+  "skipped": true,
+  "timing": "real"
+ },
+ {
+  "file": "24-tower-art-parity.spec.ts",
+  "title": "tower: the tower art matches the approved references",
+  "project": "ref",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "25-tower-captures.spec.ts",
+  "title": "tower: capture: the Crossroads, Tower home in every state and sky, and the floor intro",
+  "project": "ref",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "25-tower-captures.spec.ts",
+  "title": "tower: capture: the Guardians, every floor result, and the run-over screen",
+  "project": "ref",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
   "file": "zz-coverage.spec.ts",
   "title": "11. juice coverage: every animation and sound event fired during the suite",
   "project": "ref",
@@ -2461,6 +3238,265 @@
  {
   "file": "17-glade-parity.spec.ts",
   "title": "glade parity: how long a parity group can grow before a card is cut off",
+  "project": "se",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "18-tower-nav.spec.ts",
+  "title": "tower: a tap skips the Crossroads reveal, and a force-quit midway never replays it",
+  "project": "se",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "18-tower-nav.spec.ts",
+  "title": "tower: once Lunaria is beaten the signpost opens the Crossroads, and the app reopens there",
+  "project": "se",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "18-tower-nav.spec.ts",
+  "title": "tower: the Crossroads card shows her best floor",
+  "project": "se",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "18-tower-nav.spec.ts",
+  "title": "tower: the Crossroads fits without scrolling, and nothing covers the gate, sign, signpost or tower",
+  "project": "se",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "18-tower-nav.spec.ts",
+  "title": "tower: the Crossroads reveal plays once, lands on the Crossroads with Enter pulsing, and never replays",
+  "project": "se",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "18-tower-nav.spec.ts",
+  "title": "tower: the Map 3 gate and sign show the toast; the Tower card and the tower both open Tower home",
+  "project": "se",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "18-tower-nav.spec.ts",
+  "title": "tower: the reveal waits while the fog-lift scene is owed, and plays the time after",
+  "project": "se",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "18-tower-nav.spec.ts",
+  "title": "tower: the switcher shows all three options, with the padlock and its text before the Crossroads opens",
+  "project": "se",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "19-tower-home.spec.ts",
+  "title": "tower flow: \"End this climb\" asks first; cancelling changes nothing, confirming ends it on the floor",
+  "project": "se",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "19-tower-home.spec.ts",
+  "title": "tower flow: a forfeit loses the floor, through the existing confirmation",
+  "project": "se",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "19-tower-home.spec.ts",
+  "title": "tower flow: a Guardian floor's intro sheet, and the Guardian's intro at the table",
+  "project": "se",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "19-tower-home.spec.ts",
+  "title": "tower flow: every floor result, with its exact text",
+  "project": "se",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "19-tower-home.spec.ts",
+  "title": "tower flow: every Tower home panel state, with its exact text",
+  "project": "se",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "19-tower-home.spec.ts",
+  "title": "tower flow: run over: the lights reach the flag on a new best, and stop at the right height otherwise",
+  "project": "se",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "19-tower-home.spec.ts",
+  "title": "tower flow: the best-floor marker, above the view, in the view, and with no best",
+  "project": "se",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "19-tower-home.spec.ts",
+  "title": "tower flow: the current floor glows, and the lift hangs beside its window",
+  "project": "se",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "19-tower-home.spec.ts",
+  "title": "tower flow: the floor intro shows the tier, the three phases, the opponents and the rule chips",
+  "project": "se",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "19-tower-home.spec.ts",
+  "title": "tower: the Stats section and the How to Play section, in their exact words",
+  "project": "se",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "20-tower-climb.spec.ts",
+  "title": "tower flow: a full climb, from floor 1 to running out of hearts and starting again",
+  "project": "se",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "20-tower-climb.spec.ts",
+  "title": "tower flow: the draw survives a reload, and a floor in progress reloads exactly",
+  "project": "se",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "21-tower-motion.spec.ts",
+  "title": "tower flow: \"Climb\" plays the ascent, then Tower home opens with the next floor's intro",
+  "project": "se",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "21-tower-motion.spec.ts",
+  "title": "tower flow: sky bands follow the tier and cycle every five tiers; the music adds a layer per tier up to four",
+  "project": "se",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "21-tower-motion.spec.ts",
+  "title": "tower flow: the ascent moves exactly one floor, and a tap lands on the same end state",
+  "project": "se",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "21-tower-motion.spec.ts",
+  "title": "tower flow: the tier change rises past the Guardian, through the cloud, to the new sky and its banner",
+  "project": "se",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "21-tower-motion.spec.ts",
+  "title": "tower flow: under Reduced Motion the deal shows the cards face up, and the lift crossfades with its banner still",
+  "project": "se",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "22-tower-perf.spec.ts",
+  "title": "12. performance: tower: no main-thread task over 50 ms in the ascent, the tier change, the deal or the run-over",
+  "project": "se",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "22-tower-perf.spec.ts",
+  "title": "12. performance: tower: no main-thread task over 50 ms with Tower home and the Crossroads at rest for 10 s each",
+  "project": "se",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "22-tower-perf.spec.ts",
+  "title": "12. performance: tower: Tower home opens from the Crossroads in under 500 ms, and the lift slides smoothly",
+  "project": "se",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "23-tower-recordings.spec.ts",
+  "title": "recording: tower: a heart cracks, and a heart refills",
+  "project": "se",
+  "skipped": true,
+  "timing": "real"
+ },
+ {
+  "file": "23-tower-recordings.spec.ts",
+  "title": "recording: tower: the ascent",
+  "project": "se",
+  "skipped": true,
+  "timing": "real"
+ },
+ {
+  "file": "23-tower-recordings.spec.ts",
+  "title": "recording: tower: the Crossroads reveal",
+  "project": "se",
+  "skipped": true,
+  "timing": "real"
+ },
+ {
+  "file": "23-tower-recordings.spec.ts",
+  "title": "recording: tower: the deal",
+  "project": "se",
+  "skipped": true,
+  "timing": "real"
+ },
+ {
+  "file": "23-tower-recordings.spec.ts",
+  "title": "recording: tower: the run-over sequence",
+  "project": "se",
+  "skipped": true,
+  "timing": "real"
+ },
+ {
+  "file": "23-tower-recordings.spec.ts",
+  "title": "recording: tower: the tier change",
+  "project": "se",
+  "skipped": true,
+  "timing": "real"
+ },
+ {
+  "file": "24-tower-art-parity.spec.ts",
+  "title": "tower: the tower art matches the approved references",
+  "project": "se",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "25-tower-captures.spec.ts",
+  "title": "tower: capture: the Crossroads, Tower home in every state and sky, and the floor intro",
+  "project": "se",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "25-tower-captures.spec.ts",
+  "title": "tower: capture: the Guardians, every floor result, and the run-over screen",
   "project": "se",
   "skipped": false,
   "timing": "real"
