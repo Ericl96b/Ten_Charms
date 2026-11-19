@@ -1,6 +1,6 @@
 // How to Play: the rules in plain, friendly language.
 import { phaseNumber, phaseSequence, phaseText } from '../../engine/phases.ts';
-import { crossroadsOpen, gladeOpen } from '../../meta/progress.ts';
+import { canSeeCrossroads as crossroadsOpen, canSeeGlade as gladeOpen } from '../../meta/devmode.ts';
 import { app, persist } from '../app.ts';
 import { cardEl, icon } from '../art.ts';
 import { h } from '../dom.ts';

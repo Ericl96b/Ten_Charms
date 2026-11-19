@@ -1,6 +1,7 @@
 // The Moonlit Glade map: the Heart Path, fogged at dusk until Lunaria is beaten, then bright at sunrise.
 import { BOTS, GLADE_STOPS, LUNARIA_TITLE, TYPE_LABEL, UNLOCKABLES, type GladeStop, type GladeStopId } from '../../content.ts';
-import { gladeFogged, gladeOpenedAt, gladePlayStop, gladeWon } from '../../meta/progress.ts';
+import { gladeOpenedAtAccess, gladePlayStopAccess } from '../../meta/devmode.ts';
+import { gladeFogged, gladeWon } from '../../meta/progress.ts';
 import { app, persist } from '../app.ts';
 import { icon, petalSvg, portraitEl } from '../art.ts';
 import { sfx } from '../audio/audio.ts';
@@ -89,7 +90,7 @@ function stopState(id: GladeStopId, play: GladeStopId | null): StopState {
   const save = app.save;
   if (id === play) return 'current';
   if (gladeWon(save, id)) return 'won';
-  return gladeOpenedAt(save, GLADE_STOPS.find((s) => s.id === id)!) !== null ? 'open' : 'locked';
+  return gladeOpenedAtAccess(save, GLADE_STOPS.find((s) => s.id === id)!) !== null ? 'open' : 'locked';
 }
 
 function stopNode(stop: GladeStop, state: StopState, onTap: () => void, onLocked: (node: HTMLElement) => void): HTMLElement {
@@ -130,7 +131,7 @@ export type GladeView = { inner: HTMLElement; ready: (scroller: HTMLElement) => 
 export function gladeView(onStop: (id: GladeStopId) => void, onLocked: (id: GladeStopId, node: HTMLElement) => void): GladeView {
   const save = app.save;
   const fogged = gladeFogged(save);
-  const play = gladePlayStop(save);
+  const play = gladePlayStopAccess(save);
   const stops = GLADE_STOPS.map((s) => stopNode(s, stopState(s.id, play), () => onStop(s.id), (node) => onLocked(s.id, node)));
   const buds = BUDS.map(([x, y], i) => bud(x, y, i));
   const inner = h('div.map-inner.glade-inner', { style: `height:${GLADE_HEIGHT}rem` },

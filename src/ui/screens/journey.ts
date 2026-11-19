@@ -4,7 +4,8 @@ import { BOTS, GLADE_STOPS, LINES, STOPS, TYPE_LABEL, UNLOCKABLES, gladeStop, ty
 import { createGame } from '../../engine/game.ts';
 import { PHASES } from '../../engine/phases.ts';
 import type { GameEvent, MatchRules, Variant } from '../../engine/types.ts';
-import { crossroadsOpen, currentStop, gladeFogged, gladeOpen, gladeStars, isUnlocked, newTracker, stopOpen, totalStars } from '../../meta/progress.ts';
+import { crossroadsOpen, currentStop, gladeFogged, gladeOpen, gladeStars, newTracker, totalStars } from '../../meta/progress.ts';
+import { canPlayStop, canSeeCrossroads, canSeeGlade, canUse, devModeOn } from '../../meta/devmode.ts';
 import type { MatchMode, SavedMatch } from '../../meta/save.ts';
 import { app, persist, show } from '../app.ts';
 import { icon, portraitEl } from '../art.ts';
@@ -31,7 +32,7 @@ const EDGE = 16;
 export type NavTab = 'journey' | 'free' | 'collection' | 'stats';
 
 export function bottomNav(active: NavTab): HTMLElement {
-  const freeOpen = isUnlocked(app.save, 'free-play');
+  const freeOpen = canUse(app.save, 'free-play');
   const item = (id: NavTab, label: string, ic: string, go: () => void, locked = false, lockedNote = '') =>
     h('button.nav-item', { class: `${active === id ? 'on' : ''} ${locked ? 'locked' : ''}`, 'data-testid': `nav-${id}`, onclick: go, 'aria-label': locked ? `${label}, locked. ${lockedNote}` : label, 'aria-current': active === id ? 'page' : undefined },
       h('span.nav-icon', { html: icon(locked ? 'lock' : ic) }),
@@ -71,15 +72,17 @@ export function journey(): HTMLElement {
   const save = app.save;
   if (gladeOpen(save) && !save.glade.revealSeen) return gardenMap(true);
   if (crossroadsRevealDue()) return gladeMap(true);
-  if (crossroadsOpen(save) && save.glade.lastMap === 'crossroads') return crossroadsScreen();
-  return gladeOpen(save) && save.glade.lastMap === 'glade' ? gladeMap() : gardenMap(false);
+  if (canSeeCrossroads(save) && save.glade.lastMap === 'crossroads') return crossroadsScreen();
+  return canSeeGlade(save) && save.glade.lastMap === 'glade' ? gladeMap() : gardenMap(false);
 }
 
 /** The music for the place being shown. */
 export function mapMusic(): MusicId {
   const save = app.save;
-  if (crossroadsOpen(save) && save.glade.lastMap === 'crossroads' && save.tower.revealSeen) return towerMusic();
-  if (!gladeOpen(save) || save.glade.lastMap !== 'glade' || !save.glade.revealSeen) return 'map';
+  // A place open only in Dev Mode has no reveal of its own to wait for; one that is really open waits for its reveal.
+  const gladeRevealDue = gladeOpen(save) && !save.glade.revealSeen;
+  if (save.glade.lastMap === 'crossroads' && (crossroadsOpen(save) ? save.tower.revealSeen : devModeOn() && !gladeRevealDue)) return towerMusic();
+  if (save.glade.lastMap !== 'glade' || !(gladeOpen(save) ? save.glade.revealSeen : devModeOn())) return 'map';
   return gladeFogged(save) ? 'gladeFog' : 'gladeLift';
 }
 
@@ -91,8 +94,8 @@ export type Place = 'garden' | 'glade' | 'crossroads';
  */
 export function mapTop(which: Place): HTMLElement {
   const save = app.save;
-  const open = gladeOpen(save);
-  const xrOpen = crossroadsOpen(save);
+  const open = canSeeGlade(save);
+  const xrOpen = canSeeCrossroads(save);
   const pick = (id: Place, el: HTMLElement) => {
     if (id === 'glade' && !open) { tooltip(el, 'Beat Nightshade to unlock.'); return; }
     if (id === 'crossroads' && !xrOpen) { tooltip(el, 'Beat Lady Lunaria to unlock.'); return; }
@@ -143,7 +146,7 @@ function gardenMap(reveal: boolean): HTMLElement {
   const allWon = save.campaign.won.every(Boolean);
   const stops = STOPS.map((stop, i) => {
     const won = save.campaign.won[i];
-    const open = stopOpen(save, i);
+    const open = canPlayStop(save, i);
     const isCurrent = i === current && !won;
     const bot = BOTS[stop.featured];
     const boss = i === 4;

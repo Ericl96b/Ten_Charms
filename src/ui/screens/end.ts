@@ -5,6 +5,7 @@ import { displayPhase, matchPhases } from '../../engine/phases.ts';
 import type { Card, HistoryEntry, RoundResult } from '../../engine/types.ts';
 import type { MatchSummary } from '../../meta/progress.ts';
 import { standings } from '../../meta/progress.ts';
+import { takeLingering } from '../../meta/devmode.ts';
 import type { SavedMatch } from '../../meta/save.ts';
 import { app, persist, show } from '../app.ts';
 import { bigRose, cardEl, icon, portraitEl, teacupLid } from '../art.ts';
@@ -129,8 +130,12 @@ export function reviewSheet(t: Table, r: RoundResult): void {
 
 /* ---------- Match end ---------- */
 
+/** Dev Mode was turned off during this match, which only Dev Mode opened: its end offers only the way back. */
+let lockedAgain = false;
+
 export function showMatchEnd(t: Table, match: SavedMatch, s: MatchSummary): void {
   closeAllSheets();
+  lockedAgain = takeLingering();
   if (s.humanWon) void victory(t, match, s);
   else loss(t, match, s);
 }
@@ -140,7 +145,7 @@ function rematch(match: SavedMatch): void {
   startFromMode(match.mode, match.lineup, match.game.variant, match.back, match.cloth);
 }
 
-function toMap(): void {
+export function toMap(): void {
   closeAllSheets();
   show(journey(), mapMusic());
   maybeBackupPrompt();
@@ -213,7 +218,7 @@ async function victory(t: Table, match: SavedMatch, s: MatchSummary): Promise<vo
   for (const id of s.newCharms) await revealCharm(screen, id);
 
   stage.append(h('div.re-actions.end', null,
-    h('button.btn.secondary', { 'data-testid': 'rematch', onclick: () => rematch(match) }, 'Rematch'),
+    lockedAgain ? null : h('button.btn.secondary', { 'data-testid': 'rematch', onclick: () => rematch(match) }, 'Rematch'),
     h('button.btn.primary', { 'data-testid': 'continue', onclick: toMap }, 'Continue'),
   ));
   t.autoHook?.();
@@ -303,7 +308,7 @@ function loss(t: Table, match: SavedMatch, s: MatchSummary): void {
     ),
     h('div.re-actions.end', null,
       h('button.btn.secondary', { 'data-testid': 'back-map', onclick: toMap }, 'Back to Map'),
-      h('button.btn.primary', { 'data-testid': 'try-again', onclick: () => rematch(match) }, 'Try Again'),
+      lockedAgain ? null : h('button.btn.primary', { 'data-testid': 'try-again', onclick: () => rematch(match) }, 'Try Again'),
     ),
   );
   screen.append(card);

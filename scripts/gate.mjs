@@ -4,6 +4,7 @@ import { spawnSync } from 'node:child_process';
 import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { DEFAULT_WORKERS } from '../tests/e2e/stages.ts';
 import { clearLogs } from '../tests/e2e/global-setup.ts';
+import { MISSING, devWord } from './dev-word.ts';
 
 const OUT = 'test-results/gate';
 const PLAYWRIGHT = 'node_modules/@playwright/test/cli.js';
@@ -23,6 +24,13 @@ function step(name, args, env = {}) {
 
 if (!existsSync('qa-screenshots/cr01/baseline')) {
   console.error('No image baseline on this machine. Capture one with: npm run visual:baseline');
+  process.exit(2);
+}
+
+// The Dev Mode tests need the secret word from outside the repo (Change Request 05). Without it they can't run, and
+// they never skip, so stop here rather than 20 minutes in.
+if (!devWord()) {
+  console.error(MISSING);
   process.exit(2);
 }
 
@@ -68,6 +76,8 @@ step('parity-groups', ['scripts/parity-report.mjs']);
 const allowedDiffs = existsSync('scripts/allowed-diffs.json') ? JSON.parse(readFileSync('scripts/allowed-diffs.json', 'utf8')).tags.join(',') : '';
 step('images', ['scripts/compare-shots.mjs', ...(allowedDiffs ? [allowedDiffs] : [])]);
 step('inventory', ['scripts/test-inventory.ts', 'check', ...STAGES.map((stage) => `${OUT}/${stage}.json`)]);
+// Last, so it sees every report and log the gate wrote.
+step('secret-word', ['scripts/word-scan.mjs']);
 
 const failed = results.filter((r) => !r.ok);
 const summary = [

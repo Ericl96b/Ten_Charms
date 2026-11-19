@@ -1,5 +1,6 @@
 // Settings, Backup & Restore, Reset, and Credits.
 import { clearSave, defaultSave, exportCode, importCode, type SaveData, type Settings } from '../../meta/save.ts';
+import { devModeOn, forExport, turnOffDevMode } from '../../meta/devmode.ts';
 import { saveSummary } from '../../meta/progress.ts';
 import { app, applySettings, persist, show } from '../app.ts';
 import { icon } from '../art.ts';
@@ -67,14 +68,23 @@ export function settingsScreen(inMatch: boolean): void {
       h('button.btn.secondary.wide', { 'data-testid': 'backup', onclick: () => backupSheet() }, 'Backup & Restore'),
       h('button.btn.secondary.wide', { 'data-testid': 'credits', onclick: () => creditsSheet() }, 'Credits & licenses'),
       inMatch ? null : h('button.btn.ghost.wide', { 'data-testid': 'reset', onclick: () => resetFlow(close) }, 'Reset all progress'),
+      devModeOn() ? row('Dev Mode', h('button.btn.secondary', { 'data-testid': 'dev-off', onclick: () => devOff(inMatch, close) }, 'Turn off')) : null,
     ),
   );
   document.getElementById('overlays')!.append(screen);
   void animate(screen, [{ transform: 'translateY(100%)' }, { transform: 'translateY(0)' }], { ms: 320, ease: SOFT, fill: 'backwards' });
 }
 
+/** Turns Dev Mode off at once. From the map it returns to the Journey; in a match the match carries on. */
+function devOff(inMatch: boolean, close: () => void): void {
+  if (turnOffDevMode(app.save)) persist();
+  if (inMatch) { close(); return; }
+  document.querySelector('[data-testid="settings-screen"]')?.remove();
+  show(journey(), mapMusic());
+}
+
 function backupSheet(): void {
-  const code = exportCode(app.save);
+  const code = exportCode(forExport(app.save));
   const box = h('textarea.code-box', { readonly: 'readonly', 'data-testid': 'export-code', 'aria-label': 'Your backup code' }, code) as HTMLTextAreaElement;
   const paste = h('textarea.code-box', { placeholder: 'Paste a backup code here', 'data-testid': 'import-code', 'aria-label': 'Paste a backup code' }) as HTMLTextAreaElement;
   const share = 'share' in navigator

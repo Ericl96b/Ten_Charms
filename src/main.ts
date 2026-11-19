@@ -1,5 +1,6 @@
 // Startup: the shell, the install helper, the splash, then the map or the match in progress.
 import { TITLE } from './content.ts';
+import { checkDevLink, readDevMode } from './meta/devmode.ts';
 import { requestPersistence } from './meta/save.ts';
 import { app, initShell, persist, show } from './ui/app.ts';
 import { icon, petalSvg, roseIllustration } from './ui/art.ts';
@@ -136,6 +137,9 @@ function registerServiceWorker(): void {
 
 async function boot(): Promise<void> {
   initShell();
+  readDevMode();
+  // Only an address with a fragment waits here, for the Dev Mode check (Change Request 05). No other start ever does.
+  if (location.hash.length > 1) await checkDevLink();
   requestPersistence();
   globalListeners();
   rotateCard();

@@ -3,7 +3,7 @@
 //        node scripts/test-inventory.ts write <report.json> [more reports from the same run]
 // With reports, also checks that each test really ran, with no new skips, failures or retries.
 import { spawnSync } from 'node:child_process';
-import { readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { pathToFileURL } from 'node:url';
 import { MAP2_FILES, timingOf } from '../tests/e2e/stages.ts';
 
@@ -47,8 +47,20 @@ export function compareList(inventory: Row[], listed: Ran[]): string[] {
   ];
 }
 
+/**
+ * Tests that compare against files kept only in private/, which isn't on every machine, and the folder each needs.
+ * Where that folder is missing they skip, and the user agreed that this skip isn't a failure (Change Request 05).
+ */
+export const NEEDS_PRIVATE: Readonly<Record<string, string>> = { '24-tower-art-parity.spec.ts': 'private/mockups/tower/svg' };
+
+/** True if this skip is only because the private files its test needs aren't on this machine. */
+function privateSkip(file: string, has: (path: string) => boolean): boolean {
+  const needs = NEEDS_PRIVATE[file];
+  return needs !== undefined && !has(needs);
+}
+
 /** Finds any inventory test that didn't run as it should, across the reports of all the stages of one run. */
-export function compareRun(inventory: Row[], ran: Ran[]): string[] {
+export function compareRun(inventory: Row[], ran: Ran[], has: (path: string) => boolean = existsSync): string[] {
   const problems: string[] = [];
   const known = new Map(inventory.map((r) => [key(r), r]));
   const counts = new Map<string, number>();
@@ -60,7 +72,7 @@ export function compareRun(inventory: Row[], ran: Ran[]): string[] {
   for (const r of ran) {
     const wanted = known.get(key(r));
     if (r.status === 'skipped') {
-      if (!wanted?.skipped) problems.push(`newly skipped: ${key(r)}`);
+      if (!wanted?.skipped && !privateSkip(r.file, has)) problems.push(`newly skipped: ${key(r)}`);
       continue;
     }
     if (wanted?.skipped) problems.push(`should have been skipped: ${key(r)}`);
@@ -92,6 +104,9 @@ function main(): void {
   const inventory = JSON.parse(readFileSync(INVENTORY, 'utf8')) as Row[];
   const problems = [...compareList(inventory, listTests())];
   if (files.length > 0) problems.push(...compareRun(inventory, files.flatMap((f) => flatten(readReport(f)))));
+  for (const [file, needs] of Object.entries(NEEDS_PRIVATE)) {
+    if (!existsSync(needs)) console.log(`note: ${file} may skip here, since ${needs} is not on this machine`);
+  }
   for (const p of problems) console.log(p);
   console.log(`${inventory.length} tests in the inventory, ${problems.length} problems`);
   process.exit(problems.length > 0 ? 1 : 0);

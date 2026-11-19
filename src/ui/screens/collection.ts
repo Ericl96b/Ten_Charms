@@ -1,6 +1,6 @@
 // Collection: card backs, tablecloths, music and Charms.
 import { CHARMS, GLADE_CHARMS, UNLOCKABLES, requirementText, type Unlockable, type UnlockType } from '../../content.ts';
-import { gladeOpen, isUnlocked } from '../../meta/progress.ts';
+import { canSeeGlade as gladeOpen, canUse as isUnlocked } from '../../meta/devmode.ts';
 import { app, persist } from '../app.ts';
 import { backEl, icon } from '../art.ts';
 import { playMusic } from '../audio/audio.ts';

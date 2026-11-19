@@ -856,6 +856,132 @@
   "timing": "real"
  },
  {
+  "file": "26-dev-mode.spec.ts",
+  "title": "dev mode flow: a dev-only match survives turning off and a reload, plays to the end, then is locked again",
+  "project": "android",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "26-dev-mode.spec.ts",
+  "title": "dev mode flow: a Tower floor in progress survives turning off, then offers only the way back",
+  "project": "android",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "26-dev-mode.spec.ts",
+  "title": "dev mode flow: a Tower floor won in Dev Mode records exactly what it does normally",
+  "project": "android",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "26-dev-mode.spec.ts",
+  "title": "dev mode flow: winning in Dev Mode records exactly what winning normally does",
+  "project": "android",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "26-dev-mode.spec.ts",
+  "title": "dev mode: a Glade stop it opens plays fogged while the fog has not really lifted",
+  "project": "android",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "26-dev-mode.spec.ts",
+  "title": "dev mode: a match begins at every stop, on a Tower floor and on every Free Play variant",
+  "project": "android",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "26-dev-mode.spec.ts",
+  "title": "dev mode: a wrong, empty or wrong-case word does nothing at all",
+  "project": "android",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "26-dev-mode.spec.ts",
+  "title": "dev mode: after turning off, every screen is exactly as it was before it was on",
+  "project": "android",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "26-dev-mode.spec.ts",
+  "title": "dev mode: Backup & Restore work as before, and a code never carries Dev Mode",
+  "project": "android",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "26-dev-mode.spec.ts",
+  "title": "dev mode: captures with it on, every element inside its normal layout",
+  "project": "android",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "26-dev-mode.spec.ts",
+  "title": "dev mode: every Collection item can be previewed and equipped",
+  "project": "android",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "26-dev-mode.spec.ts",
+  "title": "dev mode: every lock is open on a fresh save, with nothing earned and no reveal",
+  "project": "android",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "26-dev-mode.spec.ts",
+  "title": "dev mode: How to Play shows the Moonlit and Tower sections on a fresh save",
+  "project": "android",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "26-dev-mode.spec.ts",
+  "title": "dev mode: the player's build recognises the link too",
+  "project": "android",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "26-dev-mode.spec.ts",
+  "title": "dev mode: the secret link turns it on, leaves the address and the save as they were, and lasts",
+  "project": "android",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "26-dev-mode.spec.ts",
+  "title": "dev mode: the Settings row is there only while it is on, last, and Turn off goes home and stays off",
+  "project": "android",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "26-dev-mode.spec.ts",
+  "title": "dev mode: Turn off during a match keeps the match on the table, as its last Settings row",
+  "project": "android",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "26-dev-mode.spec.ts",
+  "title": "dev mode: turning off puts back dev-only equipment and places",
+  "project": "android",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
   "file": "zz-coverage.spec.ts",
   "title": "11. juice coverage: every animation and sound event fired during the suite",
   "project": "android",
@@ -1719,6 +1845,132 @@
  {
   "file": "25-tower-captures.spec.ts",
   "title": "tower: capture: the Guardians, every floor result, and the run-over screen",
+  "project": "max",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "26-dev-mode.spec.ts",
+  "title": "dev mode flow: a dev-only match survives turning off and a reload, plays to the end, then is locked again",
+  "project": "max",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "26-dev-mode.spec.ts",
+  "title": "dev mode flow: a Tower floor in progress survives turning off, then offers only the way back",
+  "project": "max",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "26-dev-mode.spec.ts",
+  "title": "dev mode flow: a Tower floor won in Dev Mode records exactly what it does normally",
+  "project": "max",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "26-dev-mode.spec.ts",
+  "title": "dev mode flow: winning in Dev Mode records exactly what winning normally does",
+  "project": "max",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "26-dev-mode.spec.ts",
+  "title": "dev mode: a Glade stop it opens plays fogged while the fog has not really lifted",
+  "project": "max",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "26-dev-mode.spec.ts",
+  "title": "dev mode: a match begins at every stop, on a Tower floor and on every Free Play variant",
+  "project": "max",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "26-dev-mode.spec.ts",
+  "title": "dev mode: a wrong, empty or wrong-case word does nothing at all",
+  "project": "max",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "26-dev-mode.spec.ts",
+  "title": "dev mode: after turning off, every screen is exactly as it was before it was on",
+  "project": "max",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "26-dev-mode.spec.ts",
+  "title": "dev mode: Backup & Restore work as before, and a code never carries Dev Mode",
+  "project": "max",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "26-dev-mode.spec.ts",
+  "title": "dev mode: captures with it on, every element inside its normal layout",
+  "project": "max",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "26-dev-mode.spec.ts",
+  "title": "dev mode: every Collection item can be previewed and equipped",
+  "project": "max",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "26-dev-mode.spec.ts",
+  "title": "dev mode: every lock is open on a fresh save, with nothing earned and no reveal",
+  "project": "max",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "26-dev-mode.spec.ts",
+  "title": "dev mode: How to Play shows the Moonlit and Tower sections on a fresh save",
+  "project": "max",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "26-dev-mode.spec.ts",
+  "title": "dev mode: the player's build recognises the link too",
+  "project": "max",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "26-dev-mode.spec.ts",
+  "title": "dev mode: the secret link turns it on, leaves the address and the save as they were, and lasts",
+  "project": "max",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "26-dev-mode.spec.ts",
+  "title": "dev mode: the Settings row is there only while it is on, last, and Turn off goes home and stays off",
+  "project": "max",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "26-dev-mode.spec.ts",
+  "title": "dev mode: Turn off during a match keeps the match on the table, as its last Settings row",
+  "project": "max",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "26-dev-mode.spec.ts",
+  "title": "dev mode: turning off puts back dev-only equipment and places",
   "project": "max",
   "skipped": false,
   "timing": "real"
@@ -2640,6 +2892,132 @@
   "timing": "real"
  },
  {
+  "file": "26-dev-mode.spec.ts",
+  "title": "dev mode flow: a dev-only match survives turning off and a reload, plays to the end, then is locked again",
+  "project": "ref",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "26-dev-mode.spec.ts",
+  "title": "dev mode flow: a Tower floor in progress survives turning off, then offers only the way back",
+  "project": "ref",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "26-dev-mode.spec.ts",
+  "title": "dev mode flow: a Tower floor won in Dev Mode records exactly what it does normally",
+  "project": "ref",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "26-dev-mode.spec.ts",
+  "title": "dev mode flow: winning in Dev Mode records exactly what winning normally does",
+  "project": "ref",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "26-dev-mode.spec.ts",
+  "title": "dev mode: a Glade stop it opens plays fogged while the fog has not really lifted",
+  "project": "ref",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "26-dev-mode.spec.ts",
+  "title": "dev mode: a match begins at every stop, on a Tower floor and on every Free Play variant",
+  "project": "ref",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "26-dev-mode.spec.ts",
+  "title": "dev mode: a wrong, empty or wrong-case word does nothing at all",
+  "project": "ref",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "26-dev-mode.spec.ts",
+  "title": "dev mode: after turning off, every screen is exactly as it was before it was on",
+  "project": "ref",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "26-dev-mode.spec.ts",
+  "title": "dev mode: Backup & Restore work as before, and a code never carries Dev Mode",
+  "project": "ref",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "26-dev-mode.spec.ts",
+  "title": "dev mode: captures with it on, every element inside its normal layout",
+  "project": "ref",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "26-dev-mode.spec.ts",
+  "title": "dev mode: every Collection item can be previewed and equipped",
+  "project": "ref",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "26-dev-mode.spec.ts",
+  "title": "dev mode: every lock is open on a fresh save, with nothing earned and no reveal",
+  "project": "ref",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "26-dev-mode.spec.ts",
+  "title": "dev mode: How to Play shows the Moonlit and Tower sections on a fresh save",
+  "project": "ref",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "26-dev-mode.spec.ts",
+  "title": "dev mode: the player's build recognises the link too",
+  "project": "ref",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "26-dev-mode.spec.ts",
+  "title": "dev mode: the secret link turns it on, leaves the address and the save as they were, and lasts",
+  "project": "ref",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "26-dev-mode.spec.ts",
+  "title": "dev mode: the Settings row is there only while it is on, last, and Turn off goes home and stays off",
+  "project": "ref",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "26-dev-mode.spec.ts",
+  "title": "dev mode: Turn off during a match keeps the match on the table, as its last Settings row",
+  "project": "ref",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "26-dev-mode.spec.ts",
+  "title": "dev mode: turning off puts back dev-only equipment and places",
+  "project": "ref",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
   "file": "zz-coverage.spec.ts",
   "title": "11. juice coverage: every animation and sound event fired during the suite",
   "project": "ref",
@@ -3497,6 +3875,132 @@
  {
   "file": "25-tower-captures.spec.ts",
   "title": "tower: capture: the Guardians, every floor result, and the run-over screen",
+  "project": "se",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "26-dev-mode.spec.ts",
+  "title": "dev mode flow: a dev-only match survives turning off and a reload, plays to the end, then is locked again",
+  "project": "se",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "26-dev-mode.spec.ts",
+  "title": "dev mode flow: a Tower floor in progress survives turning off, then offers only the way back",
+  "project": "se",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "26-dev-mode.spec.ts",
+  "title": "dev mode flow: a Tower floor won in Dev Mode records exactly what it does normally",
+  "project": "se",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "26-dev-mode.spec.ts",
+  "title": "dev mode flow: winning in Dev Mode records exactly what winning normally does",
+  "project": "se",
+  "skipped": false,
+  "timing": "fast"
+ },
+ {
+  "file": "26-dev-mode.spec.ts",
+  "title": "dev mode: a Glade stop it opens plays fogged while the fog has not really lifted",
+  "project": "se",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "26-dev-mode.spec.ts",
+  "title": "dev mode: a match begins at every stop, on a Tower floor and on every Free Play variant",
+  "project": "se",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "26-dev-mode.spec.ts",
+  "title": "dev mode: a wrong, empty or wrong-case word does nothing at all",
+  "project": "se",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "26-dev-mode.spec.ts",
+  "title": "dev mode: after turning off, every screen is exactly as it was before it was on",
+  "project": "se",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "26-dev-mode.spec.ts",
+  "title": "dev mode: Backup & Restore work as before, and a code never carries Dev Mode",
+  "project": "se",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "26-dev-mode.spec.ts",
+  "title": "dev mode: captures with it on, every element inside its normal layout",
+  "project": "se",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "26-dev-mode.spec.ts",
+  "title": "dev mode: every Collection item can be previewed and equipped",
+  "project": "se",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "26-dev-mode.spec.ts",
+  "title": "dev mode: every lock is open on a fresh save, with nothing earned and no reveal",
+  "project": "se",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "26-dev-mode.spec.ts",
+  "title": "dev mode: How to Play shows the Moonlit and Tower sections on a fresh save",
+  "project": "se",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "26-dev-mode.spec.ts",
+  "title": "dev mode: the player's build recognises the link too",
+  "project": "se",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "26-dev-mode.spec.ts",
+  "title": "dev mode: the secret link turns it on, leaves the address and the save as they were, and lasts",
+  "project": "se",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "26-dev-mode.spec.ts",
+  "title": "dev mode: the Settings row is there only while it is on, last, and Turn off goes home and stays off",
+  "project": "se",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "26-dev-mode.spec.ts",
+  "title": "dev mode: Turn off during a match keeps the match on the table, as its last Settings row",
+  "project": "se",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "26-dev-mode.spec.ts",
+  "title": "dev mode: turning off puts back dev-only equipment and places",
   "project": "se",
   "skipped": false,
   "timing": "real"

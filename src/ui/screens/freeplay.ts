@@ -2,7 +2,7 @@
 import type { BotId } from '../../bots/profiles.ts';
 import { BOTS, UNLOCKABLES } from '../../content.ts';
 import type { Variant } from '../../engine/types.ts';
-import { botsUnlocked, isUnlocked } from '../../meta/progress.ts';
+import { botsAvailable as botsUnlocked, canUse as isUnlocked } from '../../meta/devmode.ts';
 import { app } from '../app.ts';
 import { icon, portraitEl } from '../art.ts';
 import { clear, h } from '../dom.ts';

@@ -6,6 +6,7 @@ import { h } from '../dom.ts';
 import { SOFT, SPRING, animate, confetti, finishAll, fx, motion } from '../fx/motion.ts';
 import { closeAllSheets } from '../overlays.ts';
 import type { MatchSummary } from '../../meta/progress.ts';
+import { takeLingering } from '../../meta/devmode.ts';
 import type { SavedMatch } from '../../meta/save.ts';
 import { startClimb, type ClimbEnd, type FloorOutcome } from '../../meta/tower.ts';
 import { persist } from '../app.ts';
@@ -14,6 +15,7 @@ import { loadKit, svgDoc, svgUrl, wholeTower } from '../tower/art.ts';
 import { ambientLife } from '../tower/ambient.ts';
 import { climbScene, prepareClimb } from '../tower/scenes.ts';
 import { openFloorIntro, openTowerHome, towerMusic } from './tower.ts';
+import { toMap } from './end.ts';
 import type { Table } from '../table/table.ts';
 
 /** The floor result, over the table, in the match-end style. */
@@ -29,7 +31,10 @@ export function towerResult(t: Table, match: SavedMatch, s: MatchSummary): void 
     : o.end ? 'That was your last heart.' : `You lost a heart. ${o.heartsAfter === 1 ? '1 heart left.' : `${o.heartsAfter} hearts left.`}`;
   // The hearts as they were, so the change plays here: a crack on a loss, a refill on a Guardian win.
   const hearts = heartsRow(o.heartsBefore, 'result');
-  const buttons = won
+  // Dev Mode was turned off during this floor, and the Tower is locked without it: only the way back is offered.
+  const buttons = takeLingering()
+    ? [h('button.btn.secondary', { 'data-testid': 'back-map', onclick: toMap }, 'Back to Map')]
+    : won
     ? [h('button.btn.primary.play', { 'data-testid': 'climb', html: `${icon('play')}<span>Climb</span>`, onclick: () => climb(o) })]
     : o.end
       ? [h('button.btn.primary', { 'data-testid': 'see-climb', onclick: () => runOver(o.end!) }, 'See your climb')]

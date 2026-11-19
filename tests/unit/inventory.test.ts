@@ -48,3 +48,12 @@ test('titles keep their describe blocks, so repeated titles stay apart', () => {
   const report = { suites: [{ file: 'a.spec.ts', title: 'a.spec.ts', suites: ['plain', 'insets'].map((title) => ({ title, specs: [{ title: 'Pip', tests: [{ projectName: 'max', status: 'expected', results: [{}] }] }] })) }] };
   assert.deepEqual(flatten(report).map((r) => r.title), ['plain › Pip', 'insets › Pip']);
 });
+
+test('a test that needs private files may skip only while those files are missing', () => {
+  const art: Row = { file: '24-tower-art-parity.spec.ts', title: 'art', project: 'max', skipped: false };
+  const skipped: Ran = { file: art.file, title: 'art', project: 'max', status: 'skipped', attempts: 0 };
+  assert.deepEqual(compareRun([art], [skipped], () => false), []);
+  assert.match(compareRun([art], [skipped], () => true)[0], /newly skipped/);
+  const other: Row = { ...art, file: 'a.spec.ts' };
+  assert.match(compareRun([other], [{ ...skipped, file: 'a.spec.ts' }], () => false)[0], /newly skipped/);
+});

@@ -1,7 +1,7 @@
 // Overall and per-bot stats.
 import { BOTS } from '../../content.ts';
 import { BOT_IDS, GLADE_BOT_IDS } from '../../bots/profiles.ts';
-import { crossroadsOpen, gladeOpen } from '../../meta/progress.ts';
+import { canSeeCrossroads as crossroadsOpen, canSeeGlade as gladeOpen } from '../../meta/devmode.ts';
 import { app } from '../app.ts';
 import { icon, portraitEl } from '../art.ts';
 import { h } from '../dom.ts';
