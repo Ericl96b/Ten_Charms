@@ -4,13 +4,14 @@ import { expect, test as base, type Page } from '@playwright/test';
 export const LOG_DIR = 'test-results/juice';
 
 /**
- * Skips the install helper, which every browser-tab launch would otherwise show first. The Moonlit Glade's
- * one-time reveal counts as seen, so tests that beat Nightshade stay on the Rose Garden; Map 2's tests opt in.
+ * Skips the install helper, which every browser-tab launch would otherwise show first. The Moonlit Glade's and the
+ * Crossroads' one-time reveals count as seen, so tests that beat Nightshade or Lunaria stay where they are; the
+ * reveals' own tests opt in.
  */
 export async function prepare(page: Page, extra: Record<string, unknown> = {}): Promise<void> {
   await page.addInitScript((extraSave) => {
     if (!localStorage.getItem('ten-charms.save')) {
-      localStorage.setItem('ten-charms.save', JSON.stringify({ schema: 2, install: { dismissedAt: Date.now() }, glade: { revealSeen: true }, ...extraSave }));
+      localStorage.setItem('ten-charms.save', JSON.stringify({ schema: 2, install: { dismissedAt: Date.now() }, glade: { revealSeen: true }, tower: { revealSeen: true }, ...extraSave }));
     }
   }, extra);
 }

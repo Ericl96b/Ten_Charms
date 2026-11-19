@@ -16,6 +16,11 @@ const FX = [
   'boss.intro', 'boss.darken', 'boss.clothFade', 'boss.mothsIn', 'boss.portrait', 'boss.line', 'boss.moths', 'boss.tension', 'boss.victory',
   'fog.clouds', 'fog.wispPuff', 'fog.lift', 'fog.bloom', 'glade.fireflies', 'glade.reveal', 'map.switch', 'crown.thornBlock',
   'lunaria.intro', 'lunaria.mist', 'lunaria.threads', 'lunaria.portrait', 'lunaria.wispsIn', 'lunaria.dissolve',
+  // The Crossroads and the Tower (TOWER_SPEC.md §9).
+  'crossroads.reveal', 'crossroads.enterPulse', 'crossroads.map3', 'crossroads.enter',
+  'tower.home', 'tower.climbStart', 'tower.deal', 'tower.flip', 'tower.floorStart', 'tower.floorWon', 'tower.floorLost', 'tower.heartLost', 'tower.heartBack',
+  'tower.climb', 'tower.ascent', 'tower.liftSettle', 'tower.tierChange', 'tower.cloudBank', 'tower.tierBanner', 'tower.liftSkip',
+  'tower.climbEnded', 'tower.runOver', 'tower.lights', 'tower.newBest',
 ];
 
 const SOUNDS = [
@@ -23,6 +28,8 @@ const SOUNDS = [
   'skipOnHer', 'skipPlayed', 'goOutHer', 'goOutBot', 'tally', 'phaseAdvance', 'invalid', 'reshuffle', 'star', 'unlock', 'charm', 'victory', 'defeat', 'bossIntro',
   'music.map', 'music.waltz', 'music.boss',
   'fogLift', 'thornBlock', 'wispPuff', 'pageTurn', 'music.gladeFog', 'music.gladeLift', 'music.lunaria', 'music.moonwaltz',
+  'towerDeal', 'towerFlip', 'liftRatchet', 'liftBell', 'cloudSwell', 'tierFlourish', 'heartCrack', 'heartBack', 'newBest', 'fairyTwinkle',
+  'music.tower', 'music.towerLayers1', 'music.towerLayers2', 'music.towerLayers3', 'music.towerLayers4',
 ];
 
 test('11. juice coverage: every animation and sound event fired during the suite', ({}, info) => {

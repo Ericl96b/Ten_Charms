@@ -52,6 +52,12 @@ Change Request 04 made Moonlit Trial A's list the Moonlit Phases. `16-glade-swap
 
 Each Map 2 test is classed `real` or `fast` in `tests/inventory.json`: `fast` if it speeds up waits with `setTestScale`, `real` otherwise. Performance checks, recordings and image captures are always `real`. `FAST_CLOCK` in `tests/e2e/stages.ts` lists the fast ones, and the inventory check fails if a Map 2 test has no class.
 
+## Tower tests
+
+The Tower's browser tests are `18-tower-nav.spec.ts` (the switcher, the Crossroads and its reveal), `19-tower-home.spec.ts` (Tower home, the floor intro, results, run over, Stats and How to Play), `20-tower-climb.spec.ts` (a whole climb, and a floor surviving a reload), `21-tower-motion.spec.ts` (the lift, skipping, Reduced Motion, sky bands and music layers), `22-tower-perf.spec.ts` (performance, alone), `23-tower-recordings.spec.ts`, `24-tower-art-parity.spec.ts` and `25-tower-captures.spec.ts`. Like Map 2's, each carries a timing class: tests titled `tower flow: …` speed up their waits with `setTestScale`; everything else runs in real time. The art parity test draws each piece with the game's own code and from the approved references in `private/`, and needs 97% of pixels to match; it's skipped where `private/` is missing. Recordings and captures go to `private/qa-screenshots/tower/`. Tower screens hold their drifting life still for captures with the `freezeAmbient` hook.
+
+The Tower update may change only a map's top bar and the Tower's own sections in Stats and How to Play. `scripts/allowed-diffs.json` names those masks, and the gate passes exactly them to `compare-shots.mjs`.
+
 ## Coverage guarantee
 
 `tests/inventory.json` lists every browser test: its file, title, project, and whether it's skipped. `npm run test:inventory` fails if any listed test is gone. Given run reports, `scripts/test-inventory.ts check` also fails if a listed test didn't run exactly once, was newly skipped, failed, or needed a retry. New tests are allowed. The gate runs this with its reports, so a test dropped by a stage filter fails the gate.

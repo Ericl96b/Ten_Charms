@@ -1,5 +1,5 @@
 // The table's set pieces: deal, lay down, hit, skip, going out, and the round-end tally.
-import { phaseNumber } from '../../engine/phases.ts';
+import { displayPhase } from '../../engine/phases.ts';
 import { BOTS } from '../../content.ts';
 import { cardPoints } from '../../engine/cards.ts';
 import type { Card, RoundResult } from '../../engine/types.ts';
@@ -125,7 +125,7 @@ export async function layDownMoment(t: Table, phase: number, groupIds: number[])
   t.fxEl.append(flash);
   void animate(flash, [{ opacity: 0 }, { opacity: 0.2, offset: 0.2 }, { opacity: 0 }], { ms: 340, ease: 'ease-out' }).then(() => flash.remove());
   fx('lay.banner');
-  const bn = banner(t, `Phase ${phaseNumber(phase)} complete!`);
+  const bn = banner(t, `Phase ${displayPhase(t.game, phase)} complete!`);
   await pause(170);
   await Promise.all(flights);
   ghosts.forEach((g) => g.classList.remove('in-flight'));
@@ -344,7 +344,7 @@ export async function roundEndMoment(t: Table, result: RoundResult): Promise<voi
     const name = seat === 0 ? 'You' : BOTS[t.match.lineup[seat - 1]].name;
     const counter = h('b.tally-count', null, '0');
     const cards = h('div.tally-cards');
-    const medal = h('span.medallion.tiny', null, h('span', null, result.phasesBefore[seat] ?? ''));
+    const medal = h('span.medallion.tiny', null, h('span', null, t.game.phases && result.phasesBefore[seat] !== null ? displayPhase(t.game, result.phasesBefore[seat]!) : result.phasesBefore[seat] ?? ''));
     const row = h('div.tally-row', { 'data-seat': seat },
       seat === 0 ? h('div.portrait.p-small.you', null, h('span', null, 'You')) : portraitEl(t.match.lineup[seat - 1], 'small'),
       h('div.tally-main', null, h('b.tally-name', null, name), cards),
@@ -391,7 +391,7 @@ export async function roundEndMoment(t: Table, result: RoundResult): Promise<voi
     void animate(r.medal, [{ transform: 'rotateY(0)' }, { transform: 'rotateY(360deg)' }], { ms: 420, fill: 'none' });
     const span = r.medal.querySelector('span');
     await pause(210);
-    if (span && before !== null) span.textContent = t.game.variant === 'choose' ? '✓' : String(phaseNumber(before) + 1);
+    if (span && before !== null) span.textContent = t.game.variant === 'choose' ? '✓' : String(displayPhase(t.game, before) + 1);
     const c = center(rectOf(r.medal));
     burst(c.x, c.y, 6, ['sparkle'], 34);
   }

@@ -1,0 +1,175 @@
+/* The Crossroads and the Tower (TOWER_SPEC.md). Pink, cozy and bright in every sky band. */
+
+/* ---------- The switcher's third option: an icon-only signpost ---------- */
+.map-opt.map-sign { flex: 0 0 4.4rem; min-width: 44px; position: relative; color: var(--plum); }
+.map-opt.map-sign .sign-icon { display: flex; font-size: 2.2rem; }
+.map-opt.map-sign.locked .sign-icon { opacity: .5; }
+.map-opt.map-sign .sign-lock { position: absolute; right: .3rem; bottom: .3rem; display: flex; padding: .15rem; border-radius: 50%; background: var(--panel); color: var(--ink-soft); font-size: 1.1rem; box-shadow: 0 0 0 .1rem var(--panel-border); }
+.map-switch .map-opt { min-height: 44px; }
+
+/* ---------- The Crossroads ---------- */
+.crossroads-screen { background: linear-gradient(180deg, #FCD6DF 0%, #FDE5E2 40%, #FCE7E2 100%); overflow: hidden; }
+.crossroads-screen .map-top, .crossroads-screen .bottom-nav { position: relative; z-index: 5; }
+.crossroads-screen .bottom-nav { margin-top: auto; }
+.xr-scene { position: absolute; inset: 0; z-index: 0; }
+.xr-art { position: absolute; left: 0; opacity: 0; }
+.crossroads-screen.ready .xr-art { opacity: 1; transition: opacity calc(240ms * var(--t)); }
+.xr-spot, .xr-mark { position: absolute; z-index: 2; background: transparent; }
+.xr-petals { position: absolute; inset: 0; z-index: 3; pointer-events: none; overflow: hidden; }
+.xr-plate { position: absolute; z-index: 4; padding: .7rem 1.6rem; border-radius: 2rem; background: var(--panel); border: .15rem solid var(--panel-border); box-shadow: var(--shadow); font-family: var(--display); font-weight: 600; font-size: 1.9rem; color: var(--plum); white-space: nowrap; }
+.xr-card { position: absolute; z-index: 4; padding: 1.4rem 1.2rem; border-radius: 2.4rem; background: var(--panel); border: .15rem solid var(--panel-border); box-shadow: 0 .4rem 1.4rem rgba(91, 35, 64, .16); text-align: center; display: flex; flex-direction: column; align-items: center; gap: .3rem; }
+.kicker { font-family: var(--ui); font-weight: 800; letter-spacing: .18em; color: var(--gold); font-size: 1.15rem; }
+.xr-title { font-family: var(--display); font-weight: 800; font-size: 2.5rem; color: var(--plum); line-height: 1.05; }
+.xr-best { display: flex; align-items: center; gap: .4rem; font-weight: 800; color: var(--plum); font-size: 1.45rem; }
+.xr-best .icon { font-size: 1.5rem; }
+.xr-enter { width: 100%; margin-top: .6rem; }
+
+/* ---------- Sky bands (§9.1) ---------- */
+.sky-rose-dawn { --sky: linear-gradient(180deg, #FFD6DF 0%, #FFE6E2 50%, #FFF1E6 100%); --light: radial-gradient(circle at 85% 8%, rgba(255, 244, 214, .9) 0, rgba(255, 244, 214, 0) 40%); }
+.sky-peach-noon { --sky: linear-gradient(180deg, #FFDDBF 0%, #FFEBD6 50%, #FFF7EC 100%); --light: radial-gradient(circle at 50% -4%, rgba(255, 250, 230, .95) 0, rgba(255, 250, 230, 0) 45%); }
+.sky-lavender-dusk { --sky: linear-gradient(180deg, #E3CCF0 0%, #F1D3EC 50%, #FCDDE3 100%); --light: radial-gradient(circle at 0% 70%, rgba(255, 214, 196, .85) 0, rgba(255, 214, 196, 0) 45%); }
+.sky-starlit-pink-night { --sky: linear-gradient(180deg, #C8B4E4 0%, #DCC0E6 50%, #F3C9DC 100%); --light: radial-gradient(circle at 82% 12%, rgba(255, 250, 238, .95) 0 3.2rem, rgba(255, 250, 238, .25) 3.3rem, rgba(255, 250, 238, 0) 7rem); }
+.sky-aurora { --sky: linear-gradient(180deg, #CBE6EE 0%, #DCD8F2 50%, #F8D5E3 100%); --light: none; }
+.tower-screen, .runover-screen { background: var(--sky); overflow: hidden; }
+.tw-light { position: absolute; inset: 0; background: var(--light); pointer-events: none; }
+/* A pale crescent moon: a disc with a soft shadow taken out of it. */
+.sky-starlit-pink-night .tw-light::after { content: ""; position: absolute; right: 14%; top: 7%; width: 4.4rem; height: 4.4rem; border-radius: 50%; box-shadow: -1.1rem .7rem 0 .1rem #FFF6E6; }
+
+/* Ambient life: decoration only, never taking a tap. */
+.tw-life, .ro-life { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.amb-cloud, .amb-petal, .amb-fly, .amb-firefly, .amb-star, .amb-aurora { position: absolute; pointer-events: none; display: block; }
+.amb-cloud { left: 0; }
+.amb-cloud svg, .amb-petal svg, .amb-fly svg, .amb-star svg { width: 100%; height: auto; }
+.amb-petal { top: 0; }
+.amb-fly { width: 1.8rem; }
+.amb-firefly { width: .6rem; height: .6rem; border-radius: 50%; background: #FFF3B8; box-shadow: 0 0 .8rem .3rem rgba(255, 236, 160, .75); }
+.amb-aurora { left: -10%; width: 120%; height: 7rem; border-radius: 50%; background: linear-gradient(90deg, rgba(178, 236, 214, 0), rgba(178, 236, 214, .6), rgba(246, 196, 220, .6), rgba(212, 196, 242, .55), rgba(212, 196, 242, 0)); filter: blur(1.2rem); }
+
+/* ---------- Tower home (§7.1) ---------- */
+.tower-screen .tw-top { position: relative; z-index: 5; display: flex; align-items: center; gap: 1rem; padding: 1.2rem 1.2rem .6rem; }
+.tw-title { flex: 1; font-family: var(--display); font-weight: 800; font-size: 2.8rem; color: var(--plum); text-align: center; white-space: nowrap; }
+.hearts { display: flex; align-items: center; gap: .3rem; }
+.hearts .heart { width: 2.6rem; height: 2.6rem; display: block; position: relative; }
+.hearts .heart svg { width: 100%; height: 100%; }
+.hearts.pill { padding: .5rem 1rem; border-radius: 2.4rem; background: var(--panel); border: .15rem solid var(--panel-border); box-shadow: var(--shadow); }
+.heart-halves { position: absolute; inset: 0; }
+.heart-halves .half { position: absolute; inset: 0; }
+.heart-halves .half.l { clip-path: inset(0 50% 0 0); }
+.heart-halves .half.r { clip-path: inset(0 0 0 50%); }
+.heart-halves svg { width: 100%; height: 100%; }
+.tw-view { position: absolute; inset: 0; z-index: 1; overflow: hidden; --fade-to: 22%; -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 var(--fade-to)); mask-image: linear-gradient(180deg, transparent 0, #000 var(--fade-to)); }
+.tw-art { position: absolute; left: 50%; top: 0; will-change: transform; }
+.tw-strip { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; }
+.tower-screen.ready .tw-strip { opacity: 1; }
+.tw-glow { position: absolute; border-radius: 50%; transform: translate(-50%, -50%); background: radial-gradient(ellipse, rgba(255, 233, 168, .85) 0, rgba(255, 220, 140, .35) 45%, rgba(255, 220, 140, 0) 70%); pointer-events: none; }
+.tw-rail { position: absolute; top: -100vh; bottom: -100vh; left: 97.6%; width: .35rem; border-radius: .2rem; background: linear-gradient(90deg, #A97A27, #F3CE78 45%, #A97A27); }
+.tw-cage { position: absolute; left: calc(97.6% + .17rem); transform: translate(-50%, 0); height: auto; }
+.tw-plaques { position: absolute; left: 1.4rem; top: 0; bottom: 0; width: 5rem; z-index: 2; }
+.tw-plaque { position: absolute; left: 0; transform: translateY(-50%); min-width: 4.2rem; padding: .35rem .9rem; border-radius: 2rem; background: rgba(255, 248, 244, .92); border: .12rem solid var(--panel-border); color: var(--plum); font-weight: 800; font-size: 1.6rem; text-align: center; box-shadow: var(--shadow); }
+.tw-plaque.current { background: #F6D27F; border-color: #D9A441; }
+.tw-flag { position: absolute; right: -1.8rem; top: 50%; transform: translateY(-50%); font-size: 1.5rem; display: flex; }
+.tw-best-pill { position: absolute; z-index: 4; right: 1.2rem; top: calc(var(--sat) + 7.2rem); display: flex; align-items: center; gap: .4rem; padding: .45rem 1.1rem; border-radius: 2rem; background: var(--panel); border: .15rem solid var(--gold-bright); color: var(--plum); font-weight: 800; font-size: 1.45rem; box-shadow: var(--shadow); }
+.tw-best-pill .icon { font-size: 1.4rem; }
+.tw-panel { position: relative; z-index: 4; margin: auto 1.2rem .8rem; padding: 1.6rem 1.8rem 1.2rem; border-radius: 2.4rem; background: var(--panel); border: .15rem solid var(--panel-border); box-shadow: 0 .4rem 1.4rem rgba(91, 35, 64, .16); display: flex; flex-direction: column; gap: .6rem; }
+.tw-panel-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
+.tw-floor { font-family: var(--display); font-weight: 800; font-size: 3.6rem; color: var(--plum); line-height: 1; }
+.tw-tier { font-weight: 800; color: var(--ink-soft); font-size: 1.5rem; margin-top: .3rem; }
+.tw-chip { display: inline-flex; align-items: center; gap: .4rem; padding: .4rem 1.1rem; border-radius: 2rem; background: #FFF4D9; border: .14rem dashed var(--gold-bright); color: var(--plum); font-weight: 800; font-size: 1.4rem; white-space: nowrap; margin-top: .6rem; }
+.tw-chip.guardian { background: #F4EEF8; border: .14rem solid #DCCDEA; }
+.tw-chip .icon { font-size: 1.4rem; color: var(--gold); }
+.tw-status { color: var(--ink-soft); font-weight: 700; font-size: 1.5rem; }
+.tw-end { align-self: center; padding: .6rem 1rem; min-height: 44px; color: var(--plum); font-weight: 800; font-size: 1.5rem; text-decoration: underline; text-underline-offset: .3rem; }
+.tower-screen .bottom-nav { position: relative; z-index: 4; }
+.btn.primary.danger { background: #B8325C; }
+
+/* ---------- The floor intro sheet (§7.2) ---------- */
+.floor-sheet .sheet-title { display: none; }
+.floor-intro { display: flex; flex-direction: column; align-items: center; text-align: center; gap: .5rem; }
+.fi-title { font-family: var(--display); font-weight: 800; font-size: 3.2rem; color: var(--plum); line-height: 1.05; }
+.fi-sub { color: var(--plum); font-weight: 700; font-size: 1.5rem; }
+.ph-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; width: 100%; margin: .8rem 0; perspective: 60rem; }
+.ph-card { position: relative; aspect-ratio: 5 / 7; border-radius: 1.4rem; }
+.ph-card-back, .ph-card-face { position: absolute; inset: 0; border-radius: 1.4rem; }
+.ph-card-back { background: repeating-linear-gradient(45deg, #F2A7BC 0 .6rem, #F7C3D2 .6rem 1.2rem); border: .25rem solid #D9A441; box-shadow: inset 0 0 0 .3rem #FFF8F4; }
+.ph-card-face { background: #FFFAF5; border: .25rem solid #D9A441; box-shadow: inset 0 0 0 .35rem #FFFAF5, inset 0 0 0 .45rem #F0DDD3; display: flex; flex-direction: column; align-items: center; padding: .9rem .6rem; visibility: hidden; }
+.ph-card.up .ph-card-face { visibility: visible; }
+.ph-card.up .ph-card-back { visibility: hidden; }
+.ph-medal { width: 2.8rem; height: 2.8rem; border-radius: 50%; background: radial-gradient(circle at 40% 35%, #FBE2A0, #E0B356); border: .15rem solid #B0832F; color: var(--plum); font-family: var(--display); font-weight: 800; font-size: 1.6rem; display: flex; align-items: center; justify-content: center; flex: none; }
+.ph-label { flex: 1; display: flex; align-items: center; justify-content: center; font-family: var(--display); font-weight: 600; color: var(--plum); font-size: 1.6rem; line-height: 1.15; overflow-wrap: anywhere; }
+.fi-opps { display: flex; justify-content: center; gap: 1.2rem; margin: .4rem 0; }
+.fi-opp { display: flex; flex-direction: column; align-items: center; gap: .3rem; font-family: var(--display); font-weight: 600; color: var(--plum); font-size: 1.4rem; }
+.fi-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: .6rem; margin-bottom: .6rem; }
+.hearts-chip { background: #FFF4D9; border: .14rem dashed var(--gold-bright); }
+.mini-hearts { display: inline-flex; gap: .15rem; }
+.mini-hearts svg { width: 1.6rem; height: 1.6rem; }
+.floor-intro .btn.primary { width: 100%; }
+
+/* ---------- The Guardian's title card ---------- */
+.bi-kicker { display: block; margin-top: .6rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: var(--gold-light); font-size: 1.25rem; text-align: center; }
+.lunaria-intro .bi-kicker { color: var(--gold); }
+
+/* ---------- The floor result (§7.4) ---------- */
+.tw-result { justify-content: center; align-items: center; }
+.tw-result .dim { position: absolute; inset: 0; background: rgba(255, 248, 244, .6); }
+.tw-result-card { position: relative; width: 100%; background: var(--panel); border: .2rem solid var(--panel-border); border-radius: 2.4rem; padding: 2.2rem 1.6rem 1.8rem; display: flex; flex-direction: column; align-items: center; gap: .8rem; box-shadow: var(--shadow); text-align: center; }
+.tw-result-card .title { font-family: var(--display); font-weight: 800; font-size: 3rem; color: var(--plum); }
+.tw-result-card .hearts .heart { width: 3.4rem; height: 3.4rem; }
+.tw-actions { flex-direction: column; }
+
+/* ---------- Run over (§7.5) ---------- */
+.runover-screen { align-items: center; padding: calc(var(--sat) + 1rem) 1.6rem calc(var(--sab) + 1.6rem); }
+.ro-cloud { position: absolute; left: 50%; bottom: -3.4rem; width: 26rem; height: 8rem; transform: translateX(-50%); border-radius: 50%; background: radial-gradient(ellipse at 50% 45%, #FFFFFF 0, rgba(255, 255, 255, .9) 40%, rgba(255, 255, 255, 0) 70%); }
+.ro-art { position: relative; z-index: 2; height: 44%; aspect-ratio: 340 / 1086; transform-origin: 50% 60%; }
+.ro-tower, .ro-lights, .ro-lights svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.ro-burst { position: absolute; left: 50%; top: 4.8%; width: 5rem; height: 5rem; transform: translate(-50%, -50%); opacity: 0; border-radius: 50%; background: radial-gradient(circle, #FFFBE6 0, rgba(255, 238, 170, .8) 35%, rgba(255, 238, 170, 0) 70%); }
+.runover-screen.burst .ro-burst { opacity: .85; }
+.ro-pill { position: absolute; left: calc(100% + .8rem); transform: translateY(-50%); padding: .4rem 1rem; border-radius: 2rem; background: var(--panel); border: .15rem solid var(--panel-border); color: var(--plum); font-weight: 800; font-size: 1.4rem; white-space: nowrap; box-shadow: var(--shadow); }
+.ro-pill.gold { background: #F6D27F; border-color: #D9A441; }
+.ro-pill[data-testid="pill-best"] { left: auto; right: calc(100% + .8rem); }
+.ro-card { position: relative; z-index: 3; margin-top: auto; width: 100%; padding: 2.4rem 1.6rem 1.6rem; border-radius: 2.4rem; background: var(--panel); border: .15rem solid var(--panel-border); box-shadow: 0 .4rem 1.4rem rgba(91, 35, 64, .16); display: flex; flex-direction: column; align-items: center; gap: .6rem; }
+.ro-ribbon { position: absolute; top: -2.2rem; left: 50%; transform: translateX(-50%); padding: .6rem 2.6rem; background: linear-gradient(180deg, #E8789A, #C7406E); color: #FFFFFF; font-family: var(--display); font-weight: 800; font-size: 2.2rem; white-space: nowrap; border-radius: .6rem; box-shadow: 0 .2rem .6rem rgba(91, 35, 64, .25); }
+.ro-reached { font-family: var(--display); font-weight: 800; font-size: 2.1rem; color: var(--plum); }
+.ro-floor { font-family: var(--display); font-weight: 800; font-size: 4.6rem; color: var(--primary); line-height: 1; }
+.ro-stats { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; width: 100%; margin: .6rem 0; }
+.ro-stat { display: flex; flex-direction: column; align-items: center; padding: .8rem; border-radius: 1.4rem; background: #FBEDEE; }
+.ro-stat b { font-family: var(--display); font-weight: 800; font-size: 2.2rem; color: var(--plum); }
+.ro-stat small { color: var(--plum); font-weight: 700; font-size: 1.3rem; }
+.ro-card .btn { width: 100%; }
+
+/* ---------- Stats ---------- */
+.tower-stats .recent { display: flex; flex-direction: column; gap: .4rem; width: 100%; }
+.tower-stats .recent-row { display: flex; justify-content: space-between; align-items: center; padding: .6rem 1rem; border-radius: 1.2rem; background: var(--panel); border: .12rem solid var(--panel-border); }
+.tower-stats .recent-row b { display: flex; align-items: center; gap: .4rem; }
+.tower-stats .recent-row .icon { font-size: 1.3rem; }
+
+/* The Crossroads reveal's mist is pink. */
+.reveal-veil.pink { background: radial-gradient(ellipse at 50% 0%, #FFF4F8 0%, #FBDDE7 45%, #F6D6E6 100%); }
+.reveal-path.xr { left: 13.5rem; }
+
+/* ---------- The lift: the ascent and the tier change (§9.4, §9.5) ---------- */
+.ascent-screen { z-index: 80; overflow: hidden; background: transparent; }
+.as-sky { position: absolute; inset: 0; background: var(--sky); transition: opacity calc(500ms * var(--t)); }
+.as-life { position: absolute; inset: 0; pointer-events: none; }
+.as-art { position: absolute; left: -38%; top: 0; will-change: transform; }
+.as-strip { position: absolute; inset: 0; width: 100%; height: 100%; }
+.as-rail { position: absolute; top: 0; bottom: 0; left: 53%; width: .45rem; border-radius: .2rem; background: linear-gradient(90deg, #A97A27, #F3CE78 45%, #A97A27); }
+.as-lift { position: absolute; left: 69%; top: 0; height: 66%; width: 12rem; transform-origin: 50% 0; display: flex; flex-direction: column; align-items: center; }
+.as-chain { flex: 1; width: .5rem; background: repeating-linear-gradient(180deg, #D9A441 0 .45rem, #A97A27 .45rem .7rem); }
+.as-cage { width: 12rem; height: auto; margin-top: -.6rem; }
+.as-burst { position: absolute; left: 69%; top: 60%; width: 16rem; height: 16rem; margin-left: 6rem; transform: translate(-50%, -50%); opacity: 0; pointer-events: none; background: radial-gradient(circle, rgba(255, 246, 204, .95) 0, rgba(246, 210, 127, .5) 30%, rgba(246, 210, 127, 0) 62%); }
+.as-dial { position: absolute; left: 50%; top: calc(var(--sat) + 5.5rem); transform: translateX(-50%); width: 20rem; display: flex; flex-direction: column; align-items: center; z-index: 2; }
+.as-face { position: relative; width: 20rem; }
+.as-face svg { width: 100%; height: auto; }
+.as-needle { position: absolute; left: 50%; bottom: .3rem; width: .4rem; height: 7.4rem; margin-left: -.2rem; border-radius: .2rem; background: linear-gradient(180deg, #E8789A, #C7406E); transform-origin: 50% 100%; transform: rotate(-70deg); }
+.as-plate { margin-top: -.6rem; padding: .4rem 2.6rem .6rem; border-radius: 1.2rem; background: #FFF8F2; border: .2rem solid #D9A441; display: flex; flex-direction: column; align-items: center; box-shadow: var(--shadow); }
+.as-plate small { font-weight: 800; letter-spacing: .2em; color: var(--gold); font-size: 1.1rem; }
+.as-count { font-family: var(--display); font-weight: 800; font-size: 3.6rem; color: var(--plum); line-height: 1; }
+.as-skip { position: absolute; left: 0; right: 0; bottom: calc(var(--sab) + 3rem); text-align: center; color: var(--ink-soft); font-weight: 800; font-size: 1.5rem; pointer-events: none; z-index: 2; }
+.as-cloudbank { position: absolute; inset: -20% -10%; opacity: 0; pointer-events: none; z-index: 1; background: radial-gradient(ellipse at 30% 50%, #FFFFFF 0, rgba(255, 255, 255, .95) 35%, rgba(255, 236, 244, 0) 70%), radial-gradient(ellipse at 75% 45%, #FFF3F8 0, rgba(255, 243, 248, .95) 35%, rgba(255, 243, 248, 0) 70%), rgba(255, 240, 246, .85); }
+.as-banner { position: absolute; left: 50%; top: 72%; transform: translate(-50%, -50%); opacity: 0; z-index: 3; padding: 1rem 4rem 1.2rem; min-width: 24rem; text-align: center; background: linear-gradient(180deg, #E8789A, #C7406E); border-radius: .6rem; box-shadow: 0 .3rem .8rem rgba(91, 35, 64, .25); display: flex; flex-direction: column; }
+.as-banner small { font-weight: 800; letter-spacing: .2em; color: #FBE2A0; font-size: 1.3rem; }
+.as-banner b { font-family: var(--display); font-weight: 800; font-size: 3.4rem; color: #FFFFFF; }
+
+/* Three options, each a 44-point tap target: the switcher may be taller than the gear now, so it reaches into the top
+   bar's own padding instead of growing the bar, and the map below stays exactly where it was. */
+.map-top .map-switch { max-height: none; overflow: visible; margin-top: -.5rem; margin-bottom: -.5rem; }

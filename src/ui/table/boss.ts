@@ -6,8 +6,23 @@ import { h, rectOf, wait } from '../dom.ts';
 import { SOFT, animate, burst, center, finishAll, fx, motion, pause } from '../fx/motion.ts';
 import type { Table } from './table.ts';
 
+/** In the Tower, a Guardian's intro carries a title card above the name line, and the rule chips for the floor. */
+export type GuardianIntro = { kicker: string; fogged: boolean; crownName: string };
+
+/** The Thorned Crown's rule chip, for whoever wears it. */
+export function crownChipText(name: string): string {
+  return `Thorned Crown — no one can add to ${name}'s groups.`;
+}
+
+function ruleChips(fogged: boolean, crownName: string): HTMLElement {
+  return h('div.rule-chips.li-chips', null,
+    fogged ? h('span.rule-chip', { html: `${icon('wisp')}<span>Moonlit Fog — card counts are hidden.</span>` }) : null,
+    h('span.rule-chip', { 'data-testid': 'intro-crown-chip', html: `${icon('thorncrown')}<span>${crownChipText(crownName)}</span>` }),
+  );
+}
+
 /** About 4 s, tap to skip. Resolves when the table should begin. */
-export function bossIntro(host: HTMLElement): Promise<void> {
+export function bossIntro(host: HTMLElement, guardian?: GuardianIntro): Promise<void> {
   return new Promise((resolve) => {
     fx('boss.intro');
     sfx('bossIntro');
@@ -65,7 +80,11 @@ export function bossIntro(host: HTMLElement): Promise<void> {
     const glow = h('div.bi-glow');
     const title = h('h1.bi-title', { 'data-testid': 'boss-title' }, `${BOTS.nightshade.name}, the Moth Queen`);
     const line = h('p.bi-line', { 'data-testid': 'boss-line' }, LINES.nightshade.intro!);
-    const center_ = h('div.bi-center', null, glow, portrait, title, line);
+    const kicker = guardian ? h('small.bi-kicker', { 'data-testid': 'guardian-kicker' }, guardian.kicker) : null;
+    const chips = guardian ? ruleChips(guardian.fogged, guardian.crownName) : null;
+    const center_ = h('div.bi-center', null, glow, portrait, kicker, title, line, chips);
+    if (kicker) void animate(kicker, [{ opacity: 0 }, { opacity: 1 }], { ms: 400, delay: 2000 });
+    if (chips) void animate(chips, [{ opacity: 0, transform: 'translateY(.6rem)' }, { opacity: 1, transform: 'none' }], { ms: 400, delay: 3000 });
     overlay.append(center_);
     fx('boss.portrait');
     void animate(portrait, [{ transform: 'translateY(60px) scale(.8)', opacity: 0 }, { transform: 'none', opacity: 1 }], { ms: 800, delay: 1500, ease: SOFT });
@@ -107,7 +126,7 @@ export async function bossDefeatMoment(t: Table): Promise<void> {
  * About 4 s, tap to skip. Mist gathers from the edges, silver threads weave into a crown, Lunaria rises,
  * Puff and Haze bob into their seats, then her line, the rule chips, and her music.
  */
-export function lunariaIntro(t: Table, line: string, fogged: boolean): Promise<void> {
+export function lunariaIntro(t: Table, line: string, fogged: boolean, guardian?: GuardianIntro): Promise<void> {
   return new Promise((resolve) => {
     fx('lunaria.intro');
     sfx('bossIntro');
@@ -146,11 +165,10 @@ export function lunariaIntro(t: Table, line: string, fogged: boolean): Promise<v
     const glow = h('div.bi-glow.li-glow');
     const title = h('h1.bi-title.li-title', { 'data-testid': 'boss-title' }, LUNARIA_TITLE);
     const said = h('p.bi-line.li-line', { 'data-testid': 'boss-line' }, line);
-    const chips = h('div.rule-chips.li-chips', null,
-      fogged ? h('span.rule-chip', { html: `${icon('wisp')}<span>Moonlit Fog — card counts are hidden.</span>` }) : null,
-      h('span.rule-chip', { html: `${icon('thorncrown')}<span>Thorned Crown — no one can add to Lunaria's groups.</span>` }),
-    );
-    overlay.append(h('div.bi-center', null, glow, portrait, title, said, chips));
+    const chips = ruleChips(fogged, BOTS.lunaria.name);
+    const kicker = guardian ? h('small.bi-kicker', { 'data-testid': 'guardian-kicker' }, guardian.kicker) : null;
+    overlay.append(h('div.bi-center', null, glow, portrait, kicker, title, said, chips));
+    if (kicker) void animate(kicker, [{ opacity: 0 }, { opacity: 1 }], { ms: 400, delay: 1800 });
     fx('lunaria.portrait');
     void animate(portrait, [{ transform: 'translateY(60px) scale(.8)', opacity: 0 }, { transform: 'none', opacity: 1 }], { ms: 800, delay: 1300, ease: SOFT });
     void animate(glow, [{ opacity: 0, transform: 'scale(.5)' }, { opacity: 1, transform: 'scale(1)' }], { ms: 900, delay: 1300, ease: SOFT });

@@ -5,7 +5,7 @@ import { MUSIC, nextNotes, type Track } from './music.ts';
 import { SYNTH, type SoundId } from './sfx.ts';
 
 export { SOUND_IDS, type SoundId } from './sfx.ts';
-export type MusicId = 'map' | 'waltz' | 'musicbox' | 'boss' | 'gladeFog' | 'gladeLift' | 'moonwaltz' | 'lunaria';
+export type MusicId = 'map' | 'waltz' | 'musicbox' | 'boss' | 'gladeFog' | 'gladeLift' | 'moonwaltz' | 'lunaria' | 'tower';
 
 let ctx: AudioContext | null = null;
 let sfxBus: GainNode | null = null;
@@ -97,6 +97,10 @@ type Voice = { gain: GainNode; track: Track; bar: number; beatTime: number; time
 let current: MusicId | null = null;
 let voice: Voice | null = null;
 let tension: Voice | null = null;
+/** The Tower theme's extra layers, each on the theme's bar grid. */
+const TOWER_LAYERS = ['towerHarp', 'towerBox', 'towerPulse'] as const;
+let towerLayers: Voice[] = [];
+let towerLayerCount = 1;
 
 function startVoice(track: Track, startTime: number, level: number, fade: number): Voice {
   const c = ctx!;
@@ -153,7 +157,38 @@ export function playMusic(id: MusicId): void {
   if (!c || c.state !== 'running') { pendingStart = true; return; }
   if (voice) stopVoice(voice, CROSSFADE);
   if (tension && (previous !== id)) { stopVoice(tension, CROSSFADE); tension = null; }
+  for (const v of towerLayers) stopVoice(v, CROSSFADE);
+  towerLayers = [];
   voice = buffers.has(`music-${id}`) ? startFileVoice(`music-${id}`, 1, CROSSFADE) : startVoice(MUSIC[id], c.currentTime + 0.05, 1, CROSSFADE);
+  if (id === 'tower') syncTowerLayers();
+}
+
+/**
+ * The Tower theme has four layers (TOWER_SPEC.md §9.9): Tier 1 plays the first, and each higher tier adds one, until
+ * all four play from Tier 4.
+ */
+export function setMusicLayers(count: number): void {
+  const n = Math.max(1, Math.min(4, count));
+  if (__DEV__) eventLog.push({ kind: 'sound', name: `music.towerLayers${n}`, at: Date.now() });
+  towerLayerCount = n;
+  syncTowerLayers();
+}
+
+export function musicLayers(): number {
+  return towerLayerCount;
+}
+
+function syncTowerLayers(): void {
+  const c = ctx;
+  if (!c || c.state !== 'running' || !voice || current !== 'tower' || buffers.has('music-tower')) return;
+  const want = towerLayerCount - 1;
+  while (towerLayers.length < want) {
+    const id = TOWER_LAYERS[towerLayers.length];
+    const v = startVoice(MUSIC[id], voice.beatTime, 1, 2);
+    v.bar = voice.bar % MUSIC[id].bars;
+    towerLayers.push(v);
+  }
+  while (towerLayers.length > want) stopVoice(towerLayers.pop()!, CROSSFADE);
 }
 
 let pendingStart = false;

@@ -1,6 +1,6 @@
 // How to Play: the rules in plain, friendly language.
 import { phaseNumber, phaseSequence, phaseText } from '../../engine/phases.ts';
-import { gladeOpen } from '../../meta/progress.ts';
+import { crossroadsOpen, gladeOpen } from '../../meta/progress.ts';
 import { app, persist } from '../app.ts';
 import { cardEl, icon } from '../art.ts';
 import { h } from '../dom.ts';
@@ -27,6 +27,18 @@ function moonlitSection(sec: (title: string, ...body: (HTMLElement | string)[]) 
     sample([c(23, 2, 'rose'), c(24, 8, 'honey'), c(25, 8, 'moonstone'), c(26, 12, 'moss')]),
   );
   el.dataset.testid = 'moonlit-phases';
+  return el;
+}
+
+/** The Tower, in exactly the words of TOWER_SPEC.md §11.4. Shown once the Crossroads is open. */
+function towerSection(sec: (title: string, ...body: (HTMLElement | string)[]) => HTMLElement): HTMLElement {
+  const el = sec('The Tower',
+    'Climb as high as you can. Each floor is a short match of three phases, drawn at random from every phase in the game and played easiest first. Win the match to climb to the next floor.',
+    'You start each climb with three hearts. Lose a floor and you lose a heart, then try that floor again with new phases. When your last heart is gone, the climb ends.',
+    'Every tenth floor is a Guardian floor. The Guardian wears the Thorned Crown, so no one can add to their groups. Beat the Guardian to win back a heart.',
+    "Every ten floors the sky changes and the tables grow tougher. From Tier 4, the Moonlit Fog hides everyone's card count. Your best floor is kept forever.",
+  );
+  el.dataset.testid = 'tower-howto';
   return el;
 }
 
@@ -60,6 +72,7 @@ export function howToPlay(onClose: () => void): void {
         'A Skip makes someone miss their next turn. Discard it and choose who. Skips can\'t go in groups, and they can\'t be picked up.',
       ),
       gladeOpen(app.save) ? moonlitSection(sec) : null,
+      crossroadsOpen(app.save) ? towerSection(sec) : null,
       sec('Your turn',
         h('ol.steps', null,
           h('li', null, 'Draw one card, from the draw pile or the discard pile.'),

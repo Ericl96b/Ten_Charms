@@ -4,6 +4,8 @@ export const SOUND_IDS = [
   'oppLayDown', 'hit', 'skipOnHer', 'skipPlayed', 'goOutHer', 'goOutBot', 'tally', 'phaseAdvance', 'invalid', 'reshuffle',
   'star', 'unlock', 'charm', 'victory', 'defeat', 'bossIntro',
   'fogLift', 'thornBlock', 'wispPuff', 'pageTurn',
+  // The Tower (TOWER_SPEC.md §9.9).
+  'towerDeal', 'towerFlip', 'liftRatchet', 'liftBell', 'cloudSwell', 'tierFlourish', 'heartCrack', 'heartBack', 'newBest', 'fairyTwinkle',
 ] as const;
 
 export type SoundId = (typeof SOUND_IDS)[number];
@@ -158,4 +160,19 @@ export const SYNTH: Record<SoundId, Synth> = {
   wispPuff(c, o, t, p) { swish(c, o, t, 900 * p, 0.12, 0.05, 0.6, 0.5); return 0.14; },
   /** A light page-turn. */
   pageTurn(c, o, t, p) { swish(c, o, t, 2600 * p, 0.16, 0.1, 0.8, 1.8); swish(c, o, t + 0.08, 4200 * p, 0.08, 0.05, 1.2); return 0.25; },
+  // A soft whoosh as the floor's cards fly in, and a small chime as each turns over.
+  towerDeal(c, o, t, p) { swish(c, o, t, 1900 * p, 0.28, 0.1, 0.8, 1.7); return 0.3; },
+  towerFlip(c, o, t, p) { swish(c, o, t, 3400 * p, 0.05, 0.06, 1.2); bell(c, o, t + 0.03, NOTE.E6 * p, 0.35, 0.12); return 0.4; },
+  // The lift's dial: soft ratchet ticks, then a bell at the top.
+  liftRatchet(c, o, t, p) { for (let i = 0; i < 6; i++) tone(c, o, t + i * 0.12, 1700 * p, 0.018, 0.05, 'triangle'); return 0.75; },
+  liftBell(c, o, t, p) { bell(c, o, t, NOTE.G5 * p, 1.1, 0.2); bell(c, o, t + 0.02, NOTE.C6 * p, 0.9, 0.08); return 1.1; },
+  // An airy swell through the cloud bank, and a short sparkling flourish with the tier banner.
+  cloudSwell(c, o, t, p) { swish(c, o, t, 900 * p, 1.2, 0.12, 0.5, 2.4); return 1.25; },
+  tierFlourish(c, o, t, p) { [NOTE.C6, NOTE.E6, NOTE.G6].forEach((f, i) => bell(c, o, t + i * 0.09, f * p, 0.45, 0.13)); return 0.7; },
+  // A soft glassy crack, and a warm rising chime.
+  heartCrack(c, o, t, p) { tone(c, o, t, 2900 * p, 0.05, 0.12, 'triangle'); swish(c, o, t, 5200 * p, 0.12, 0.08, 2.2, 0.5); slide(c, o, t + 0.06, 900 * p, 520 * p, 0.35, 0.08); return 0.45; },
+  heartBack(c, o, t, p) { [NOTE.C5, NOTE.E5, NOTE.G5, NOTE.C6].forEach((f, i) => tone(c, o, t + i * 0.08, f * p, 0.35, 0.12)); return 0.65; },
+  // A short celebratory fanfare for a new best, and a soft twinkle as the fairy lights climb.
+  newBest(c, o, t, p) { [NOTE.G5, NOTE.C6, NOTE.E6, NOTE.G6].forEach((f, i) => bell(c, o, t + i * 0.12, f * p, 0.6, 0.15)); tone(c, o, t + 0.48, NOTE.C5 * p, 0.7, 0.1, 'triangle'); return 1.2; },
+  fairyTwinkle(c, o, t, p) { for (let i = 0; i < 5; i++) bell(c, o, t + i * 0.13, (NOTE.E6 + i * 90) * p, 0.25, 0.05); return 0.8; },
 };

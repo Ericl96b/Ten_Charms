@@ -105,10 +105,11 @@ test('glade: the reveal plays once, then the map switcher remembers the map', as
   await page.waitForSelector('[data-testid="splash"]', { state: 'detached', timeout: 15_000 });
   await expect(page.locator('[data-map="glade"]')).toHaveCount(1);
   await expect(page.locator('[data-testid="reveal-banner"]')).toHaveCount(0);
-  await expect(page.locator('[data-testid="total-stars"]')).toContainText('0 / 21');
+  // The star counter went in the Tower update (TOWER_SPEC.md §2.2); each map's own option shows its stars.
+  await expect(page.locator('[data-testid="map-glade"]')).toContainText('0/21');
+  await expect(page.locator('[data-testid="total-stars"]')).toHaveCount(0);
   await tap(page, '[data-testid="map-garden"]');
   await page.waitForSelector('[data-map="garden"]');
-  await expect(page.locator('[data-testid="total-stars"]')).toContainText('12 / 15');
   await expect(page.locator('[data-testid="map-garden"]')).toContainText('12/15');
   await expect(page.locator('[data-testid="map-glade"]')).toContainText('0/21');
   await keepLog();
@@ -500,7 +501,7 @@ test('glade: both paths lead through the Old Stones to the boss, and the fog lif
 test('glade: Sunrise Garden, the Glade Charms heading, How to Play and Stats', async ({ page }) => {
   await openApp(page);
   await gladeSave(page, ['g1', 'a1', 'a2', 'b1', 'b2', 'g2', 'g3'], { fogLifted: true, stars: { g1: 3, a1: 3, a2: 3, b1: 3, b2: 3, g2: 3, g3: 3 } });
-  await expect(page.locator('[data-testid="total-stars"]')).toContainText('21 / 21');
+  await expect(page.locator('[data-testid="map-glade"]')).toContainText('21/21');
   await tap(page, '[data-testid="nav-collection"]');
   await tap(page, '[data-testid="tab-cloth"]');
   await expect(page.locator('[data-testid="item-sunrise-garden"]')).toHaveAttribute('data-unlocked', '1');

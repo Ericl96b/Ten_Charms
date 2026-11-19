@@ -10,6 +10,12 @@ import { matchPhases } from '../engine/phases.ts';
 import { applyMotionVars, eventLog, motion } from '../ui/fx/motion.ts';
 import { journey, mapMusic, resumeMatch, startFromMode } from '../ui/screens/journey.ts';
 import { activeTable } from '../ui/table/table.ts';
+import { drawAttempt, freshRun } from '../meta/tower.ts';
+import type { TowerAttempt } from '../meta/save.ts';
+import { freezeAmbientForTests } from '../ui/tower/ambient.ts';
+import { openTowerHome } from '../ui/screens/tower.ts';
+import { prepareRunOver, runOver } from '../ui/screens/tower-end.ts';
+import * as liftScenes from '../ui/tower/scenes.ts';
 
 type Dice = () => number;
 
@@ -34,7 +40,7 @@ function autoStep(): void {
   autoTimer = window.setTimeout(autoStep, 4);
   if (tapId('coach-skip')) return;
   if (tapId('reveal') || tapId('reveal-charm')) return;
-  if (q('[data-testid="continue"]') || q('[data-testid="back-map"]')) { autoOn = false; return; }
+  if (q('[data-testid="continue"]') || q('[data-testid="back-map"]') || q('[data-testid="floor-result"]')) { autoOn = false; return; }
   const t = activeTable;
   if (!t || t.animatingBot) return;
   if (t.busy > 0) return;
@@ -128,6 +134,40 @@ export function installDevHooks(): void {
     /** Holds every drifting cloud at its starting place, so screenshots of fogged screens repeat exactly. */
     freezeFog: () => freezeFogForTests(),
     autoRunning: () => autoOn,
+    /**
+     * Sets up the Tower for a test: the floor, hearts and best, and optionally the next draw (by seed, or given
+     * outright). `climb: false` leaves no climb under way.
+     */
+    towerSet(opts: { floor?: number; hearts?: number; best?: number; climb?: boolean; seed?: string; draw?: Partial<TowerAttempt>; revealSeen?: boolean }) {
+      const t = app.save.tower;
+      if (opts.best !== undefined) t.best = opts.best;
+      if (opts.revealSeen !== undefined) t.revealSeen = opts.revealSeen;
+      if (opts.climb === false) t.climb = null;
+      else if (opts.floor !== undefined || opts.hearts !== undefined || opts.seed || opts.draw || opts.climb) {
+        const floor = opts.floor ?? t.climb?.floor ?? 1;
+        t.climb = { floor, hearts: opts.hearts ?? t.climb?.hearts ?? 3, run: t.climb?.run ?? freshRun(), attempt: null };
+        if (opts.seed || opts.draw) {
+          const base = drawAttempt(opts.seed ?? 'ab'.repeat(16), floor);
+          t.climb.attempt = { ...base, ...(opts.draw ?? {}) };
+        }
+      }
+      persist();
+    },
+    towerHome: () => openTowerHome(),
+    /** Ends the Tower floor at the table now, won or lost, through the real end of the match. */
+    forceFloor(won: boolean) {
+      const t = activeTable!;
+      t.game.winners = won ? [0] : [1];
+      t.game.stage = 'matchOver';
+      void t.endMatch();
+    },
+    runOver: (end: Parameters<typeof runOver>[0]) => runOver(end),
+    prepareRunOver: () => prepareRunOver().then(() => undefined),
+    climbScene: (from: number, to: number) => liftScenes.climbScene(from, to),
+    lastLift: () => liftScenes.lastLift,
+    prepareClimb: (from: number, to: number) => liftScenes.prepareClimb(from, to).then(() => undefined),
+    /** Holds every Tower and Crossroads ambient loop, and the fog, at one moment, so screenshots repeat exactly. */
+    freezeAmbient(ms = 0) { freezeAmbientForTests(ms); freezeFogForTests(); },
     endMatchNow(winnerSeat: number) {
       const t = activeTable!;
       const g = t.game;

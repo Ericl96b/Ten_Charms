@@ -4,7 +4,7 @@ import { BOTS, GLADE_STOPS, LINES, STOPS, TYPE_LABEL, UNLOCKABLES, gladeStop, ty
 import { createGame } from '../../engine/game.ts';
 import { PHASES } from '../../engine/phases.ts';
 import type { GameEvent, MatchRules, Variant } from '../../engine/types.ts';
-import { currentStop, gladeFogged, gladeOpen, gladeStars, isUnlocked, newTracker, stopOpen, totalStars } from '../../meta/progress.ts';
+import { crossroadsOpen, currentStop, gladeFogged, gladeOpen, gladeStars, isUnlocked, newTracker, stopOpen, totalStars } from '../../meta/progress.ts';
 import type { MatchMode, SavedMatch } from '../../meta/save.ts';
 import { app, persist, show } from '../app.ts';
 import { icon, portraitEl } from '../art.ts';
@@ -19,6 +19,8 @@ import { freePlayScreen } from './freeplay.ts';
 import { GLADE_SPOTS, gladeReward, gladeView } from './glade.ts';
 import { settingsScreen } from './settings.ts';
 import { statsScreen } from './stats.ts';
+import { crossroadsScreen } from './crossroads.ts';
+import { towerMusic } from './tower.ts';
 
 const SPOTS = [{ x: 12.5, y: 57 }, { x: 26, y: 45 }, { x: 12.5, y: 33 }, { x: 26, y: 21 }, { x: 19.5, y: 0.5 }];
 /** How far the current stop's pink halo reaches past its portrait, in rem. */
@@ -58,26 +60,42 @@ export function starsRow(n: number): HTMLElement {
   return row;
 }
 
-/** The home screen: whichever map she last viewed, after the one-time reveal of the Glade. */
+/** The Crossroads' one-time reveal is owed: it waits until the fog-lift scene, which comes first, has played. */
+function crossroadsRevealDue(): boolean {
+  const save = app.save;
+  return crossroadsOpen(save) && !save.tower.revealSeen && !save.glade.liftScenePending && save.glade.revealSeen;
+}
+
+/** The home screen: whichever place she last viewed, after the one-time reveals of the Glade and the Crossroads. */
 export function journey(): HTMLElement {
   const save = app.save;
   if (gladeOpen(save) && !save.glade.revealSeen) return gardenMap(true);
+  if (crossroadsRevealDue()) return gladeMap(true);
+  if (crossroadsOpen(save) && save.glade.lastMap === 'crossroads') return crossroadsScreen();
   return gladeOpen(save) && save.glade.lastMap === 'glade' ? gladeMap() : gardenMap(false);
 }
 
-/** The music for the map being shown. */
+/** The music for the place being shown. */
 export function mapMusic(): MusicId {
   const save = app.save;
+  if (crossroadsOpen(save) && save.glade.lastMap === 'crossroads' && save.tower.revealSeen) return towerMusic();
   if (!gladeOpen(save) || save.glade.lastMap !== 'glade' || !save.glade.revealSeen) return 'map';
   return gladeFogged(save) ? 'gladeFog' : 'gladeLift';
 }
 
-/** The star counter, the two-map switcher, and the gear. */
-function mapTop(which: 'garden' | 'glade'): HTMLElement {
+export type Place = 'garden' | 'glade' | 'crossroads';
+
+/**
+ * The three-part switcher and the gear. Each map's own option shows its stars, so there's no star counter beside it;
+ * the Crossroads is an icon-only signpost at the right end.
+ */
+export function mapTop(which: Place): HTMLElement {
   const save = app.save;
   const open = gladeOpen(save);
-  const pick = (id: 'garden' | 'glade', el: HTMLElement) => {
+  const xrOpen = crossroadsOpen(save);
+  const pick = (id: Place, el: HTMLElement) => {
     if (id === 'glade' && !open) { tooltip(el, 'Beat Nightshade to unlock.'); return; }
+    if (id === 'crossroads' && !xrOpen) { tooltip(el, 'Beat Lady Lunaria to unlock.'); return; }
     if (id === which) return;
     fx('map.switch');
     sfx('pageTurn');
@@ -85,6 +103,15 @@ function mapTop(which: 'garden' | 'glade'): HTMLElement {
     persist();
     show(journey(), mapMusic(), 'none');
   };
+  const signpost: HTMLElement = h('button.map-opt.map-sign', {
+    class: `${which === 'crossroads' ? 'on' : ''} ${xrOpen ? '' : 'locked'}`,
+    'data-testid': 'map-crossroads', 'aria-pressed': which === 'crossroads' ? 'true' : 'false',
+    'aria-label': xrOpen ? 'The Crossroads' : 'The Crossroads, locked. Beat Lady Lunaria to unlock.',
+    onclick: () => pick('crossroads', signpost),
+  },
+    h('span.sign-icon', { html: icon('signpost') }),
+    xrOpen ? null : h('span.sign-lock', { html: icon('lock') }),
+  );
   const option = (id: 'garden' | 'glade', name: string, stars: number, total: number) => {
     const locked = id === 'glade' && !open;
     const el: HTMLElement = h('button.map-opt', {
@@ -100,12 +127,11 @@ function mapTop(which: 'garden' | 'glade'): HTMLElement {
     );
     return el;
   };
-  const shown = which === 'glade' ? `${gladeStars(save)} / 21` : `${totalStars(save)} / 15`;
-  return h('div.map-top', null,
-    h('div.star-pill', { 'data-testid': 'total-stars', html: `${icon('star')}<span>${shown}</span>` }),
+  return h('div.map-top', { 'data-testid': 'map-top' },
     h('div.map-switch', { 'data-testid': 'map-switch', role: 'group', 'aria-label': 'Map' },
       option('garden', 'Rose Garden', totalStars(save), 15),
       option('glade', 'Moonlit Glade', gladeStars(save), 21),
+      signpost,
     ),
     h('button.round-btn', { 'aria-label': 'Settings', html: icon('settings'), onclick: () => settingsScreen(false), 'data-testid': 'settings' }),
   );
@@ -280,7 +306,7 @@ function bush(x: number, y: number): HTMLElement {
 
 /* ---------- The Moonlit Glade ---------- */
 
-function gladeMap(): HTMLElement {
+function gladeMap(revealCrossroads = false): HTMLElement {
   const save = app.save;
   const fogged = gladeFogged(save);
   const view = gladeView(gladeIntro, (id, node) => {
@@ -294,8 +320,15 @@ function gladeMap(): HTMLElement {
     bottomNav('journey'),
   );
   app.onLeave = () => view.leave();
+  if (revealCrossroads) {
+    // Saved first, so a force-quit partway through can never replay it.
+    save.tower.revealSeen = true;
+    save.glade.lastMap = 'crossroads';
+    persist();
+  }
   requestAnimationFrame(() => {
     view.ready(scroller);
+    if (revealCrossroads) void revealTheCrossroads(root, scroller);
     if (save.glade.liftScenePending) {
       // Cleared before it plays, so it can never play twice.
       save.glade.liftScenePending = false;
@@ -344,6 +377,39 @@ async function revealGlade(root: HTMLElement, scroller: HTMLElement): Promise<vo
   after.remove();
 }
 
+/**
+ * The Crossroads' one-time reveal: the Glade's path runs on past Lunaria's stop into soft pink mist, the view glides up
+ * into it, and lands on the Crossroads, where the Tower card's Enter button pulses twice. About 4 s; a tap skips it.
+ */
+async function revealTheCrossroads(root: HTMLElement, scroller: HTMLElement): Promise<void> {
+  fx('crossroads.reveal');
+  let skipped = false;
+  const veil = h('div.reveal-veil.pink', { 'data-testid': 'xr-reveal-veil' });
+  const banner = h('div.reveal-banner', { 'data-testid': 'xr-reveal-banner' }, 'Two paths lie ahead…');
+  const shield = h('button.scene-skip', { 'aria-label': 'Skip', 'data-testid': 'xr-reveal-skip', onclick: () => { skipped = true; fx('crossroads.revealSkip'); } });
+  const inner = scroller.firstElementChild as HTMLElement;
+  const path = h('div.reveal-path.xr', { html: '<svg viewBox="0 0 120 220" aria-hidden="true"><path d="M60 220C60 180 80 150 70 110S40 50 60 0" fill="none" stroke="#FFF8F4" stroke-width="30" stroke-linecap="round"/><path d="M60 220C60 180 80 150 70 110S40 50 60 0" fill="none" stroke="#EBA9BC" stroke-width="3" stroke-dasharray="4 11" stroke-linecap="round"/></svg>' });
+  inner.append(path);
+  root.append(veil, banner, shield);
+  const until = (ms: number) => Promise.race([wait(motion.reduced ? Math.min(ms, 300) : ms), new Promise<void>((r) => { const t = () => (skipped ? r() : setTimeout(t, 40)); t(); })]);
+  scroller.scrollTop = 0;
+  void animate(path, [{ opacity: 0, transform: 'translateY(2rem)' }, { opacity: 1, transform: 'none' }], { ms: 700, ease: SOFT, ambient: true });
+  void animate(veil, [{ opacity: 0 }, { opacity: 0.55 }], { ms: 900, ease: SOFT, ambient: true });
+  void animate(banner, [{ opacity: 0, transform: 'translate(-50%, 1rem)' }, { opacity: 1, transform: 'translate(-50%, 0)' }], { ms: 500, ease: SOFT, delay: 300, ambient: true });
+  await until(1600);
+  if (!motion.reduced && !skipped) {
+    void animate(inner, [{ transform: 'none' }, { transform: 'translateY(30rem)' }], { ms: 1600, ease: 'ease-in-out', fill: 'forwards', ambient: true });
+  }
+  void animate(veil, [{ opacity: 0.55 }, { opacity: 1 }], { ms: skipped ? 120 : 1500, ease: 'ease-in', fill: 'forwards', ambient: true });
+  await until(1600);
+  const next = crossroadsScreen({ pulseEnter: true });
+  show(next, mapMusic(), 'none');
+  const after = h('div.reveal-veil.pink.out');
+  next.append(after);
+  await animate(after, [{ opacity: 1 }, { opacity: 0 }], { ms: motion.reduced ? 200 : 700, ease: SOFT, ambient: true });
+  after.remove();
+}
+
 /** The Match Intro for a Glade stop. */
 export function gladeIntro(id: GladeStopId): void {
   const stop = gladeStop(id);
@@ -387,10 +453,18 @@ export function isLunariaBoss(match: SavedMatch): boolean {
   return match.mode.kind === 'glade' && match.mode.stop === 'g3';
 }
 
-/** The music for a table. */
+/** A Tower Guardian floor's Guardian, or null for any other table. */
+export function towerGuardian(match: SavedMatch): 'nightshade' | 'lunaria' | null {
+  if (match.mode.kind !== 'tower' || match.mode.floor % 10 !== 0) return null;
+  return Math.ceil(match.mode.floor / 10) % 2 === 1 ? 'nightshade' : 'lunaria';
+}
+
+/** The music for a table. A Tower Guardian floor plays that boss's music; every other floor her chosen music. */
 export function tableMusic(match: SavedMatch): MusicId {
   if (match.boss) return 'boss';
   if (isLunariaBoss(match)) return 'lunaria';
+  const g = towerGuardian(match);
+  if (g) return g === 'nightshade' ? 'boss' : 'lunaria';
   const m = app.save.equipped.music;
   return m === 'music-box' ? 'musicbox' : m === 'moonlight-waltz' ? 'moonwaltz' : 'waltz';
 }
@@ -424,16 +498,20 @@ export function matchIntro(index: number): void {
   ));
 }
 
+/** What a Tower floor brings to its match: its own list, its rules, and the seed it was drawn with. */
+export type FloorSetup = { phases: number[]; rules: MatchRules; seed: string };
+
 /** Starts a brand-new match. */
-export function startFromMode(mode: MatchMode, lineup: BotId[], variant: Variant, back: string, cloth: string, seed?: string, botSeed?: string): void {
+export function startFromMode(mode: MatchMode, lineup: BotId[], variant: Variant, back: string, cloth: string, seed?: string, botSeed?: string, floor?: FloorSetup): void {
   closeAllSheets();
   const crown = lineup.indexOf('lunaria');
-  // The fog covers Glade campaign matches until the boss falls. The crown goes wherever Lunaria plays.
-  const rules: MatchRules = {
+  // The fog covers Glade campaign matches until the boss falls. The crown goes wherever Lunaria plays. A Tower floor
+  // brings its own rules: the fog by tier, and the crown on the Guardian, whoever it is.
+  const rules: MatchRules = floor ? { ...floor.rules } : {
     ...(mode.kind === 'glade' && gladeFogged(app.save) ? { fog: true } : {}),
     ...(crown >= 0 ? { crownSeat: crown + 1, crownName: BOTS.lunaria.name } : {}),
   };
-  const { state, events } = createGame({ playerCount: lineup.length + 1, variant, seed, rules: Object.keys(rules).length > 0 ? rules : undefined });
+  const { state, events } = createGame({ playerCount: lineup.length + 1, variant, seed: seed ?? floor?.seed, rules: Object.keys(rules).length > 0 ? rules : undefined, phases: floor?.phases });
   const boss = mode.kind === 'campaign' && mode.stop === 4;
   const match: SavedMatch = {
     game: state,
@@ -456,12 +534,19 @@ export function startFromMode(mode: MatchMode, lineup: BotId[], variant: Variant
 
 async function openTable(match: SavedMatch, events: GameEvent[]): Promise<void> {
   const table = new Table(match, true);
-  const intro = match.boss || isLunariaBoss(match);
+  const guardian = towerGuardian(match);
+  const intro = match.boss || isLunariaBoss(match) || guardian !== null;
   const root = table.mount();
   show(root, intro ? null : tableMusic(match));
   setFxLayer(table.fxEl);
   if (match.boss) await bossIntro(root);
   if (isLunariaBoss(match)) await lunariaIntro(table, gladeFogged(app.save) ? LINES.lunaria.intro! : LINES.lunaria.introLifted!, match.game.rules?.fog === true);
+  if (guardian && match.mode.kind === 'tower') {
+    // The Guardian's existing intro, with "Guardian of Floor N" above the name line and the wisps left out.
+    const card = { kicker: `Guardian of Floor ${match.mode.floor}`, fogged: match.game.rules?.fog === true, crownName: BOTS[guardian].name };
+    if (guardian === 'nightshade') await bossIntro(root, card);
+    else await lunariaIntro(table, LINES.lunaria.introLifted!, card.fogged, card);
+  }
   table.start(events);
 }
 

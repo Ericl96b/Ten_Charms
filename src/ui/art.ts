@@ -40,6 +40,10 @@ const ICONS: Record<string, string> = {
   crown: path('M3 18 4.500 7l4.500 5 3-7 3 7 4.500-5L21 18Z') + path('M3 19.500h18v1.500H3Z'),
   /** The Thorned Crown: thorn points with rosebuds between them. */
   thorncrown: path('M3 19h18v2H3ZM3 18 4 9l3 4 2-7 3 6 3-6 2 7 3-4 1 9Z') + '<circle cx="9.500" cy="14" r="1.300" fill="#E8789A"/><circle cx="14.500" cy="14" r="1.300" fill="#E8789A"/>',
+  // The Crossroads: one post, two arrow boards.
+  signpost: path('M12 3v18M8.500 21h7', STROKE) + path('M5.500 5h10l2.500 2.500-2.500 2.500h-10ZM18.500 12.500h-10L6 15l2.500 2.500h10Z', STROKE),
+  flag: path('M6 21V3.500', STROKE) + path('M6.500 4h11l-2.500 3.500 2.500 3.500h-11Z', 'fill="#E8789A"'),
+  arrowUp: path('M12 19V5M6 11l6-6 6 6', STROKE),
 };
 
 export function icon(name: string, cls = ''): string {

@@ -64,7 +64,9 @@ writeFileSync('test-results/rows.log', rows.join(''));
 
 // Report only (Change Request 04 §6): fails only if the measurement is missing for a test size.
 step('parity-groups', ['scripts/parity-report.mjs']);
-step('images', ['scripts/compare-shots.mjs']);
+// The parts of existing screens this branch may change, and only those (scripts/allowed-diffs.json).
+const allowedDiffs = existsSync('scripts/allowed-diffs.json') ? JSON.parse(readFileSync('scripts/allowed-diffs.json', 'utf8')).tags.join(',') : '';
+step('images', ['scripts/compare-shots.mjs', ...(allowedDiffs ? [allowedDiffs] : [])]);
 step('inventory', ['scripts/test-inventory.ts', 'check', ...STAGES.map((stage) => `${OUT}/${stage}.json`)]);
 
 const failed = results.filter((r) => !r.ok);

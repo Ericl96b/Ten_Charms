@@ -59,6 +59,12 @@ const MOON_WALTZ_PLAN = [
   ...repeat(['Bm', 'G', 'D', 'A'], 2), ...repeat(['G', 'Em', 'A', 'D'], 2),
 ];
 
+/** The Tower's theme: bright music box and harp, 52 bars, a little over two minutes before it loops. */
+const TOWER_PLAN = [
+  ...repeat(['C', 'G', 'Am', 'F'], 4), ...repeat(['F', 'C', 'Dm', 'G'], 2), ...repeat(['Am', 'F', 'C', 'G'], 2),
+  ...repeat(['C', 'Em', 'F', 'G'], 2), ...repeat(['F', 'G', 'C', 'C'], 2), ...['Dm', 'G', 'C', 'C'],
+];
+
 export const MUSIC = {
   map: track(88, 4, MAP_PLAN, MAJOR, 'box', 'harp', 0.8),
   waltz: track(100, 3, WALTZ_PLAN, MAJOR, 'harp', 'harp', 0.75),
@@ -72,6 +78,12 @@ export const MUSIC = {
   moonwaltz: track(96, 3, MOON_WALTZ_PLAN, MAJOR, 'box', 'harp', 0.75),
   /** Shimmering and minor-leaning, never dark. It shares the boss chords and bars, so the tension layer fits it. */
   lunaria: track(92, 4, BOSS_PLAN, MINOR, 'box', 'harp', 0.7),
+  /** The Tower and the Crossroads (TOWER_SPEC.md §9.9). Its layers are added by tier. */
+  tower: track(96, 4, TOWER_PLAN, MAJOR, 'box', 'harp', 0.8),
+  /** The Tower theme's added layers, on its bar grid: a harp line, a second music box, and a soft pulse. */
+  towerHarp: track(96, 4, TOWER_PLAN, MAJOR, 'harp', 'harp', 0.42),
+  towerBox: track(96, 4, TOWER_PLAN, MAJOR, 'box', 'box', 0.34),
+  towerPulse: track(96, 4, TOWER_PLAN, MAJOR, 'pulse', 'pulse', 0.3, true),
 } as const;
 
 const midi = (m: number) => 440 * 2 ** ((m - 69) / 12);

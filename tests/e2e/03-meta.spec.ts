@@ -68,7 +68,8 @@ test('7. the whole campaign: stars, unlocks, Charms, Free Play, variants and the
   let s = await save();
   expect(s.campaign.stars[0]).toBe(3);
   expect(s.stats.won).toBe(1);
-  await expect(page.locator('[data-testid="total-stars"]')).toContainText('3 / 15');
+  // The star counter went in the Tower update (TOWER_SPEC.md §2.2); the Rose Garden's own option shows its stars.
+  await expect(page.locator('[data-testid="map-garden"]')).toContainText('3/15');
   await expect(page.locator('[data-testid="nav-free"]')).not.toContainText('Beat Pip');
 
   await tap(page, '[data-testid="nav-collection"]');
@@ -229,7 +230,7 @@ test('8. backup: export, reset, import restores identical progress', async ({ pa
   await page.waitForTimeout(400);
   const after = await page.evaluate(() => (window as any).__TC__.getSave());
   expect({ ...after, match: null }).toEqual({ ...before, match: null });
-  await expect(page.locator('[data-testid="total-stars"]')).toContainText('5 / 15');
+  await expect(page.locator('[data-testid="map-garden"]')).toContainText('5/15');
 });
 
 test('corrupt save data falls back to the backup, and never crashes', async ({ page }) => {

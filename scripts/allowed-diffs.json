@@ -1,0 +1,4 @@
+{
+  "why": "TOWER_SPEC.md §0.4: a map's top bar (the star counter removed, the Crossroads added to the switcher), and the Tower's new sections in Stats and How to Play. Every other screen and element must match the baseline exactly.",
+  "tags": ["map-topbar", "stats-tower", "howto-tower"]
+}

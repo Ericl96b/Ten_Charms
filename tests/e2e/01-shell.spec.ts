@@ -75,6 +75,8 @@ test('production build has no developer hooks and no outside network calls', asy
   expect(js).not.toContain('freezeFog');
   // So is the simulation's random-discard Hoot (scripts/refine/random-discard-bot.ts).
   expect(js).not.toContain('sim-only-hoot-random-discards');
+  // And the Tower's: setting a climb up, forcing a floor's result, and holding the ambient motion still.
+  for (const hook of ['towerSet', 'forceFloor', 'freezeAmbient']) expect(js).not.toContain(hook);
   const css = await (await request.get('http://localhost:4175/app.css')).text();
   expect(js + css).not.toMatch(/fonts\.googleapis|https?:\/\/(?!www\.w3\.org)/);
 });

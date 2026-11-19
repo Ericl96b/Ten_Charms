@@ -24,6 +24,7 @@ npm run preview
 | `npm run sim` | Headless simulation on all cores; rewrites `SIMULATION.md` (about a minute, or instant if nothing that affects it changed) |
 | `node scripts/simulate-map2.ts` | The Moonlit Glade's simulation: phase difficulty, match length, a stress test and every stop's win rate and star thresholds. Rewrites `SIMULATION_MAP2.md` (about 25 minutes, cached like `npm run sim`) |
 | `node scripts/refine/simulate-refine.ts` | The Moonlit Phases refinement: measures 39 phases, checks the bots against an independent judge, searches every 10-phase list and confirms the finalists on fresh seeds. Rewrites `SIMULATION_MOONLIT_REFINEMENT.md` (several hours; each measured piece is cached in `test-results/sim-cache/refine/`, so a rerun only redoes what changed). `--smoke` writes a small, never-final run to `test-results/` |
+| `node scripts/simulate-tower.ts` | The Tower's simulation: floor win rates per tier, tuning within the allowed levers, whole climbs, floor lengths, bot strength and a stress test. Rewrites `SIMULATION_TOWER.md` and caches each measured piece in `test-results/sim-cache/tower/`. `--smoke` writes a small, never-final run to `test-results/` |
 | `npm run gate` | **Everything, required before committing** (about 20 minutes). `TESTING.md` has the targeted commands for iterating |
 | `npm run test:e2e` | Browser suite one test at a time, about 40 minutes (WebKit at 375×667, 390×844, 440×956; Chromium with an Android user agent at 412×892). Run both builds first |
 | `node scripts/compare-shots.mjs [tags]` | Compares the screenshots from the last browser run with a saved baseline in `qa-screenshots/cr01/baseline/`. Tags name what may differ: `settings-icon`, `map-current`, `table` |
@@ -35,10 +36,12 @@ npm run preview
 | `src/engine/` | Rules engine: deterministic, no presentation. `observation.ts` is all a bot may see |
 | `src/bots/` | The bot profiles (the Rose Garden's five, the Moonlit Glade's seven, and Lunaria's two wisps) and hand evaluation. A test proves this code cannot reach hidden state, or any card count under the fog |
 | `src/sim/` | Headless match driver |
-| `src/meta/` | Saves, backup codes, progression, Charms, stats |
+| `src/meta/` | Saves, backup codes, progression, Charms, stats. `tower.ts` is the Tower: tiers, Guardians, each floor's draw, and the climb |
 | `src/content.ts` | Title, roster, dialogue, stops, unlocks, Charms |
 | `src/ui/` | Table, set pieces, screens, audio, styles. `screens/glade.ts` is the Moonlit Glade's map and `fx/fog.ts` its drifting clouds |
 | `src/dev/` | Test hooks, compiled out of production builds |
+| `src/ui/tower/` | The Tower's art, ambient life, hearts and the lift between floors. `screens/crossroads.ts`, `screens/tower.ts` and `screens/tower-end.ts` are its screens |
+| `public/art/tower-kit.json` | The tower's vector pieces, lifted once from the approved reference art; the game only chooses and places them. Loaded on the first visit to the Crossroads |
 | `assets/portraits/`, `assets/audio/` | Drop-in art and sound |
 
 ## Major choices

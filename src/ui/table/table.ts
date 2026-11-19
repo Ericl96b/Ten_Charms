@@ -4,7 +4,7 @@ import { simpleUnseen, tally, evaluate, usedCards } from '../../bots/analysis.ts
 import { BOTS, LINES, type LineTrigger } from '../../content.ts';
 import { eligibleSkipTargets, nextRound, step } from '../../engine/game.ts';
 import { observe } from '../../engine/observation.ts';
-import { PHASES, checkGroup, checkHit, findArrangement, groupLabel, matchPhases, phaseNumber, phaseText } from '../../engine/phases.ts';
+import { PHASES, checkGroup, checkHit, displayPhase, findArrangement, groupLabel, matchPhases, phaseText } from '../../engine/phases.ts';
 import { createRng } from '../../engine/rng.ts';
 import type { Action, Card, GameEvent, GameState, LaidGroup } from '../../engine/types.ts';
 import { applyEvents, finishMatch, type MatchSummary } from '../../meta/progress.ts';
@@ -21,7 +21,8 @@ import { bossDefeatMoment, lunariaDefeatMoment } from './boss.ts';
 import { reviewSheet, historySheet, showRoundEnd, showMatchEnd } from '../screens/end.ts';
 import { howToPlay } from '../screens/howto.ts';
 import { settingsScreen } from '../screens/settings.ts';
-import { isLunariaBoss, journey, mapMusic } from '../screens/journey.ts';
+import { isLunariaBoss, journey, mapMusic, towerGuardian } from '../screens/journey.ts';
+import { towerResult } from '../screens/tower-end.ts';
 import { Tutorial } from './tutorial.ts';
 
 const SPEED: Record<string, [number, number]> = { relaxed: [1600, 2400], normal: [900, 1400], brisk: [400, 700] };
@@ -305,7 +306,7 @@ export class Table {
       const seat = i + 1;
       const p = this.game.players[seat];
       const chip = this.chips[seat];
-      chip.querySelector('.chip-phase')!.textContent = p.phase === null ? 'Choosing' : `Ph ${phaseNumber(p.phase)}`;
+      chip.querySelector('.chip-phase')!.textContent = p.phase === null ? 'Choosing' : `Ph ${displayPhase(this.game, p.phase)}`;
       if (!this.fogged) {
         rollNumber(chip.querySelector('.chip-count') as HTMLElement, p.hand.length);
         chip.querySelector('.chip-cards')!.textContent = p.hand.length === 1 ? ' card' : ' cards';
@@ -409,7 +410,7 @@ export class Table {
       const name = seat === 0 ? 'Your' : `${BOTS[this.match.lineup[seat - 1]].name}'s`;
       const crowned = seat === this.crownSeat;
       const row = h('div.laid-row', { 'data-seat': seat },
-        h('span.laid-label', null, crowned ? h('i.label-crown', { 'data-testid': 'label-crown', html: icon('crown') }) : null, `${name} Phase ${p.phase === null ? '' : phaseNumber(p.phase)}`),
+        h('span.laid-label', null, crowned ? h('i.label-crown', { 'data-testid': 'label-crown', html: icon('crown') }) : null, `${name} Phase ${p.phase === null ? '' : displayPhase(this.game, p.phase)}`),
         h('div.laid-groups', null, groups.map((x) => this.groupEl(x))),
       );
       this.laidEl.append(row);
@@ -446,7 +447,7 @@ export class Table {
     const crowned = this.isCrowned(g);
     const el = h('button.group', {
       'data-group-id': g.id, 'data-testid': `group-${g.id}`,
-      'aria-label': `${name}, ${g.cards.length} cards${crowned ? ", Lunaria's, no one else can add to it" : ''}`,
+      'aria-label': `${name}, ${g.cards.length} cards${crowned ? `, ${this.crownName}'s, no one else can add to it` : ''}`,
       class: `${(g.type === 'run' || g.type === 'colorRun') && g.cards.length > 5 ? 'long' : ''} t-${g.type} ${crowned ? 'crowned' : ''}`,
     });
     for (const p of g.cards) el.append(cardEl(p.card, true));
@@ -467,7 +468,7 @@ export class Table {
       panel.dataset.sig = sig;
       clear(panel);
       panel.classList.toggle('compact', compact);
-      this.medal = h('div.medallion', { 'data-testid': 'medallion', 'aria-label': phase === null ? 'Choosing a phase' : `Phase ${phaseNumber(phase)}` }, h('span', null, phase === null ? '?' : phaseNumber(phase)));
+      this.medal = h('div.medallion', { 'data-testid': 'medallion', 'aria-label': phase === null ? 'Choosing a phase' : `Phase ${displayPhase(this.game, phase)}` }, h('span', null, phase === null ? '?' : displayPhase(this.game, phase)));
       const track = h('div.track', { 'aria-hidden': 'true' });
       for (const p of seq) {
         track.append(h('i', { class: me.completed.includes(p) || (me.laidDown && p === phase) ? 'done' : p === phase ? 'now' : '', 'data-p': p }));
@@ -630,7 +631,7 @@ export class Table {
       if (hittable) { label = 'Hit'; mode = 'hit'; active = my && g.stage === 'play' && !!sel; }
       else { label = 'Discard'; mode = 'discard'; active = my && g.stage === 'play' && !!sel; }
     } else {
-      label = me.phase === null ? 'Lay down' : `Lay down Phase ${phaseNumber(me.phase)}`;
+      label = me.phase === null ? 'Lay down' : `Lay down Phase ${displayPhase(this.game, me.phase)}`;
       active = my && g.stage === 'play' && this.allSlotsReady();
     }
     this.primaryBtn.dataset.mode = mode;
@@ -1077,15 +1078,23 @@ export class Table {
     this.hitOn(id, el!, e.clientX);
   }
 
-  /** Lunaria's groups refuse her cards: the thorns bristle, and Lunaria may say so once a round. */
+  /** The crown wearer's name, as the rules give it. */
+  get crownName(): string {
+    return this.game.rules?.crownName ?? 'Lunaria';
+  }
+
+  /**
+   * The crowned groups refuse her cards: the thorns bristle, and Lunaria may say so once a round. A Guardian with no
+   * such line (Nightshade in the Tower) says nothing.
+   */
   thornsSaidRound = -1;
   thornBlock(el: Element | null): void {
-    invalid(el, "No one can add to Lunaria's groups.");
+    invalid(el, `No one can add to ${this.crownName}'s groups.`);
     fx('crown.thornBlock');
     sfx('thornBlock');
     const thorns = el?.querySelector('.thorns');
     if (thorns && !motion.reduced) void animate(thorns, [{ transform: 'scale(1)' }, { transform: 'scale(1.08)', offset: 0.4 }, { transform: 'scale(1)' }], { ms: 250, ease: 'ease-out' });
-    if (this.crownSeat !== undefined && this.thornsSaidRound !== this.game.round) {
+    if (this.crownSeat !== undefined && this.match.lineup[this.crownSeat - 1] === 'lunaria' && this.thornsSaidRound !== this.game.round) {
       this.thornsSaidRound = this.game.round;
       this.say(this.crownSeat, 'humanHitsCrown', true);
     }
@@ -1146,7 +1155,7 @@ export class Table {
       const row = h('button.target', { class: off ? 'off' : '', 'data-testid': `target-${seat}`, 'aria-disabled': off ? 'true' : undefined },
         portraitEl(bot, 'small'),
         // In the fog the picker shows only who and which phase.
-        h('span.t-main', null, h('b', null, BOTS[bot].name), h('small', null, `Phase ${p.phase === null ? '' : phaseNumber(p.phase)}${this.fogged ? '' : ` · ${p.hand.length} cards`}${off ? ' · already skipped' : ''}`)),
+        h('span.t-main', null, h('b', null, BOTS[bot].name), h('small', null, `Phase ${p.phase === null ? '' : displayPhase(this.game, p.phase)}${this.fogged ? '' : ` · ${p.hand.length} cards`}${off ? ' · already skipped' : ''}`)),
       );
       row.addEventListener('click', () => {
         if (off) { invalid(row, 'That player is already being skipped.'); return; }
@@ -1451,7 +1460,7 @@ export class Table {
     const list = h('div.phase-choices', { 'data-testid': 'phase-choices' });
     const sheet = openSheet(list, { title: 'Choose your phase', dismissable: false });
     for (const p of open) {
-      const row = h('button.phase-choice', { 'data-testid': `choose-${p}` }, h('span.medallion.small', null, h('span', null, phaseNumber(p))), h('span', null, phaseText(p)));
+      const row = h('button.phase-choice', { 'data-testid': `choose-${p}` }, h('span.medallion.small', null, h('span', null, displayPhase(this.game, p))), h('span', null, phaseText(p)));
       row.addEventListener('click', () => {
         void sheet.close();
         this.enqueue(async () => {
@@ -1532,6 +1541,7 @@ export class Table {
     });
     await pause(finished.boss || isLunariaBoss(finished) ? 1600 : 700);
     if (!this.alive) return;
+    if (summary.tower) { towerResult(this, finished, summary); return; }
     showMatchEnd(this, finished, summary);
     this.autoHook?.();
   }
@@ -1548,9 +1558,11 @@ export class Table {
   }
 
   syncTension(): void {
-    if (!this.match.boss && !isLunariaBoss(this.match)) return;
+    if (!this.match.boss && !isLunariaBoss(this.match) && !towerGuardian(this.match)) return;
     // Map 1's rule, also at Lunaria's table: the tension layer joins once anyone reaches the last two phases.
-    const on = this.game.players.some((p) => p.phase !== null && phaseNumber(p.phase) >= 9);
+    // A Tower floor's list is three long, so there it joins on Phase 3, its final phase.
+    const list = this.game.phases;
+    const on = this.game.players.some((p) => p.phase !== null && (list ? displayPhase(this.game, p.phase) === list.length : displayPhase(this.game, p.phase) >= 9));
     this.root.classList.toggle('tense', on);
     if (on) fx('boss.tension');
     setTension(on);
@@ -1629,10 +1641,13 @@ export class Table {
 
   forfeit(): void {
     confirmSheet('Forfeit this match?', 'It will count as a loss.', 'Forfeit', () => {
-      finishMatch(app.save, this.match, true);
+      const summary = finishMatch(app.save, this.match, true);
+      const finished = this.match;
       app.save.match = null;
       persist();
       closeAllSheets();
+      // A Tower floor forfeited is a floor lost: its result shows, as after any loss.
+      if (summary.tower) { this.alive = false; towerResult(this, finished, summary); return; }
       show(journey(), mapMusic());
     }, 'Keep playing');
   }

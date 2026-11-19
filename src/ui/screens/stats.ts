@@ -1,12 +1,39 @@
 // Overall and per-bot stats.
 import { BOTS } from '../../content.ts';
 import { BOT_IDS, GLADE_BOT_IDS } from '../../bots/profiles.ts';
-import { gladeOpen } from '../../meta/progress.ts';
+import { crossroadsOpen, gladeOpen } from '../../meta/progress.ts';
 import { app } from '../app.ts';
-import { portraitEl } from '../art.ts';
+import { icon, portraitEl } from '../art.ts';
 import { h } from '../dom.ts';
 import type { StatBotId } from '../../meta/save.ts';
 import { bottomNav } from './journey.ts';
+
+/** The day a climb ended, as the phone would write it. */
+function day(ms: number): string {
+  return new Date(ms).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+/** The Tower's records (TOWER_SPEC.md §11.2), shown once the Crossroads is open. */
+function towerSection(): HTMLElement {
+  const t = app.save.tower;
+  const stat = (label: string, value: string | number) => h('div.stat', { 'data-stat': label }, h('b', null, value), h('small', null, label));
+  const body = t.totals.climbs === 0
+    ? [h('p.sheet-text', { 'data-testid': 'no-climbs' }, 'No climbs yet')]
+    : [
+      h('div.stat-grid', null,
+        stat('Best floor', t.best),
+        stat('Climbs', t.totals.climbs),
+        stat('Floors cleared', t.totals.floorsCleared),
+        stat('Guardians beaten', t.totals.guardiansBeaten),
+      ),
+      h('h3.sec.small', null, 'Recent climbs'),
+      h('div.recent', { 'data-testid': 'recent-climbs' }, t.history.slice(0, 10).map((c) => h('div.recent-row', { 'data-new-best': c.newBest ? 'true' : 'false' },
+        h('b', { html: `<span>Floor ${c.floor}</span>${c.newBest ? icon('flag') : ''}` }),
+        h('span', null, day(c.endedAt)),
+      ))),
+    ];
+  return h('section.tower-stats', { 'data-testid': 'tower-stats' }, h('h2.sec', null, 'The Tower'), ...body);
+}
 
 export function statsScreen(): HTMLElement {
   const s = app.save.stats;
@@ -34,6 +61,7 @@ export function statsScreen(): HTMLElement {
         h('b', null, BOTS[id].name),
         h('span', null, `${s.perBot[id].wins} wins · ${s.perBot[id].losses} losses`),
       ))),
+      crossroadsOpen(app.save) ? towerSection() : null,
     ),
     bottomNav('stats'),
   );

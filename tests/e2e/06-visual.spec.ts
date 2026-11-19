@@ -21,7 +21,13 @@ async function shot(page: Page, project: string, name: string, tags: string[] = 
   // Where the map switcher sits, so a comparison can set aside the one part of a map screen Map 2 changed.
   const sw = page.locator('[data-testid="map-switch"]');
   const switcher = (await sw.count()) > 0 ? await sw.boundingBox() : null;
-  writeFileSync(`${file}.json`, JSON.stringify({ tags, icon, switcher, scale: 2 }));
+  // The parts the Tower update may change (TOWER_SPEC.md §0.4): a map's top bar, and the Tower's own sections in
+  // Stats and How to Play when a capture shows them.
+  const boxOf = async (sel: string) => { const l = page.locator(sel).first(); return (await l.count()) > 0 && (await l.isVisible()) ? l.boundingBox() : null; };
+  const topbar = await boxOf('[data-testid="map-top"]');
+  const towerStats = await boxOf('[data-testid="tower-stats"]');
+  const towerHowto = await boxOf('[data-testid="tower-howto"]');
+  writeFileSync(`${file}.json`, JSON.stringify({ tags, icon, switcher, topbar, towerStats, towerHowto, scale: 2 }));
 }
 
 /** Fixes the random choices, and hides the layers that drift or come and go by the clock. */
