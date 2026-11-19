@@ -36,7 +36,7 @@ npm run preview
 | `src/engine/` | Rules engine: deterministic, no presentation. `observation.ts` is all a bot may see |
 | `src/bots/` | The bot profiles (the Rose Garden's five, the Moonlit Glade's seven, and Lunaria's two wisps) and hand evaluation. A test proves this code cannot reach hidden state, or any card count under the fog |
 | `src/sim/` | Headless match driver |
-| `src/meta/` | Saves, backup codes, progression, Charms, stats. `tower.ts` is the Tower: tiers, Guardians, each floor's draw, and the climb |
+| `src/meta/` | Saves, backup codes, progression, Charms, stats. `tower.ts` is the Tower: tiers, Guardians, each floor's draw, and the climb. `devmode.ts` is Dev Mode, which opens every lock on one browser (TESTING.md) |
 | `src/content.ts` | Title, roster, dialogue, stops, unlocks, Charms |
 | `src/ui/` | Table, set pieces, screens, audio, styles. `screens/glade.ts` is the Moonlit Glade's map and `fx/fog.ts` its drifting clouds |
 | `src/dev/` | Test hooks, compiled out of production builds |

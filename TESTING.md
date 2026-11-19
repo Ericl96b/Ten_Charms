@@ -56,7 +56,23 @@ Each Map 2 test is classed `real` or `fast` in `tests/inventory.json`: `fast` if
 
 The Tower's browser tests are `18-tower-nav.spec.ts` (the switcher, the Crossroads and its reveal), `19-tower-home.spec.ts` (Tower home, the floor intro, results, run over, Stats and How to Play), `20-tower-climb.spec.ts` (a whole climb, and a floor surviving a reload), `21-tower-motion.spec.ts` (the lift, skipping, Reduced Motion, sky bands and music layers), `22-tower-perf.spec.ts` (performance, alone), `23-tower-recordings.spec.ts`, `24-tower-art-parity.spec.ts` and `25-tower-captures.spec.ts`. Like Map 2's, each carries a timing class: tests titled `tower flow: …` speed up their waits with `setTestScale`; everything else runs in real time. The art parity test draws each piece with the game's own code and from the approved references in `private/`, and needs 97% of pixels to match; it's skipped where `private/` is missing. Recordings and captures go to `private/qa-screenshots/tower/`. Tower screens hold their drifting life still for captures with the `freezeAmbient` hook.
 
-The Tower update may change only a map's top bar and the Tower's own sections in Stats and How to Play. `scripts/allowed-diffs.json` names those masks, and the gate passes exactly them to `compare-shots.mjs`.
+The Tower update could change only a map's top bar and the Tower's own sections in Stats and How to Play. `scripts/allowed-diffs.json` names the masks a branch may use, and the gate passes exactly them to `compare-shots.mjs`. Since Change Request 05 the list is empty: every screen must match the baseline with no masks.
+
+## Dev Mode
+
+Dev Mode (Change Request 05) opens every progression lock on one browser, without writing anything to the save.
+
+**Turning it on.** Open the app's address with `#` and the secret word after it: `https://ericl96b.github.io/Ten_Charms/#<word>`. It stays on for that browser, across reloads and the Home Screen icon, and the word leaves the address. A wrong word does nothing. The word isn't in the repo; the app holds only a salted PBKDF2 digest of it (`DEV_DIGEST` in `src/meta/devmode.ts`).
+
+**Turning it off.** Settings shows a last row, "Dev Mode", only while it's on. "Turn off" turns it off at once and returns to the Journey, or leaves you on the table if a match is under way.
+
+**The word for tests.** The tests read it from `TC_DEV_WORD`, or from the untracked file `private/dev-mode-word.txt` (the word alone on one line). `node scripts/dev-word.ts` says whether it's available. Without it the gate stops before it starts, and the Dev Mode unit tests fail; they never skip. If the word changes, put the output of `node scripts/dev-word.ts --digest` in `DEV_DIGEST`.
+
+**Keeping the word out.** `tests/unit/dev-mode.test.ts` fails if any tracked file, or either build, holds the word. The gate ends with `scripts/word-scan.mjs`, which fails if it shows up in any report or log under `test-results/` or `qa-screenshots/cr05/`. Browser tests pass the word into the page only as an argument, never in a title, an address the runner logs, or a message.
+
+**The tests.** `26-dev-mode.spec.ts` covers turning it on and off, each lock, matches at every stop, on a Tower floor and on every Free Play variant, what turning off puts back, a match left running when it's turned off, Backup & Restore, and the player's build. Tests titled `dev mode flow: …` run on a fast clock; the rest run in real time. Its captures, with Dev Mode on, go to `qa-screenshots/cr05/dev-on/`. They are new pictures, not part of the baseline. `tests/unit/dev-mode.test.ts` checks the word, and that with Dev Mode off every check returns exactly what the game's own progress gives, on every prepared save.
+
+**Private files.** `24-tower-art-parity.spec.ts` compares against references that live only in `private/`. Where `private/mockups/tower/svg` is missing, its skip doesn't fail the inventory check, which prints a note instead. Everywhere else it must run.
 
 ## Coverage guarantee
 
@@ -161,5 +177,6 @@ Before this work, with no code changed and no retries, 1 of 3 full runs was clea
 | Wrong card tapped in the fan | `se`, 1 test in a gate | Tapping a fanned card now waits for its movement to finish. 40 of 40 repeats and 3 gates since. |
 | Tap timeout | `ref`, with 6 workers | Too many workers for this laptop, so the default is 4 |
 | "No tappable point" on a card in the fog test (`glade: in the fog, every count is hidden`) | `android`, 1 run in a gate | Passed 5 of 5 alone and in the gates before and after. Not reproduced, and the cause isn't confirmed; likely load. Watch for it. |
+| `glade-table-boss-fogged` image: Lunaria's hidden-count cloud drawn slightly larger (113 pixels, a difference of up to 80) | `android`, 1 gate during Change Request 05, which changes no table code | Matched the baseline exactly in 3 captures in a row straight after. Not reproduced, and the cause isn't confirmed; likely the cloud caught mid-transition under load. Watch for it. |
 
 **Image baseline.** It was recaptured when captures began stopping loops. Compared with the old baseline, 169 of 176 shots were within tolerance. The other 7 are at `android`: the 6 shots above (2 pixels, a difference of 9) and `table-bot-thinking` (20 pixels, a difference of up to 15, from its looping dots). The production build was byte-identical throughout.
