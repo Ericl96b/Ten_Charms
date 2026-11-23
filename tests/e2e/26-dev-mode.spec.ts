@@ -195,6 +195,36 @@ test('dev mode: a wrong, empty or wrong-case word does nothing at all', async ({
   }
 });
 
+test('dev mode: the word typed into a tab where the game is already open turns it on, with no reload', async ({ page }) => {
+  await openApp(page, FIXED);
+  const before = await raw(page);
+  await tab(page, 'collection');
+  await expect(page.locator('.item[data-unlocked="0"]').first()).toBeVisible();
+  // Marks this page, so a reload would show: typing a new fragment into the address never reloads it.
+  await page.evaluate(() => { (window as any).__samePage = true; });
+  // A wrong word typed in does nothing, and stays in the address as typed.
+  const wrong = await page.evaluate((w) => encodeURIComponent(w.toUpperCase()), WORD);
+  await page.evaluate((f) => { location.hash = f; }, wrong);
+  await page.waitForTimeout(1500);
+  expect(await flag(page)).toBeNull();
+  expect(await page.evaluate(() => location.hash.slice(1))).toBe(wrong);
+  await expect(page.locator('.item[data-unlocked="0"]').first()).toBeVisible();
+  // The right word turns it on in place: the screen showing is drawn again, opened.
+  await page.evaluate((w) => { location.hash = encodeURIComponent(w); }, WORD);
+  await page.waitForFunction(() => localStorage.getItem('ten-charms.dev') === '1', null, { timeout: 15_000 });
+  await expect(page.locator('.item[data-unlocked="0"]')).toHaveCount(0);
+  expect(await page.evaluate(() => (window as any).__samePage)).toBe(true);
+  expect(await hasWord(page)).toBe(false);
+  expect(await page.evaluate(() => location.hash)).toBe('');
+  expect(await raw(page)).toBe(before);
+  await tab(page, 'journey');
+  await expect(page.locator('[data-testid="stop-2"]')).not.toHaveClass(/locked/);
+  // Typed in again while it's on, the word still leaves the address.
+  await page.evaluate((w) => { location.hash = encodeURIComponent(w); }, WORD);
+  await page.waitForFunction((w) => !location.href.includes(w), WORD, { timeout: 15_000 });
+  expect(await flag(page)).toBe('1');
+});
+
 test('dev mode: the Settings row is there only while it is on, last, and Turn off goes home and stays off', async ({ page }) => {
   await openApp(page, FIXED);
   await openSettings(page);

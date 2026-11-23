@@ -1,6 +1,6 @@
 // Startup: the shell, the install helper, the splash, then the map or the match in progress.
 import { TITLE } from './content.ts';
-import { checkDevLink, readDevMode } from './meta/devmode.ts';
+import { checkDevLink, devModeOn, readDevMode } from './meta/devmode.ts';
 import { requestPersistence } from './meta/save.ts';
 import { app, initShell, persist, show } from './ui/app.ts';
 import { icon, petalSvg, roseIllustration } from './ui/art.ts';
@@ -8,7 +8,10 @@ import { resumePending, setHidden, sfx, unlockAudio } from './ui/audio/audio.ts'
 import { h, wait } from './ui/dom.ts';
 import { SPRING, animate, fx, setFxLayer } from './ui/fx/motion.ts';
 import { noteToast } from './ui/overlays.ts';
+import { collectionScreen } from './ui/screens/collection.ts';
+import { freePlayScreen } from './ui/screens/freeplay.ts';
 import { journey, mapMusic, resumeMatch } from './ui/screens/journey.ts';
+import { statsScreen } from './ui/screens/stats.ts';
 import { installDevHooks } from './dev/hooks.ts';
 
 const WEEK = 7 * 24 * 60 * 60 * 1000;
@@ -135,11 +138,25 @@ function registerServiceWorker(): void {
   }).catch(() => { /* still playable without offline support */ });
 }
 
+/** The Dev Mode link added to an open game: if it turns Dev Mode on, the screen showing is drawn again with it. */
+async function devLinkAdded(): Promise<void> {
+  const wasOn = devModeOn();
+  await checkDevLink();
+  if (wasOn || !devModeOn()) return;
+  const screen = app.current?.dataset.screen;
+  if (screen === 'journey') show(journey(), mapMusic(), 'none');
+  else if (screen === 'free') show(freePlayScreen(), null, 'none');
+  else if (screen === 'collection') show(collectionScreen(), null, 'none');
+  else if (screen === 'stats') show(statsScreen(), null, 'none');
+}
+
 async function boot(): Promise<void> {
   initShell();
   readDevMode();
   // Only an address with a fragment waits here, for the Dev Mode check (Change Request 05). No other start ever does.
   if (location.hash.length > 1) await checkDevLink();
+  // Typing the link into a tab where the game is already open changes only the fragment, which never reloads the page.
+  addEventListener('hashchange', () => { void devLinkAdded(); });
   requestPersistence();
   globalListeners();
   rotateCard();

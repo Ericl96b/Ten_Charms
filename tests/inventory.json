@@ -969,6 +969,13 @@
  },
  {
   "file": "26-dev-mode.spec.ts",
+  "title": "dev mode: the word typed into a tab where the game is already open turns it on, with no reload",
+  "project": "android",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "26-dev-mode.spec.ts",
   "title": "dev mode: Turn off during a match keeps the match on the table, as its last Settings row",
   "project": "android",
   "skipped": false,
@@ -1957,6 +1964,13 @@
  {
   "file": "26-dev-mode.spec.ts",
   "title": "dev mode: the Settings row is there only while it is on, last, and Turn off goes home and stays off",
+  "project": "max",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "26-dev-mode.spec.ts",
+  "title": "dev mode: the word typed into a tab where the game is already open turns it on, with no reload",
   "project": "max",
   "skipped": false,
   "timing": "real"
@@ -3005,6 +3019,13 @@
  },
  {
   "file": "26-dev-mode.spec.ts",
+  "title": "dev mode: the word typed into a tab where the game is already open turns it on, with no reload",
+  "project": "ref",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "26-dev-mode.spec.ts",
   "title": "dev mode: Turn off during a match keeps the match on the table, as its last Settings row",
   "project": "ref",
   "skipped": false,
@@ -3987,6 +4008,13 @@
  {
   "file": "26-dev-mode.spec.ts",
   "title": "dev mode: the Settings row is there only while it is on, last, and Turn off goes home and stays off",
+  "project": "se",
+  "skipped": false,
+  "timing": "real"
+ },
+ {
+  "file": "26-dev-mode.spec.ts",
+  "title": "dev mode: the word typed into a tab where the game is already open turns it on, with no reload",
   "project": "se",
   "skipped": false,
   "timing": "real"
