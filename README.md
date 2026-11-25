@@ -1,6 +1,9 @@
 # Ten Charms
 
 A cozy, Rose Garden themed rummy card game for iPhone and Android: a static web app installed to the Home Screen.
+
+Coding agents start from [AGENTS.md](AGENTS.md). Project knowledge lives in [docs/](docs/): [rules](docs/RULES.md), [design and assets](docs/DESIGN.md), [decisions](docs/DECISIONS.md) and [status](docs/STATUS.md).
+
 ## Commands
 
 Needs Node 24 or newer. On the build machine, Node is a portable copy; in PowerShell, run `$env:PATH = "$PWD\.tools\node;$env:PATH"` first.

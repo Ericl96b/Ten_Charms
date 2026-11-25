@@ -23,6 +23,25 @@ How the tests are organized, what they cost, and how reliable they are.
 
 Targeted runs rebuild first, and they leave out the coverage check, which only means something in a whole run. If that check is the only failure, `test:failed` finds no tests, so run the gate.
 
+## Machine prerequisites and pre-existing failures
+
+What a machine needs before the gate can pass, and the failures already known on such a machine.
+
+**Prerequisites:**
+- **Browsers.** `npx playwright install webkit chromium`.
+- **Image baseline.** This machine's own baseline in `qa-screenshots/cr01/baseline/`, captured with `npm run visual:baseline` on a clean `main`. Since Change Request 05 no masks are allowed, so a baseline captured before a screen changed fails the gate on that screen. Recapture it on a clean `main`, and never on a branch whose changes are being tested.
+- **The Dev Mode word.** It comes from `TC_DEV_WORD` or `private/dev-mode-word.txt` ([Dev Mode](#dev-mode)). Without it the gate stops before it starts.
+- **One run at a time.** Run only one Playwright run or gate per checkout. The browser tests serve the dev build on port 4174 and the production build on 4175 with `reuseExistingServer`, so two runs would share servers and `test-results/`. For concurrent work, use a second git worktree with its own baseline copy.
+
+**Failures that happen without any code change.** None of these tests was edited. They were seen during the Tower build on 2026-11-18, and haven't been rechecked since. If one is still there, it isn't caused by your change. Report it and rerun it alone, but don't edit the test.
+
+| Failure | When | Seen |
+|---|---|---|
+| `tests/unit/assets.test.ts` "uses the exact lines from the spec" | `private/SPEC.md` is present but `private/MAP2_SPEC.md` isn't, so the Glade's lines aren't found. With no `private/` at all, it's skipped | Every run on such a machine |
+| `12-glade-polish.spec.ts` "clouds drifting for 10 s" | 49–52 ms against the 50 ms limit at `ref` and `max` | 5 of 10 runs alone |
+| `12-glade-polish.spec.ts` "Lunaria's intro or the fog-lift scene" | 46–55 ms, with one 209 ms outlier | 1 of 5 runs alone |
+| `06-visual` `glade-table-*-fogged-android` | 34–114 pixels differ around the opponent chips | 1 of 5 runs |
+
 ## What the gate does
 
 `scripts/gate.mjs` rebuilds, typechecks, then runs the unit tests and the full simulation, and then the browser tests in stages. `tests/e2e/stages.ts` lists which tests go where.
